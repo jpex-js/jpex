@@ -1,6 +1,6 @@
 {
   "name": "jpex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Javascript Prototype Extension",
   "main": "index.js",
   "devDependencies": {
