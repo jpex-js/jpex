@@ -18,6 +18,12 @@ describe('Base Class - Dependency Injection', function(){
         expect(First._factories.test.fn).toBe(fn);
       });
       
+      it('should register a factory by calling register', function(){
+        var fn = function(){};
+        First.Register('test', fn);
+        expect(First._factories.test.fn).toBe(fn);
+      });
+      
       it('should run the factory for every dependency request', function(){
         var fn = function(){
           return {};
@@ -655,6 +661,26 @@ describe('Base Class - Dependency Injection', function(){
         expect(err).toBeDefined();
         expect(err.message).toBe('Recursive loop for dependency a encountered');
       }
+    });
+  });
+  
+  describe('Bind to Instance', function(){
+    it('should bind dependencies to the instance', function(){
+      First.Register.Factory('myFactory', function(){
+        return {};
+      });
+      var Second = First.extend({
+        bindToInstance : true,
+        constructor : function(myFactory, myService, myNamedParameter, fs){}
+      });
+      Second.Register.Service('myService', function(){});
+      
+      var instance = new Second({myNamedParameter : {}});
+      
+      expect(instance.myFactory).toBeDefined();
+      expect(instance.myService).toBeDefined();
+      expect(instance.myNamedParameter).toBeDefined();
+      expect(instance.fs).toBeDefined();
     });
   });
 });

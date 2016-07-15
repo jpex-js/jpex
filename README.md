@@ -66,14 +66,26 @@ var MyClass3 = jpex.extend({
 #####Constructor
 The constructor function that will be called when the class is instantiated.
 
-#####Dependencies
+#####dependencies
 Dependencies to be resolved and injected into the constructor. If omitted, the dependencies are extracted from the constructor function Angular-style.  
 Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](#object-dependencies) or dependencies that are not valid parameter names.  
 
-#####Prototype
+#####bindToInstance
+If true, any dependencies that are injected into the class will be automatically attached to the instance object.
+```javascript
+var MyClass = jpex.extend({
+  dependencies : ['fs', 'path', '$promise'],
+  bindToInstance
+});
+
+var instance = new MyClass();
+// instance.fs, instance.path, instance.$promise will all be set
+```
+
+#####prototype
 Adds functions to the class prototype. There isn't really advantage over adding to the prototype after creating the class, except for keeping code organised. The prototype is inherited (it becomes the prototype of the child class's prototype).
 
-#####InvokeParent
+#####invokeParent
 *Defaults to False if there is a constructor function, or True if there isn't*  
 Determines whether the parent constructor should be called before calling the class constructor. Any dependencies shared between the parent and child classes will be passed up the invocation chain, if the parent uses any different dependencies these will be resolved.  
 If invokeParent is set to `'after'` the parent will be called after the main constructor.
@@ -109,7 +121,7 @@ new BabyClass();
 // Child Class
 ```
 
-#####Static
+#####static
 Adds static properties to the newly created class, this is the same as doing `MyClass.something = x`. Static properties are inherited.
 
 ###Register

@@ -3,16 +3,20 @@ var internal = require('./internal'),
 
 // Dependency Injection registration
 module.exports = function(thisObj){
-  return {
-    Constant : Constant.bind(thisObj),
-    Service : Service.bind(thisObj),
-    Factory : Factory.bind(thisObj),
-    Enum : Enum.bind(thisObj),
-    
-    File : File.bind(thisObj),
-    Folder : Folder.bind(thisObj),
-    NodeModule : NodeModule.bind(thisObj)
+  var register = function(){
+    return register.Factory.apply(thisObj, arguments);
   };
+  register.Factory = Factory.bind(thisObj);
+  
+  register.Constant = Constant.bind(thisObj);
+  register.Service = Service.bind(thisObj);
+  register.Enum = Enum.bind(thisObj);
+  
+  register.File = File.bind(thisObj);
+  register.Folder = Folder.bind(thisObj);
+  register.NodeModule = NodeModule.bind(thisObj);
+  
+  return register;
 };
 
 // Return an object

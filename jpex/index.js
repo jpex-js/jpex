@@ -13,7 +13,8 @@ Base.extend = function(params){
     invokeParent : !(typeof params === 'function' || params && params.constructor),
     prototype : null,
     static : null,
-    dependencies : []
+    dependencies : [],
+    bindToInstance : false
   };
   
   //Merge params with defaults
@@ -41,6 +42,13 @@ Base.extend = function(params){
     //Invoke Parent before
     if (opt.invokeParent && opt.invokeParent !== 'after'){
       newClass.InvokeParent(this, args, namedParameters);
+    }
+    
+    if (opt.bindToInstance){
+      var bindParameters = newClass.NamedParameters(args, namedParameters);
+      Object.keys(bindParameters).forEach(key => {
+        this[key] = bindParameters[key];
+      });
     }
     
     //Run constructor
