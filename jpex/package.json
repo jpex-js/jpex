@@ -12,5 +12,8 @@
     "spec": "jasmine-node ../spec --autotest --watch ../jpex --color"
   },
   "author": "Jack Ellis",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "glob": "^7.0.5"
+  }
 }

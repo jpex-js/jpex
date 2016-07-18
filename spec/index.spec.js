@@ -76,7 +76,7 @@ describe('Base Class', function(){
     expect(instance.c).toBe('c');
   });
   
-  it('should register some default factories', function(){
+  it('should register some default factories', function(done){
       spyOn(console, 'log');
       spyOn(console, 'warn');
       spyOn(console, 'error');
@@ -97,6 +97,13 @@ describe('Base Class', function(){
       expect(console.log).toHaveBeenCalledWith('log');
       expect(console.warn).toHaveBeenCalledWith('warn');
       expect(console.error).toHaveBeenCalledWith('error');
+      
+      $promise(function(resolve){
+        resolve();
+      })
+      .then(function(){
+        done();
+      });
     });
     
     new NewClass();
