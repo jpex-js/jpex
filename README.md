@@ -66,26 +66,14 @@ var MyClass3 = jpex.extend({
 #####Constructor
 The constructor function that will be called when the class is instantiated.
 
-#####dependencies
+#####Dependencies
 Dependencies to be resolved and injected into the constructor. If omitted, the dependencies are extracted from the constructor function Angular-style.  
 Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](#object-dependencies) or dependencies that are not valid parameter names.  
 
-#####bindToInstance
-If true, any dependencies that are injected into the class will be automatically attached to the instance object.
-```javascript
-var MyClass = jpex.extend({
-  dependencies : ['fs', 'path', '$promise'],
-  bindToInstance
-});
-
-var instance = new MyClass();
-// instance.fs, instance.path, instance.$promise will all be set
-```
-
-#####prototype
+#####Prototype
 Adds functions to the class prototype. There isn't really advantage over adding to the prototype after creating the class, except for keeping code organised. The prototype is inherited (it becomes the prototype of the child class's prototype).
 
-#####invokeParent
+#####InvokeParent
 *Defaults to False if there is a constructor function, or True if there isn't*  
 Determines whether the parent constructor should be called before calling the class constructor. Any dependencies shared between the parent and child classes will be passed up the invocation chain, if the parent uses any different dependencies these will be resolved.  
 If invokeParent is set to `'after'` the parent will be called after the main constructor.
@@ -121,7 +109,7 @@ new BabyClass();
 // Child Class
 ```
 
-#####static
+#####Static
 Adds static properties to the newly created class, this is the same as doing `MyClass.something = x`. Static properties are inherited.
 
 ###Register
@@ -237,8 +225,49 @@ MyClass.Register.Folder('files');
 new MyClass();
 ```
 
+#####Folders (advanced)
+*(Path, Options)*  
+It is also possible to have the folder factory automatically register all files in a folder. This means you can organise your application in a logical manner and then have all dependencies automatically loaded and injected into your jpex classes.  
+The Options parameter takes the following options:
+######type
+The type of dependency you want to register them as. If not specified it will register all functions as factories and anything else as a constant. Valid values are *'Factory', 'Service', 'Constant', 'Enum'*
+######singleton
+Whether or not to create a singleton if the files are services or factories.
+######prefix
+Aprefix to add to the start of each dependency
+######suffix
+Asuffix to add to the end of each dependency
+######prefixFolder
+When adding sub folders, this will prepend the folder name to the dependency, so *main* folder with a *sub.js* file will be registered as *mainSub*, for example.
+######pattern
+A glob pattern to match by. This defaults to `'**/*.js'`
+######transform
+*(file, folders, ext)*  
+A function that will transform the filename into the name of the dependency. This is entirely optional and will be handled automatically using the above option values if omitted.  
+The function takes 3 parameters: the file name (without the folders or file extension), an array of folders leading to the file, and the file extension (.js).  
+The value returned by this function will be used as the dependency name.
+######register
+Another optional function that takes the name of the dependency and the contents of the related file and registers the dependency against the class.  
+
+```javascript
+var MyClass = jpex.extend(function(myserviceModel, subfolderServiceModel){
+  
+});
+
+MyClass.Register.Folder('models', {
+  type : 'Service',
+  suffix : 'model'
+});
+
+//where there is a folder structure:
+// models
+//   myservice.js
+//   subfolder
+//     service.js
+```
+
 #####Node_module
-*(name)*
+*(name)*  
 If all of the above fail, it will attempt to load the dependency from node_modules. This includes anything in the node_modules folder and global modiles like fs and path.  
 To avoid the overhead of checking all factories and folders before resorting to this method, you can manually register a node_module.
 ```javascript
