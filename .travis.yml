@@ -12,5 +12,3 @@ script :
 deploy :
   provider : npm
   api_key : 73a63fc3-2337-4f37-a8dc-87e976efa67f
-  on :
-    tags : true
