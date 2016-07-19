@@ -1,5 +1,6 @@
 var internal = require('./internal'),
-    grequire = require('./grequire');
+    grequire = require('./grequire'),
+    master;
 
 // Dependency Injection registration
 module.exports = function(thisObj){
@@ -40,6 +41,10 @@ function Service(name, dependencies, fn, singleton){
     return this;
   }
   
+  if(fn.extend && fn.Register && fn.Register.Factory){
+      return jaas.call(this, name, dependencies, fn, singleton);
+  }
+  
   if (dependencies){
     dependencies = [].concat(dependencies);
   }else{
@@ -54,6 +59,54 @@ function Service(name, dependencies, fn, singleton){
   
   return this.Register.Factory(name, dependencies, instantiator, singleton);
 }
+// -----------------------------------------
+function jaas(name, dependencies, fn, singleton){
+  // Assuming the parameters have been validated and sorted already
+  dependencies = dependencies ? [].concat(dependencies) : [];
+  dependencies.unshift('$namedParameters');
+  
+  function instantiator(){
+    var args = Array.from(arguments);
+    
+    var params = {};
+    
+    // Get factory dependencies
+    var i = 1;
+    dependencies.forEach(function(key, index){
+      if (index === 0){return;}
+      
+      if (typeof key === 'object'){
+        Object.keys(key).forEach(function(key2){
+          var val = args[i++];
+          if (val !== undefined){
+            params[key2] = val;
+          }
+        });
+      }else{
+        var val = args[i++];
+        if (val !== undefined){
+          params[key] = val;
+        }
+      }
+    });
+    
+    // Get named dependencies
+    if (args[0] && args[0]){
+      Object.keys(args[0]).forEach(function(key){
+        var val = args[0][key];
+        if (val !== undefined){
+          params[key] = args[0][key];
+        }
+      });
+    }
+    
+    // Instantiate the class
+    return new fn(params);
+  }
+  
+  return this.Register.Factory(name, dependencies, instantiator, singleton);
+}
+
 // -----------------------------------------
 // Return a factory function
 function Factory(name, dependencies, fn, singleton){

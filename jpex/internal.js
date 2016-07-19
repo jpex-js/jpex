@@ -80,6 +80,9 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
     if (name === '$options'){
       return localOptions;
     }
+    if (name === '$namedParameters'){
+      return namedParameters;
+    }
     
     // Named parameters
     if (namedParameters && namedParameters[name] !== undefined){
