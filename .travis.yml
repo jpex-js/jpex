@@ -11,4 +11,4 @@ script :
   - jasmine-node ../spec
 deploy :
   provider : npm
-  api_key : 73a63fc3-2337-4f37-a8dc-87e976efa67f
+  api_key : "73a63fc3-2337-4f37-a8dc-87e976efa67f"
