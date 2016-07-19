@@ -1,0 +1,11 @@
+branches : 
+  only :
+    - master
+language : node_js
+node_js :
+  - 4
+install :
+  - cd jpex
+  - npm install
+script :
+  - jasmine-node ../spec
