@@ -1,21 +1,22 @@
-
+'use strict';
 
 exports.Copy = function(obj){
   var self = this;
+  var o, flags;
   
-  switch(module.exports.Typeof(obj)){
+  switch(self.Typeof(obj)){
   case 'object':
-    var o = {};
+    o = {};
     Object.keys(obj).forEach(function(k){
       o[k] = self.Copy(obj[k]);
     });
     return o;
     
   case 'array':
-    return obj.map(o => self.Copy(o));
+    return obj.map((o) => self.Copy(o));
   
   case 'regexp':
-    var flags = [];
+    flags = [];
     if (obj.global){flags.push('g');}
     if (obj.ignoreCase){flags.push('i');}
     return new RegExp(obj.source, flags.join(''));

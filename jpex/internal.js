@@ -24,9 +24,10 @@ function getDependency (parentClass, name){
 //------------------------------------------------------------
 
 function getFileFromFolder(parentClass, name){
-  for (var x = 0; x < this._folders.length; x++){
+  var x, result;
+  for (x = 0; x < this._folders.length; x++){
     try{
-      var result = grequire(this._folders[x] + '/' + name);
+      result = grequire(this._folders[x] + '/' + name);
       this.Register.Constant(name, result);
       return this._factories[name];
     }
@@ -56,20 +57,24 @@ function getFromNodeModules(name){
 //------------------------------------------------------------
 
 function resolveDependencies(theClass, obj, namedParameters, globalOptions, stack){
-  if (!(obj && obj.dependencies)){
-    return [];
-  }
-  if (!stack){
-    stack = [];
-  }
+  return start();
   
-  var args = [].concat(obj.dependencies).map(resolveDependency);
-  
-  return Array.prototype.concat.apply([], args);
+  function start(){
+    if (!(obj && obj.dependencies)){
+      return [];
+    }
+    if (!stack){
+      stack = [];
+    }
+
+    var args = [].concat(obj.dependencies).map(resolveDependency);
+
+    return Array.prototype.concat.apply([], args);
+  }
   
   function resolveDependency(name){
     if (typeof name === 'object'){
-      return Object.keys(name).map(key => dothework(key, name[key]));
+      return Object.keys(name).map((key) => dothework(key, name[key]));
     }else{
       return [dothework(name, globalOptions)];
     }
@@ -180,5 +185,5 @@ function extractParameters(fn){
   
   // Pull out the parameters and split into an array
   str = str.substring(open + 1, close);
-  return str ? str.split(chr_delimeter).map(s => s.trim()) : [];
+  return str ? str.split(chr_delimeter).map((s) => s.trim()) : [];
 }
