@@ -77,6 +77,36 @@ describe('Base Class - Dependency Injection', function(){
         expect(err).toBeDefined();
       }
     });
+    it('should not error if dependency is optional', function(){
+      var Second = First.extend(function(_false_){
+        expect(_false_).toBeUndefined();
+      });
+      
+      new Second();
+    });
+    it('should not error if optional dependency\'\s dependencies fail', function(){
+      var Second = First.extend(function(_exists_){
+        expect(_exists_).toBeUndefined();
+      });
+      Second.Register.Factory('exists', function(notExists){
+        throw new Error('Exists factory should not run');
+      });
+      
+      new Second();
+    });
+    it('should load an optional dependency', function(){
+      var Second = First.extend(function(_a_){
+        expect(_a_).toBe('B');
+      });
+      Second.Register.Factory('a', function(b){
+        return b;
+      });
+      Second.Register.Factory('b', function(){
+        return 'B';
+      });
+      
+      new Second();
+    });
   });
   
   describe('Inheritance', function(){

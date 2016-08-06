@@ -76,6 +76,18 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
   }
   
   function dothework(name, localOptions){
+    // Optional?
+    var optional = false;
+    if (name[0] === '_'){
+      var arr = name.split('');
+      if (arr[arr.length-1] === '_'){
+        optional = true;
+        arr.shift();
+        arr.pop();
+        name = arr.join('');
+      }
+    }
+    
     // Special case for options
     if (name === '$options'){
       return localOptions;
@@ -106,11 +118,22 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
     }
     
     if (!(factory && factory.fn && typeof factory.fn === 'function')){
+      if (optional){
+        return undefined;
+      }
       throw new Error(['Unable to find required dependency:', name].join(' '));
     }
     
     //Get the dependency's dependencies
-    var args = resolveDependencies(theClass, factory, namedParameters, localOptions, stack.concat(name));
+    try{
+      var args = resolveDependencies(theClass, factory, namedParameters, localOptions, stack.concat(name));
+    }
+    catch(e){
+      if (optional){
+        return undefined;
+      }
+      throw e;
+    }
     
     //Run the factory function and return the result
     return factory.fn.apply(this, args);
