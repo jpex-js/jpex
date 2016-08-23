@@ -1,5 +1,5 @@
 /* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../jpex/grequire');
+var grequire = require('../../../jpex/grequire');
 
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
@@ -12,7 +12,7 @@ describe('Base Class - Dependency Injection', function(){
   describe('Registration', function(){
     describe('File', function(){
       it('should register a file as a dependency', function(){
-        First.Register.File('fileDependency', '../spec/folder/file');
+        First.Register.File('fileDependency', '../spec/jpex/folder/file');
         expect(Object.keys(First._factories).length).toBe(1);
         expect(First._factories.fileDependency).toBeDefined();
       });
@@ -22,7 +22,7 @@ describe('Base Class - Dependency Injection', function(){
           expect(fileDependency.val).toBe('loaded from file');
           done();
         });
-        Second.Register.File('fileDependency', '../spec/folder/file');
+        Second.Register.File('fileDependency', '../spec/jpex/folder/file');
         new Second();
       });
       it('should attempt to load the dependency from the registered json file', function(done){
@@ -31,11 +31,11 @@ describe('Base Class - Dependency Injection', function(){
           expect(jsonFileDependency.val).toBe('loaded from json');
           done();
         });
-        Second.Register.File('jsonFileDependency', '../spec/folder/json');
+        Second.Register.File('jsonFileDependency', '../spec/jpex/folder/json');
         new Second();
       });
       it('should check parent and ancestor files', function(done){
-        First.Register.File('file', '../spec/folder/file');
+        First.Register.File('file', '../spec/jpex/folder/file');
         var Second = First.extend();
         var Third = Second.extend(function(file){
           expect(file).toBeDefined();

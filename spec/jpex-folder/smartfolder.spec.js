@@ -1,18 +1,20 @@
 /* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../jpex/grequire');
+var grequire = require('../../../jpex-folder/grequire');
 
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
   
   beforeEach(function(){
-    Base = grequire('.');
+    Base = grequire('node_modules/jpex');
+    var Folder = grequire('.');
+    Base.Include(Folder);
     First = Base.extend();
   });
 
   describe('Registration', function(){
     describe('Smart Folder', function(){
       it('should register a file from a folder', function(done){
-        First.Register.Folder('../spec/smart', {pattern : 'constant.*'});
+        First.Register.Folder('../spec/jpex-folder/smart', {pattern : 'constant.*'});
         
         expect(First._factories.constant).toBeDefined();
         
@@ -25,7 +27,7 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
       });
       it('should register an index.js file', function(done){
-        First.Register.Folder('../spec/smart', {pattern : 'folder/*.*'});
+        First.Register.Folder('../spec/jpex-folder/smart', {pattern : 'folder/*.*'});
         expect(First._factories.folder).toBeDefined();
         
         var Second  = First.extend(function(folder){
@@ -37,7 +39,7 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
       });
       it('should load multiple files from within multiple folders', function(done){
-        First.Register.Folder('../spec/smart', {pattern : 'folders/**/*.*'});
+        First.Register.Folder('../spec/jpex-folder/smart', {pattern : 'folders/**/*.*'});
         expect(First._factories.foldersFirst).toBeDefined();
         expect(First._factories.foldersSecond).toBeDefined();
         expect(First._factories.foldersSubFirst).toBeDefined();
@@ -56,7 +58,7 @@ describe('Base Class - Dependency Injection', function(){
       it('should accept a custom name transformer', function(){
         var expected = ['index', 'first', 'second', 'first', 'second', 'constant', 'factory', 'service', 'enums'];
         
-        First.Register.Folder('../spec/smart', {
+        First.Register.Folder('../spec/jpex-folder/smart', {
           pattern : '**/*.{js,json}',
           transform : function(file, folders, ext){
             expect(typeof file).toBe('string');
@@ -72,7 +74,7 @@ describe('Base Class - Dependency Injection', function(){
         expect(expected.length).toBe(0);
       });
       it('should exclude any null transformer results', function(){
-        First.Register.Folder('../spec/smart', {
+        First.Register.Folder('../spec/jpex-folder/smart', {
           pattern : '**/*.*',
           transform : function(file){
             if (file === 'first' || file === 'constant'){
@@ -92,12 +94,12 @@ describe('Base Class - Dependency Injection', function(){
           register : function(){}
         };
         spyOn(opt, 'register');
-        First.Register.Folder('../spec/smart', opt);
+        First.Register.Folder('../spec/jpex-folder/smart', opt);
         expect(opt.register).toHaveBeenCalled();
       });
       
       it('should register a factory', function(done){
-        First.Register.Folder('../spec/smart', {type : 'factory', pattern : 'factory.js'});
+        First.Register.Folder('../spec/jpex-folder/smart', {type : 'factory', pattern : 'factory.js'});
         
         var Second = First.extend(function(factory){
           expect(factory).toBe('i am a factory');
@@ -110,7 +112,7 @@ describe('Base Class - Dependency Injection', function(){
         var err;
         
         try{
-          First.Register.Folder('../spec/smart', {type : 'factory', pattern : 'constant.json'});
+          First.Register.Folder('../spec/jpex-folder/smart', {type : 'factory', pattern : 'constant.json'});
         }
         catch(e){
           err = e;
@@ -120,7 +122,7 @@ describe('Base Class - Dependency Injection', function(){
         }
       });
       it('should register a service', function(done){
-        First.Register.Folder('../spec/smart', {type : 'service', pattern : 'service.js'});
+        First.Register.Folder('../spec/jpex-folder/smart', {type : 'service', pattern : 'service.js'});
         
         var Second = First.extend(function(service){
           expect(service.test).toBe('i am a service');
@@ -133,7 +135,7 @@ describe('Base Class - Dependency Injection', function(){
         var err;
         
         try{
-          First.Register.Folder('../spec/smart', {type : 'service', pattern : 'constant.json'});
+          First.Register.Folder('../spec/jpex-folder/smart', {type : 'service', pattern : 'constant.json'});
         }
         catch(e){
           err = e;
@@ -143,7 +145,7 @@ describe('Base Class - Dependency Injection', function(){
         }
       });
       it('should register a constant', function(done){
-        First.Register.Folder('../spec/smart', {type : 'constant', pattern : 'constant.json'});
+        First.Register.Folder('../spec/jpex-folder/smart', {type : 'constant', pattern : 'constant.json'});
         
         var Second = First.extend(function(constant){
           expect(constant.test).toBe('i am a constant');
@@ -153,7 +155,7 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
       });
       it('should register an enum', function(done){
-        First.Register.Folder('../spec/smart', {type : 'enum', pattern : 'enums.json'});
+        First.Register.Folder('../spec/jpex-folder/smart', {type : 'enum', pattern : 'enums.json'});
         
         var Second = First.extend(function(enums){
           expect(enums.test).toBeDefined();
@@ -164,21 +166,21 @@ describe('Base Class - Dependency Injection', function(){
       });
       
       it('should determine how to register a file automatically', function(){
-        First.Register.Folder('../spec/smart', {pattern : '{constant,factory}.*'});
+        First.Register.Folder('../spec/jpex-folder/smart', {pattern : '{constant,factory}.*'});
         var Second = First.extend(function(constant, factory){
           expect(constant.test).toBe('i am a constant');
           expect(factory).toBe('i am a factory');
         });
       });
       it('should add a prefix and suffix to the dependency', function(){
-        First.Register.Folder('../spec/smart', {prefix : 'pre', suffix : 'post'});
+        First.Register.Folder('../spec/jpex-folder/smart', {prefix : 'pre', suffix : 'post'});
         
         expect(First._factories.preFactoryPost).toBeDefined();
         expect(First._factories.preFoldersSubFirstPost).toBeDefined();
       });
       
       it('should not prefix the folder name', function(){
-        First.Register.Folder('../spec/smart', {
+        First.Register.Folder('../spec/jpex-folder/smart', {
           prefixFolder : false,
           pattern : '**/first.js'
         });

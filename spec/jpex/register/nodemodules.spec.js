@@ -1,5 +1,5 @@
 /* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../jpex/grequire');
+var grequire = require('../../../jpex/grequire');
 
 describe('Base Class - Dependency Injection', function(){
   var Base, First;

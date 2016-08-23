@@ -1,0 +1,28 @@
+{
+  "name": "jpex-folder",
+  "version": "0.0.1",
+  "description": "Search folders and auto-register jpex factories",
+  "main": "index.js",
+  "scripts": {
+    "cover": "istanbul cover --include-all-sources .\\node_modules\\jasmine-node\\bin\\jasmine-node ../spec",
+    "spec": "jasmine-node ../spec --autotest --watch ../jpex --color"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackmellis/jpex.git"
+  },
+  "author": "Jack Ellis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackmellis/jpex/issues"
+  },
+  "homepage": "https://github.com/jackmellis/jpex#readme",
+  "dependencies": {
+    "glob": "^7.0.5"
+  },
+  "devDependencies": {
+    "jpex": "file:..\\jpex",
+    "istanbul": "^0.4.3",
+    "jasmine-node": "^1.14.5"
+  }
+}
