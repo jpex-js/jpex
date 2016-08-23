@@ -25,5 +25,5 @@ module.exports = function(NewClass){
     $promise.reject = Promise.reject;
     $promise.resolve = Promise.resolve;
     return $promise;
-  });
+  }, true);
 };
