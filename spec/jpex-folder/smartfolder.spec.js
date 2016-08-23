@@ -1,13 +1,12 @@
 /* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../../jpex-folder/grequire');
+var grequire = require('../../jpex-folder/grequire');
 
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
   
   beforeEach(function(){
+    grequire('.')();
     Base = grequire('node_modules/jpex');
-    var Folder = grequire('.');
-    Base.Include(Folder);
     First = Base.extend();
   });
 

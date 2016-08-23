@@ -4,22 +4,28 @@ var internal = require('./internal'),
     grequire = require('./grequire');
 
 // Dependency Injection registration
-module.exports = function(thisObj){
-  var register;
-  register = function(){
-    return register.Factory.apply(thisObj, arguments);
-  };
-  register.Factory = Factory.bind(thisObj);
-  
-  register.Constant = Constant.bind(thisObj);
-  register.Service = Service.bind(thisObj);
-  register.Enum = Enum.bind(thisObj);
-  
-  register.File = File.bind(thisObj);
-  register.Folder = Folder.bind(thisObj);
-  register.NodeModule = NodeModule.bind(thisObj);
-  
-  return register;
+module.exports = {
+  factories : {
+    Factory : Factory,
+    Service : Service,
+    Constant : Constant,
+    Enum : Enum,
+    File : File,
+    Folder : Folder,
+    NodeModule : NodeModule
+  },
+  apply : function(thisObj){
+    var self = this;
+    var register = function(){
+      return register.Factory.apply(thisObj, arguments);
+    };
+    Object.keys(self.factories).forEach(function(f){
+      var fn = self.factories[f];
+      register[f] = fn.bind(thisObj);
+    });
+    
+    thisObj.Register = register;
+  }
 };
 // -----------------------------------------
 // Return an object

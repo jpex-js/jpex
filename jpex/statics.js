@@ -51,15 +51,3 @@ exports.Typeof = function(el){
       return typeof el;
   }
 };
-
-exports.Include = function(name){
-  if (typeof name === 'string'){
-    name = require('jpex-' + name);
-  }else if (typeof name === 'function'){
-    
-  }else{
-    throw new Error('Invalid parameter type ' + typeof name);
-  }
-  
-  name(this);
-};

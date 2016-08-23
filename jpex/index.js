@@ -109,7 +109,7 @@ Base.extend = function(params){
   newClass._getFromNodeModules = internal.getFromNodeModules.bind(newClass);
   
   newClass.Dependencies = opt.dependencies;
-  newClass.Register = factories(newClass);
+  factories.apply(newClass);
   
   return newClass;
 };

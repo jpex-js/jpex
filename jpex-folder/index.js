@@ -3,6 +3,7 @@ glob = require('glob'),
 Path = require('path');
 
 function smartfolder(path, opt){
+  console.log('calling smart folder');
   var self = this;
   
   opt = {
@@ -114,6 +115,10 @@ function toPascal(arr){
     .join('');
 }
 
-module.exports = function(jpex){
-  jpex.Register.SmartFolder = smartfolder;
+module.exports = function(){
+  console.log('registering smart folder');
+  var jpex = require('jpex');
+  var factories = require('jpex/factories');
+  factories.factories.SmartFolder = smartfolder;
+  factories.apply(jpex);
 };
