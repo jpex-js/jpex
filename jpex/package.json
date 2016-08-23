@@ -1,8 +1,16 @@
 {
   "name": "jpex",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Javascript Prototype Extension",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackmellis/jpex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jackmellis/jpex/issues"
+  },
+  "homepage": "https://github.com/jackmellis/jpex#readme",
   "devDependencies": {
     "istanbul": "^0.4.3",
     "jasmine-node": "^1.14.5"
