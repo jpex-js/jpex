@@ -1,3 +1,5 @@
+'use strict';
+
 var internal = require('./internal'),
     factories = require('./factories'),
     statics = require('./statics'),
@@ -5,12 +7,13 @@ var internal = require('./internal'),
 
 //Base class that all classes should inherit from
 var Base = function(){};
-
+Base.Copy = statics.Copy;
+Base.Typeof = statics.Typeof;
 Base.extend = function(params){
   var parentClass = this,
   opt = {
     constructor : (typeof params === 'function') ? params : null,
-    invokeParent : !(typeof params === 'function' || params && params.constructor),
+    invokeParent : !(typeof params === 'function' || (params && params.constructor)),
     prototype : null,
     static : null,
     dependencies : [],
@@ -36,31 +39,33 @@ Base.extend = function(params){
   
   ////============================================================================
   //Create a new class
-  var newClass = function(namedParameters){
-  
+  var newClass;
+  newClass = function(namedParameters){
+    var self = this;
+    
     //Get dependencies
     var args = internal.resolveDependencies(newClass, opt, namedParameters);
     
     //Invoke Parent before
     if (opt.invokeParent && opt.invokeParent !== 'after'){
-      newClass.InvokeParent(this, args, namedParameters);
+      newClass.InvokeParent(self, args, namedParameters);
     }
     
     if (opt.bindToInstance){
       var bindParameters = newClass.NamedParameters(args, namedParameters);
-      Object.keys(bindParameters).forEach(key => {
-        this[key] = bindParameters[key];
+      Object.keys(bindParameters).forEach(function(key){
+        self[key] = bindParameters[key];
       });
     }
     
     //Run constructor
     if (typeof(opt.constructor) === 'function'){
-      opt.constructor.apply(this, args);
+      opt.constructor.apply(self, args);
     }
     
     //Invoke Parent after
     if (opt.invokeParent === 'after'){
-      newClass.InvokeParent(this, args, namedParameters);
+      newClass.InvokeParent(self, args, namedParameters);
     }
   };
   ////============================================================================
@@ -108,9 +113,6 @@ Base.extend = function(params){
   
   return newClass;
 };
-
-Base.Copy = statics.Copy;
-Base.Typeof = statics.Typeof;
 
 module.exports = Base.extend();
 

@@ -1,10 +1,12 @@
+'use strict';
+
 var internal = require('./internal'),
-    grequire = require('./grequire'),
-    master;
+    grequire = require('./grequire');
 
 // Dependency Injection registration
 module.exports = function(thisObj){
-  var register = function(){
+  var register;
+  register = function(){
     return register.Factory.apply(thisObj, arguments);
   };
   register.Factory = Factory.bind(thisObj);
@@ -22,7 +24,7 @@ module.exports = function(thisObj){
 // -----------------------------------------
 // Return an object
 function Constant(name, obj){
-  return this.Register.Factory(name, null, () => obj);
+  return this.Register.Factory(name, null, () => obj, true);
 }
 // -----------------------------------------
 // Return a new instance
@@ -60,7 +62,7 @@ function Service(name, dependencies, fn, singleton){
   return this.Register.Factory(name, dependencies, instantiator, singleton);
 }
 // -----------------------------------------
-function jaas(name, dependencies, fn, singleton){
+function jaas(name, dependencies, Fn, singleton){
   // Assuming the parameters have been validated and sorted already
   dependencies = dependencies ? [].concat(dependencies) : [];
   dependencies.unshift('$namedParameters');
@@ -91,7 +93,7 @@ function jaas(name, dependencies, fn, singleton){
     });
     
     // Get named dependencies
-    if (args[0] && args[0]){
+    if (args[0] && typeof args[0] === 'object'){
       Object.keys(args[0]).forEach(function(key){
         var val = args[0][key];
         if (val !== undefined){
@@ -101,7 +103,7 @@ function jaas(name, dependencies, fn, singleton){
     }
     
     // Instantiate the class
-    return new fn(params);
+    return new Fn(params);
   }
   
   return this.Register.Factory(name, dependencies, instantiator, singleton);
@@ -152,8 +154,9 @@ function Factory(name, dependencies, fn, singleton){
 }
 // -----------------------------------------
 function File(name, path){
-  var file;
-  return this.Register.Factory(name, null, () => file || (file = grequire(path)));
+  return this.Register.Factory(name, null, function(){
+    return grequire(path);
+  }, true);
 }
 // -----------------------------------------
 function Folder(path, opt){
@@ -256,7 +259,7 @@ function smartfolder(path, opt){
     var name = opt.transform.call(self, base, folders, ext);
 
     return {
-      path : [path, file].join('/'),
+      path : ([path, file]).join('/'),
       file : base,
       name : name
     };
@@ -284,8 +287,9 @@ function toPascal(arr){
 
 // -----------------------------------------
 function NodeModule(name){
-  var file;
-  return this.Register.Factory(name, null, () => file || (file = require(name)));
+  return this.Register.Factory(name, null, function(){
+    return require(name);
+  }, true);
 }
 // -----------------------------------------
 function Enum(name, value){

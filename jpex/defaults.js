@@ -1,10 +1,13 @@
+'use strict';
+
 module.exports = function(NewClass){
   NewClass.Register.Constant('$timeout', setTimeout);
   NewClass.Register.Constant('$interval', setInterval);
   NewClass.Register.Constant('$immediate', setImmediate);
   NewClass.Register.Constant('$tick', process.nextTick);
   NewClass.Register.Factory('$log', null, function(){
-      var $log = function(){
+      var $log;
+      $log = function(){
           return $log.log.apply(console, arguments);
       };
       $log.log = console.log;
