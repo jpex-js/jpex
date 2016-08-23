@@ -17,7 +17,7 @@ Dead easy! Just require, extend, and instantiate!
 ```javascript
 var jpex = require('jpex');
 
-var MyClass = jpex(function($log){
+var MyClass = jpex.extend(function($log){
   this.thing = 'hello';
   $log('My Class instantiated');
 });
@@ -36,7 +36,7 @@ Api
 ###Extend
 The extend function creates a new class using the original as its parent and the function as a constructor. You can then extend the new class and so on.
 
-Note that you don't have to pass arguments into the new command, these are automatically infected.
+Note that you don't have to pass arguments into the new command, these are automatically injected.
 
 Extend can be called in 3 ways: with no parameters, with a constructor function, and with an [options](#extend-options) object:
 
@@ -69,6 +69,7 @@ The constructor function that will be called when the class is instantiated.
 #####Dependencies
 Dependencies to be resolved and injected into the constructor. If omitted, the dependencies are extracted from the constructor function Angular-style.  
 Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](#object-dependencies) or dependencies that are not valid parameter names.  
+It is also possible to make dependencies [optional](#optional-dependencies).  
 
 #####Prototype
 Adds functions to the class prototype. There isn't really advantage over adding to the prototype after creating the class, except for keeping code organised. The prototype is inherited (it becomes the prototype of the child class's prototype).
@@ -398,7 +399,7 @@ var MyClass = jpex.extend({
   dependencies : [{myFactory : 'bob'}, {myFactory : 'steve'}],
   constructor : function(a, b){
     a.sayHello(); // hello bob
-    a.sayHello(); // hello steve
+    b.sayHello(); // hello steve
   }
 });
 
@@ -412,4 +413,27 @@ MyClass.Register.Factory('myFactory', function($options){
 
 new MyClass();
 ```
-This also works with services.
+This also works with services.  
+
+####Optional Dependencies  
+Dependencies can be made optional by wrapping them in underscores. Normally if a require dependency cannot be resolved, an error is thrown. If an optional dependency can't be found, it will fail silently and return undefined.  
+```javascript
+var MyClass = jpex.extend(function(_doesNotExist_, _failsToResolve_, _doesExist_, $log){
+  $log(_doesNotExist_);
+  $log(_failsToResolve_);
+  $log(_doesExist_);
+});
+
+MyClass.Register.Factory('failsToResolve', function(doesNotExist){
+  return {};
+});
+
+MyClass.Register.Factory('doesExist', function(){
+  return {};
+});
+
+new MyClass();
+// undefined
+// undefined
+// {}
+```

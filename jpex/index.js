@@ -17,6 +17,8 @@ Base.extend = function(params){
     bindToInstance : false
   };
   
+  
+  
   //Merge params with defaults
   if (Base.Typeof(params) === 'object'){
     Object.keys(params).forEach(function(key){
@@ -100,6 +102,7 @@ Base.extend = function(params){
   newClass._getDependency = internal.getDependency.bind(newClass, parentClass);
   newClass._getFileFromFolder = internal.getFileFromFolder.bind(newClass, parentClass);
   newClass._getFromNodeModules = internal.getFromNodeModules.bind(newClass);
+  
   newClass.Dependencies = opt.dependencies;
   newClass.Register = factories(newClass);
   
