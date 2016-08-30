@@ -11,8 +11,8 @@ exports.extractParameters = extractParameters;
 
 //------------------------------------------------------------
 
-function getDependency (parentClass, name){
-  if (this._factories[name]){
+function getDependency (parentClass, name, parentsOnly){
+  if (!parentsOnly && this._factories[name]){
     return this._factories[name];
   }
   if (parentClass._getDependency){
@@ -23,15 +23,17 @@ function getDependency (parentClass, name){
 
 //------------------------------------------------------------
 
-function getFileFromFolder(parentClass, name){
+function getFileFromFolder(parentClass, name, parentsOnly){
   var x, result;
-  for (x = 0; x < this._folders.length; x++){
-    try{
-      result = grequire(this._folders[x] + '/' + name);
-      this.Register.Constant(name, result);
-      return this._factories[name];
-    }
-    catch(e){
+  if (!parentsOnly){
+    for (x = 0; x < this._folders.length; x++){
+      try{
+        result = grequire(this._folders[x] + '/' + name);
+        this.Register.Constant(name, result);
+        return this._factories[name];
+      }
+      catch(e){
+      }
     }
   }
   
@@ -87,6 +89,7 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
   function dothework(name, localOptions){
     // Optional?
     var optional = false;
+    var parentsOnly = false;
     if (name[0] === '_'){
       var arr = name.split('');
       if (arr[arr.length-1] === '_'){
@@ -110,16 +113,19 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
       return namedParameters[name];
     }
     
+    var stackIndex = stack.indexOf(name);
+    if (stackIndex > -1 && stackIndex === stack.length-1){
+      parentsOnly = true;
     // Check for infinite recursion
-    if (stack.indexOf(name) > -1){
+    }else if (stackIndex > -1){
       throw new Error(['Recursive loop for dependency', name, 'encountered'].join(' '));
     }
     
     // Get the factory from the class factories (which will also scan the parent classes)
-    var factory = theClass._getDependency(name);
+    var factory = theClass._getDependency(name, parentsOnly);
     
     if (!validFactory(factory)){
-      factory = theClass._getFileFromFolder(name);
+      factory = theClass._getFileFromFolder(name, parentsOnly);
     }
     
     if (!validFactory(factory)){
