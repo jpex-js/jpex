@@ -30,7 +30,8 @@ module.exports = {
 // -----------------------------------------
 // Return an object
 function Constant(name, obj){
-  return this.Register.Factory(name, null, () => obj, true);
+  this._factories[name] = {value : obj, constant : true};
+  return this;
 }
 // -----------------------------------------
 // Return a new instance
@@ -118,6 +119,8 @@ function jaas(name, dependencies, Fn, singleton){
 // -----------------------------------------
 // Return a factory function
 function Factory(name, dependencies, fn, singleton){
+  var self = this;
+  
   if (singleton === undefined && typeof fn === 'boolean'){
     singleton = fn;
     fn = undefined;
@@ -142,12 +145,10 @@ function Factory(name, dependencies, fn, singleton){
   }
   
   if (singleton){
-    var instance;
     var oldFn = fn;
     fn = function(){
-      if (!instance){
-        instance = oldFn.apply(null, arguments);
-      }
+      var instance = oldFn.apply(null, arguments);
+      self.Register.Constant(name, instance);
       return instance;
     };
   }
@@ -160,9 +161,7 @@ function Factory(name, dependencies, fn, singleton){
 }
 // -----------------------------------------
 function File(name, path){
-  return this.Register.Factory(name, null, function(){
-    return grequire(path);
-  }, true);
+  return this.Register.Factory(name, null, () => grequire(path), true);
 }
 // -----------------------------------------
 function Folder(path, opt){
@@ -179,9 +178,7 @@ function Folder(path, opt){
 
 // -----------------------------------------
 function NodeModule(name){
-  return this.Register.Factory(name, null, function(){
-    return require(name);
-  }, true);
+  return this.Register.Factory(name, null, () => require(name), true);
 }
 // -----------------------------------------
 function Enum(name, value){

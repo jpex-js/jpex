@@ -16,7 +16,8 @@ describe('Base Class - Dependency Injection', function(){
         First.Register.Constant('object', obj);
         
         expect(First._factories.object).toBeDefined();
-        expect(First._factories.object.fn()).toBe(obj);
+        expect(First._factories.object.value).toBe(obj);
+        expect(First._factories.object.constant).toBe(true);
         
         var Second = First.extend({
           constructor : function(obj2){

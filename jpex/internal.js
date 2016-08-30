@@ -80,6 +80,10 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
     }
   }
   
+  function validFactory(factory){
+    return factory && (factory.fn || factory.constant);
+  }
+  
   function dothework(name, localOptions){
     // Optional?
     var optional = false;
@@ -114,19 +118,23 @@ function resolveDependencies(theClass, obj, namedParameters, globalOptions, stac
     // Get the factory from the class factories (which will also scan the parent classes)
     var factory = theClass._getDependency(name);
     
-    if (!(factory && factory.fn && typeof factory.fn === 'function')){
+    if (!validFactory(factory)){
       factory = theClass._getFileFromFolder(name);
     }
     
-    if (!(factory && factory.fn && typeof factory.fn === 'function')){
+    if (!validFactory(factory)){
       factory = theClass._getFromNodeModules(name);
     }
     
-    if (!(factory && factory.fn && typeof factory.fn === 'function')){
+    if (!validFactory(factory)){
       if (optional){
         return undefined;
       }
       throw new Error(['Unable to find required dependency:', name].join(' '));
+    }
+    
+    if (factory.constant){
+      return factory.value;
     }
     
     //Get the dependency's dependencies
