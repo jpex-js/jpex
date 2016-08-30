@@ -245,6 +245,22 @@ describe('Base Class - Dependency Injection', function(){
         expect(err.message).toBe('Recursive loop for dependency a encountered');
       }
     });
+    
+    it('should load the parent instance of a dependency if it is the same name', function(){
+      var result;
+      First.Register.Factory('a', function(){
+        return 'a';
+      });
+      var Second = First.extend(function(a){
+        result = a;
+      });
+      Second.Register.Factory('a', function(a){
+        return a + 'A';
+      });
+      
+      new Second();
+      expect(result).toBe('aA');
+    });
   });
   
   describe('Bind to Instance', function(){
