@@ -6,9 +6,10 @@ var internal = require('./internal'),
 // Dependency Injection registration
 module.exports = {
   factories : {
-    Factory : Factory,
-    Service : Service,
     Constant : Constant,
+    Factory : Factory,
+    Decorator : Decorator,
+    Service : Service,
     Enum : Enum,
     File : File,
     Folder : Folder,
@@ -31,6 +32,78 @@ module.exports = {
 // Return an object
 function Constant(name, obj){
   this._factories[name] = {value : obj, constant : true};
+  return this;
+}
+// -----------------------------------------
+// Return a factory function
+function Factory(name, dependencies, fn, singleton){
+  var self = this;
+  
+  if (singleton === undefined && typeof fn === 'boolean'){
+    singleton = fn;
+    fn = undefined;
+  }
+  
+  if (fn === undefined){
+    fn = dependencies;
+    dependencies = null;
+  }
+  
+  if (typeof fn !== 'function'){
+    return this;
+  }
+  
+  if (dependencies){
+    dependencies = [].concat(dependencies);
+  }else{
+    dependencies = internal.extractParameters(fn);
+  }
+  if (!dependencies.length){
+    dependencies = null;
+  }
+  
+  if (singleton){
+    var oldFn = fn;
+    fn = function(){
+      var instance = oldFn.apply(null, arguments);
+      self.Register.Constant(name, instance);
+      return instance;
+    };
+  }
+  
+  this._factories[name] = {
+    fn : fn,
+    dependencies : dependencies
+  };
+  return this;
+}
+// -----------------------------------------
+function Decorator(name, dependencies, fn){
+  if (fn === undefined){
+    fn = dependencies;
+    dependencies = null;
+  }
+  
+  if (typeof fn !== 'function'){
+    return this;
+  }
+  
+  if (dependencies){
+    dependencies = [].concat(dependencies);
+  }else{
+    dependencies = internal.extractParameters(fn);
+  }
+  if (!dependencies.length){
+    dependencies = null;
+  }
+  
+  if (!this._decorators[name]){
+    this._decorators[name] = [];
+  }
+  this._decorators[name].push({
+    fn : fn,
+    dependencies : dependencies
+  });
   return this;
 }
 // -----------------------------------------
@@ -116,49 +189,6 @@ function jaas(name, dependencies, Fn, singleton){
   return this.Register.Factory(name, dependencies, instantiator, singleton);
 }
 
-// -----------------------------------------
-// Return a factory function
-function Factory(name, dependencies, fn, singleton){
-  var self = this;
-  
-  if (singleton === undefined && typeof fn === 'boolean'){
-    singleton = fn;
-    fn = undefined;
-  }
-  
-  if (fn === undefined){
-    fn = dependencies;
-    dependencies = null;
-  }
-  
-  if (typeof fn !== 'function'){
-    return this;
-  }
-  
-  if (dependencies){
-    dependencies = [].concat(dependencies);
-  }else{
-    dependencies = internal.extractParameters(fn);
-  }
-  if (!dependencies.length){
-    dependencies = null;
-  }
-  
-  if (singleton){
-    var oldFn = fn;
-    fn = function(){
-      var instance = oldFn.apply(null, arguments);
-      self.Register.Constant(name, instance);
-      return instance;
-    };
-  }
-  
-  this._factories[name] = {
-    fn : fn,
-    dependencies : dependencies
-  };
-  return this;
-}
 // -----------------------------------------
 function File(name, path){
   return this.Register.Factory(name, null, () => grequire(path), true);

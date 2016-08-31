@@ -43,34 +43,44 @@ Base.extend = function(params){
   newClass = function(namedParameters){
     var self = this;
     
-    //Get dependencies
-    var args = internal.resolveDependencies(newClass, opt, namedParameters);
-    
-    //Invoke Parent before
-    if (opt.invokeParent && opt.invokeParent !== 'after'){
-      newClass.InvokeParent(self, args, namedParameters);
-    }
-    
-    if (opt.bindToInstance){
-      var bindTo = self;
-      if (typeof opt.bindToInstance === 'string'){
-        bindTo = {};
-        self[opt.bindToInstance] = bindTo;
+    try{
+      //Get dependencies
+      var args = internal.resolveDependencies(newClass, opt, namedParameters);
+
+      //Invoke Parent before
+      if (opt.invokeParent && opt.invokeParent !== 'after'){
+        newClass.InvokeParent(self, args, namedParameters);
       }
-      var bindParameters = newClass.NamedParameters(args, namedParameters);
-      Object.keys(bindParameters).forEach(function(key){
-        bindTo[key] = bindParameters[key];
-      });
+
+      if (opt.bindToInstance){
+        var bindTo = self;
+        if (typeof opt.bindToInstance === 'string'){
+          bindTo = {};
+          self[opt.bindToInstance] = bindTo;
+        }
+        var bindParameters = newClass.NamedParameters(args, namedParameters);
+        Object.keys(bindParameters).forEach(function(key){
+          bindTo[key] = bindParameters[key];
+        });
+      }
+
+      //Run constructor
+      if (typeof(opt.constructor) === 'function'){
+        opt.constructor.apply(self, args);
+      }
+
+      //Invoke Parent after
+      if (opt.invokeParent === 'after'){
+        newClass.InvokeParent(self, args, namedParameters);
+      }
     }
-    
-    //Run constructor
-    if (typeof(opt.constructor) === 'function'){
-      opt.constructor.apply(self, args);
-    }
-    
-    //Invoke Parent after
-    if (opt.invokeParent === 'after'){
-      newClass.InvokeParent(self, args, namedParameters);
+    catch(e){
+      var errorHandler = internal.resolveDependencies(newClass, {dependencies:'_$errorHandler_'}, namedParameters)[0];
+      if (errorHandler){
+        errorHandler(e);
+      }else{
+        throw e;
+      }
     }
   };
   ////============================================================================
@@ -108,8 +118,10 @@ Base.extend = function(params){
   
   //Dependency Injection
   newClass._factories = {};
+  newClass._decorators = {};
   newClass._folders = [];
   newClass._getDependency = internal.getDependency.bind(newClass, parentClass);
+  newClass._getDecorators = internal.getDecorators.bind(newClass, parentClass);
   newClass._getFileFromFolder = internal.getFileFromFolder.bind(newClass, parentClass);
   newClass._getFromNodeModules = internal.getFromNodeModules.bind(newClass);
   

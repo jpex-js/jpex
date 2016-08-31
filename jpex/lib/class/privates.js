@@ -1,3 +1,9 @@
+exports = function(Class, ParentClass){
+  Class._getDependency = getDependency.bind(Class, ParentClass);
+  Class._getDecorators = getDecorators.bind(Class, ParentClass);
+};
+
+
 var statics = require('./statics'),
     grequire = require('./grequire');
 
