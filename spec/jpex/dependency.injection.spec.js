@@ -281,5 +281,23 @@ describe('Base Class - Dependency Injection', function(){
       expect(instance.myNamedParameter).toBeDefined();
       expect(instance.fs).toBeDefined();
     });
+    it('should bind to a named property of an instance', function(){
+      First.Register.Factory('myFactory', function(){
+        return {};
+      });
+      var Second = First.extend({
+        bindToInstance : '_bound',
+        dependencies : ['myFactory', 'myService', 'myNamedParameter', 'fs']
+      });
+      Second.Register.Service('myService', function(){});
+      
+      var instance = new Second({myNamedParameter : {}});
+      
+      expect(instance._bound).toBeDefined();
+      expect(instance._bound.myFactory).toBeDefined();
+      expect(instance._bound.myService).toBeDefined();
+      expect(instance._bound.myNamedParameter).toBeDefined();
+      expect(instance._bound.fs).toBeDefined();
+    });
   });
 });

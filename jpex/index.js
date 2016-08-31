@@ -52,9 +52,14 @@ Base.extend = function(params){
     }
     
     if (opt.bindToInstance){
+      var bindTo = self;
+      if (typeof opt.bindToInstance === 'string'){
+        bindTo = {};
+        self[opt.bindToInstance] = bindTo;
+      }
       var bindParameters = newClass.NamedParameters(args, namedParameters);
       Object.keys(bindParameters).forEach(function(key){
-        self[key] = bindParameters[key];
+        bindTo[key] = bindParameters[key];
       });
     }
     
