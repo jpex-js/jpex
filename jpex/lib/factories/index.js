@@ -13,7 +13,7 @@ module.exports = {
   apply : function(Class){
     var self = this;
     var register = function(){
-      return register.Factory.apply(thisObj, arguments);
+      return register.Factory.apply(Class, arguments);
     };
     Object.keys(self.factories).forEach(function(f){
       var fn = self.factories[f];

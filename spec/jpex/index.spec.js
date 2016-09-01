@@ -75,37 +75,4 @@ describe('Base Class', function(){
     expect(instance.b).toBe('b');
     expect(instance.c).toBe('c');
   });
-  
-  it('should register some default factories', function(done){
-      spyOn(console, 'log');
-      spyOn(console, 'warn');
-      spyOn(console, 'error');
-  
-    var NewClass = BaseClass.extend(function($timeout, $interval, $immediate, $tick, $promise, $log){    
-      expect($timeout).toBe(setTimeout);
-      expect($interval).toBe(setInterval);
-      expect($immediate).toBe(setImmediate);
-      expect($tick).toBe(process.nextTick);
-      expect($promise).toBeDefined();
-      
-      expect($log).toBeDefined();
-      $log('direct');
-      $log.log('log');
-      $log.warn('warn');
-      $log.error('error');
-      expect(console.log).toHaveBeenCalledWith('direct');
-      expect(console.log).toHaveBeenCalledWith('log');
-      expect(console.warn).toHaveBeenCalledWith('warn');
-      expect(console.error).toHaveBeenCalledWith('error');
-      
-      $promise(function(resolve){
-        resolve();
-      })
-      .then(function(){
-        done();
-      });
-    });
-    
-    new NewClass();
-  });
 });

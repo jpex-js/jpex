@@ -86,18 +86,41 @@ module.exports = {
 
       return args;
     },
-    InvokeParent : function(parentClass, keys, instance, values, args){
-      args = this.NamedParameters(keys, values, args);
+    InvokeParent : function(parentClass, instance, values, args){
+      if (values && !Array.isArray(values)){
+        values = Array.from(values);
+      }
+      args = this.NamedParameters(values, args);
       parentClass.call(instance, args);
     }
   },
   
   apply : function(Class, Parent, dependencies){
     Object.keys(this.getters).forEach(n => {
-      Class[n] = this.getters[n].bind(Class, Parent);
+      Object.defineProperty(Class, n, {
+        value : this.getters[n].bind(Class, Parent)
+      });
     });
     
-    Class.NamedParameters = this.manual.NamedParameters.bind(Class, dependencies);
-    Class.InvokeParent = this.manual.InvokeParent.bind(Class, Parent, dependencies);
+    Object.defineProperties(Class, {
+      NamedParameters : {
+        value : this.manual.NamedParameters.bind(Class, dependencies)
+      },
+      InvokeParent : {
+        value : this.manual.InvokeParent.bind(Class, Parent)
+      },
+      _factories : {
+        writable : true,
+        value : {}
+      },
+      _folders : {
+        writable : true,
+        value : []
+      },
+      _decorators : {
+        writable : true,
+        value : []
+      }
+    });
   }
 };

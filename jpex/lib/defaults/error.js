@@ -6,7 +6,7 @@ module.exports = function(NewClass){
     };
     
     // create a new error type and add it to $error
-    $error.declare = function(name, fn){
+    $error.define = function(name, fn){
       var NewError = function(message){
         this.message = message;
         

@@ -1,8 +1,13 @@
 module.exports = {
-  defaults : ['./log', './timeout', './promise', './error'],
+  defaults : [
+    require('./log'), 
+    require('./timeout'), 
+    require('./promise'), 
+    require('./error')
+  ],
   apply : function(Class){
     this.defaults.forEach(n => {
-      require(n)(Class);
+      n(Class);
     });
   }
 };
