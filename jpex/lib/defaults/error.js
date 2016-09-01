@@ -1,6 +1,3 @@
-function ErrorUtil(){}
-
-
 module.exports = function(NewClass){  
   NewClass.Register.Factory('$error', null, function(){  
     // Throw the standard error
@@ -41,8 +38,7 @@ module.exports = function(NewClass){
       return err;
     };
     
-    $error.declare('Error');
-    $error.Error.Class = Error;
+    $error.declare('Error').Class = Error;
     $error.Standard = $error.Error;
     
     return $error;
