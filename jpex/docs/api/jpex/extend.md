@@ -1,5 +1,6 @@
-Extend
+Jpex.Extend
 ======
+*Object*  
 The extend function creates a new class using the original as its parent and the function as a constructor. You can then extend the new class and so on.
 
 Note that you don't have to pass arguments into the new command, these are automatically injected.
@@ -33,7 +34,7 @@ var MyClass3 = jpex.extend({
 Extend options
 --------------
 
-###constructor###  
+###constructor  
 *function(dependency1, ...)*  
 The constructor function that will be called when the class is instantiated.
 
@@ -56,11 +57,11 @@ var instance = new MyClass();
 instance.tmp.myService;
 ```
 
-###prototype###  
+###prototype  
 *Object*  
 Adds functions to the class prototype. This is the same as directly adding properties to the prototype after creating the class. The prototype is inherited (it becomes the prototype of the child class's prototype).
 
-###invokeParent###
+###invokeParent
 *Boolean | String*  
 *Defaults to false if there is a constructor function, or true if there isn't*  
 Determines whether the parent constructor should be called before calling the class constructor. Any dependencies shared between the parent and child classes will be passed up the invocation chain, if the parent uses any different dependencies these will be resolved.  
@@ -97,5 +98,5 @@ new BabyClass();
 // Child Class
 ```
 
-###Static###  
+###Static  
 Adds static properties to the newly created class, this is the same as doing `MyClass.something = x`. Static properties are inherited.

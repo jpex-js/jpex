@@ -13,4 +13,4 @@ Inheritence
 Dependency Injection  
 Error Handling  
 Creating Jpex Plugins  
-[API](./api')
+[API](./api/index.md')
