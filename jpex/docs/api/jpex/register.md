@@ -12,12 +12,12 @@ var ChildClass = Jpex.extend(function(myFactory){
 ```
 
 Register contains the following methods:  
-Factory
-Constant
-Service
-File
-Folder
-Enum
-node_module
+Factory  
+Constant  
+Service  
+File  
+Folder  
+Enum  
+node_module  
 
-The Register function itself is just a shortcut for Register.Factory();
+The Register function itself is just a shortcut for `Register.Factory();`
