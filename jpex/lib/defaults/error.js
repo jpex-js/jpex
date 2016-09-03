@@ -2,7 +2,7 @@ module.exports = function(NewClass){
   NewClass.Register.Factory('$error', null, function(){  
     // Throw the standard error
     var $error = function(){
-      $error.Standard.apply(this, arguments).throw();
+      $error.default.apply(this, arguments).throw();
     };
     
     // create a new error type and add it to $error
@@ -27,8 +27,10 @@ module.exports = function(NewClass){
         throw this;
       };
       
-      $error[name] = function(message){
-        return $error.create(NewError, message);
+      $error[name] = function(){
+        var args = Array.from(arguments);
+        args.unshift(NewError);
+        return $error.create.apply(null, args);
       };
       $error[name].Class = NewError;
       return NewError;
@@ -38,9 +40,9 @@ module.exports = function(NewClass){
       return err;
     };
     
-    $error.declare('Error').Class = Error;
-    $error.Standard = $error.Error;
+    $error.define('Error').Class = Error;
+    $error.default = $error.Error;
     
     return $error;
-  });
+  }, true);
 };
