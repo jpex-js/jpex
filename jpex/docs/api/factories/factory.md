@@ -1,5 +1,7 @@
 Factory
 =======
+| Parameter     | Type          |           |
+|---------------|---------------|-----------|
 | Name          | String        |           |
 | Dependencies  | Array[String] | Optional  |
 | Function      | Function      |           |
