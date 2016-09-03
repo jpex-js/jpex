@@ -29,7 +29,7 @@ var MyClass3 = jpex.extend({
 });
 ```
 
-*Keep in mind that the constructor parameters are injected rather than passed in directly. So calling `new MyClass2(service, factory)` would not instantiate the class with those parameters. If you wanted to pass a parameters into your Class you would need to use [named parameters](./named-params') e.g. `new MyClass2({mySerivce : service, myFactory L factory})`*
+*Keep in mind that the constructor parameters are injected rather than passed in directly. So calling `new MyClass2(service, factory)` would not instantiate the class with those parameters. If you wanted to pass a parameters into your Class you would need to use [named parameters](../factories/named-params.md') e.g. `new MyClass2({mySerivce : service, myFactory : factory})`*
 
 Extend options
 --------------

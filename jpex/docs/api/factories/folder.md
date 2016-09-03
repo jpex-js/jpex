@@ -1,11 +1,12 @@
-JPEX - Javascipt Protoype Extension
-===================================
-
 Folder
-------
-*(Path)*  
-If a dependency can't be found in the registered factories, it will attempt to find the dependency on any registered folders.
+======
+| Parameter     | Type          | Default   |
+|---------------|---------------|-----------|
+| Path          | String        |           |
+
+If a dependency can't be found in the registered factories, it will attempt to find the dependency in any registered folders.  
 This can be an expensive process so should be avoided if possible. Once the dependency has been found in a folder, the resulting location will be cached.
+
 ```javascript
 var MyClass = jpex.extend(function(jsfile, jsonfile){
   file1.doSomething();
@@ -16,6 +17,7 @@ MyClass.Register.Folder('files');
 
 new MyClass();
 ```
+
 
 Folders (advanced)
 ------------------

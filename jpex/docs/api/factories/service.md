@@ -1,11 +1,15 @@
-JPEX - Javascipt Protoype Extension
-===================================
-
 Service
--------
-*(Name, Deps, Fn, Singleton)*
-Fn is an instantiatable function. Services are similar to angular services except that they are not singletons by default.  
-It is also possible to register another jpex class as a service.
+=======
+| Parameter     | Type          | Default   |
+|---------------|---------------|-----------|
+| Name          | String        |           |
+| Dependencies  | Array[String] | null      |
+| Function      | Function      |           |
+| Singleton     | boolean       | false     |
+
+Services are simple classes that are instantiated and the instance returned when injected.  
+It is also possible to register another Jpex class as a service, meaning that you can inject classes into each other.
+
 ```javascript
 var MyClass = jpex.extend(function(myService){
   myService.doSomething();
@@ -18,4 +22,10 @@ MyClass.Register.Service('myService', function($log){
 });
 
 new MyClass();
+
+var LinkedClass = jpex.extend(function(myClass){
+
+});
+
+LinkedClass.Register.Service('myClass', MyClass); // injects MyClass as a dependency of Linked Class
 ```

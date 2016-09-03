@@ -12,22 +12,22 @@ The following static properties and methods are available on the Jpex class obje
 
 Factories
 ---------
-Factories are small modules that can be injected into a class or another factory.
-Factory  
-Constant  
-Service  
-File  
-Folder  
-Enum  
-node_module  
-named parameters  
+Factories are small modules that can be injected into a class or another factory.  
+[Factory](./factories/factory.md)  
+[Constant](./factories/constant.md)  
+[Service](./factories/service.md)  
+[File](./factories/file.md)  
+[Folder](./factories/folder.md)  
+[Enum](./factories/enum.md)  
+[node_module](./factories/node_module.md)  
+[named parameters](./factories/named-params.md)  
 
 Default factories
 -----------------
-$log  
-$timeout  
-$interval  
-$immediate  
-$tick  
-$promise  
-$fs  
+Jpex comes with several default factories that can be injected into your classes.  
+[$log](./defaults/log.md)  
+[$timeout](./defaults/timers.md#$timeout)  
+[$interval](./defaults/timers.md#$interval)  
+[$immediate](./defaults/timers.md#$immediate)  
+[$tick](./defaults/timers.md#$tick)  
+[$promise](./defaults/promise.md)  

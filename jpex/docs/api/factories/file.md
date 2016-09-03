@@ -1,10 +1,12 @@
-JPEX - Javascipt Protoype Extension
-===================================
-
 File
------
-*(Name, Path)*  
-This will attempt to require the provided path when injected. Once loaded, the result is returned as is, there is no additional processing, just the object in the file.
+====
+| Parameter     | Type          | Default   |
+|---------------|---------------|-----------|
+| Name          | String        |           |
+| Path          | String        |           |
+
+This will attempt to load the provided path when injected. Once loaded, the result is returned as is, there is no additional processing, just the object in the file. If Path is a relative path, it will be resolved in relation to the current working directory.
+
 ```javascript
 var MyClass = jpex.extend(function(file1, file2, file3){
   file1.doSomething();
