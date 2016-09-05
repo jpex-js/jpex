@@ -9,8 +9,8 @@ The second purpose of Jpex is to make dependency injection extremely easy. You s
 
 Topics
 ------
-Inheritence  
-Dependency Injection  
+[Inheritence](./inheritence.md)  
+[Dependency Injection](./di.md)  
 Error Handling  
 Creating Jpex Plugins  
 [API](./api/index.md)  

@@ -109,6 +109,9 @@ module.exports = {
       InvokeParent : {
         value : this.manual.InvokeParent.bind(Class, Parent)
       },
+      _parent : {
+        get : () => Parent
+      },
       _factories : {
         writable : true,
         value : {}

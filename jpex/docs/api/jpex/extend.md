@@ -29,7 +29,7 @@ var MyClass3 = jpex.extend({
 });
 ```
 
-*Keep in mind that the constructor parameters are injected rather than passed in directly. So calling `new MyClass2(service, factory)` would not instantiate the class with those parameters. If you wanted to pass a parameters into your Class you would need to use [named parameters](../factories/named-params.md') e.g. `new MyClass2({mySerivce : service, myFactory : factory})`*
+*Keep in mind that the constructor parameters are injected rather than passed in directly. So calling `new MyClass2(service, factory)` would not instantiate the class with those parameters. If you wanted to pass a parameters into your Class you would need to use [named parameters](../factories/named-params.md) e.g. `new MyClass2({mySerivce : service, myFactory : factory})`*
 
 Extend options
 --------------
@@ -38,14 +38,14 @@ Extend options
 *function(dependency1, ...)*  
 The constructor function that will be called when the class is instantiated.
 
-###dependencies###
+###dependencies
 *Array[String | Object]*  
 Dependencies to be resolved and injected into the constructor. If omitted, the dependencies are extracted from the constructor function.    
 Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](#object-dependencies) or dependencies that are not valid parameter names.  
 It is also possible to make dependencies [optional](#optional-dependencies).  
 
-###bindToInstance###  
-*Boolean | String*
+###bindToInstance  
+*Boolean | String*  
 If *true*, the bindToInstance option will attach all injected dependencies to the instance (e.g. `this.$promise`). If bindToInstance is a string, it will create a property of that name on the instance and attach the dependencies to that.
 ```javascript
 var MyClass = jpex.extend({

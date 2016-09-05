@@ -31,3 +31,4 @@ Jpex comes with several default factories that can be injected into your classes
 [$immediate](./defaults/timers.md#$immediate)  
 [$tick](./defaults/timers.md#$tick)  
 [$promise](./defaults/promise.md)  
+[$error](./defaults/error.md)

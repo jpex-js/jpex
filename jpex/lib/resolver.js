@@ -59,6 +59,13 @@ function resolveMany(Class, definition, namedParameters, globalOptions, stack){
 
 // Resolves a single dependency
 function resolveDependency(Class, name, localOptions, namedParameters, stack){
+  var ancestoral = checkAncestoral(name);
+  if (ancestoral){
+    name = ancestoral;
+    if (Class._parent){
+      return resolveDependency(Class._parent, name, localOptions, namedParameters);
+    }
+  }
   var optional = checkOptional(name);
   if (optional){
     name = optional;
@@ -89,7 +96,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   
   // Constant values don't need any more calculations
   if (factory.constant){
-    return decorateResult(Class, name, namedParameters, localOptions, factory.value);
+    return factory.value;
   }
   
   var args;
@@ -108,9 +115,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   }
 
   //Run the factory function and return the result
-  var result = factory.fn.apply(this, args); 
-  
-  return decorateResult(Class, name, namedParameters, localOptions, result);
+  return factory.fn.apply(this, args); 
 }
 
 // Check for _name_ syntax
@@ -125,6 +130,13 @@ function checkOptional(name){
     }
   }
   return false;
+}
+
+// Check ancestoral
+function checkAncestoral(name){
+  if (name[0] === '^'){
+    return name.substr(1);
+  }
 }
 
 // Get the factory from the class factories (which will also scan the parent classes)
@@ -152,21 +164,4 @@ function getFactory(Class, name, optional){
 // Check if the factory is valid
 function isValidFactory(factory){
   return factory && ((factory.fn && typeof factory.fn === 'function') || factory.constant);
-}
-
-// Runs any decorators against the dependency
-function decorateResult(Class, name, namedParameters, localOptions, result){
-  var decorators = Class._getDecorators(name);
-  
-  if (decorators && decorators.length){
-    decorators.forEach((decorator) => {
-      var args;
-      if (decorator.dependencies && decorator.dependencies.length){
-        args = resolveMany(Class, decorator, namedParameters, localOptions);
-      }
-      result = decorator.fn.apply(result, args);
-    });
-  }
-  
-  return result;
 }

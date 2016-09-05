@@ -3,7 +3,6 @@ module.exports = {
   factories : {
     Constant : require('./constant'),
     Factory : require('./factory'),
-    Decorator : require('./decorator'),
     Service : require('./service'),
     Enum : require('./enum'),
     File : require('./file'),

@@ -17,7 +17,7 @@ describe('Jpex - Default Factories', function(){
         expect($error.Error).toBeDefined();
       });
       it('should be an instance of Error', function(){
-        expect($error.Error() instanceof Error).toBe(true);
+        expect(new $error.Error() instanceof Error).toBe(true);
       });
       it('should create a new Error', function(){
         var TestError = $error.define('TestError');
@@ -26,7 +26,7 @@ describe('Jpex - Default Factories', function(){
       it('should attach the new Error to the factory', function(){
         var TestError = $error.define('TestError');
         expect($error.TestError).toBeDefined();
-        expect($error.TestError.Class).toBe(TestError);
+        expect($error.TestError).toBe(TestError);
       });
     });
 
@@ -37,7 +37,7 @@ describe('Jpex - Default Factories', function(){
           this.code = code;
           this.type = 'test';
         });
-        err = $error.TestError('this is a test error', 999);
+        err = $error.TestError.create('this is a test error', 999);
       });
       
       it('should create an instance of error', function(){
@@ -45,10 +45,7 @@ describe('Jpex - Default Factories', function(){
         expect(err instanceof Error).toBe(true);
       });
       it('should be an instance of itself', function(){
-        expect(err instanceof $error.TestError.Class).toBe(true);
-      });
-      it('should be throwable', function(){
-        expect(err.throw).toBeDefined();
+        expect(err instanceof $error.TestError).toBe(true);
       });
       it('should have a stack trace', function(){
         expect(err.stack).toBeDefined();
@@ -81,29 +78,29 @@ describe('Jpex - Default Factories', function(){
         }finally{
           expect(err).toBeDefined();
           expect(err instanceof Error).toBe(true);
-          expect(err instanceof $error.TestError.Class).toBe(false);
+          expect(err instanceof $error.TestError).toBe(false);
         }
       });
       it('should throw a specific error using .throw()', function(){
         var err;
         try{
-          $error.TestError('uhoh').throw();
+          $error.TestError.throw('uhoh');
         }catch(e){
           err = e;
         }finally{
           expect(err).toBeDefined();
-          expect(err instanceof $error.TestError.Class).toBe(true);
+          expect(err instanceof $error.TestError).toBe(true);
         }
       });
       it('should throw an error using throw ...', function(){
         var err;
         try{
-          throw $error.TestError('uhoh');
+          throw $error.TestError.throw('uhoh');
         }catch(e){
           err = e;
         }finally{
           expect(err).toBeDefined();
-          expect(err instanceof $error.TestError.Class).toBe(true);
+          expect(err instanceof $error.TestError).toBe(true);
         }
       });
       it('should override the standard error to be thrown', function(){
@@ -116,7 +113,7 @@ describe('Jpex - Default Factories', function(){
         }finally{
           expect(err).toBeDefined();
           expect(err instanceof Error).toBe(true);
-          expect(err instanceof $error.TestError.Class).toBe(true);
+          expect(err instanceof $error.TestError).toBe(true);
         }
       });
     });
@@ -131,7 +128,7 @@ describe('Jpex - Default Factories', function(){
           this.code = 1234;
           this.message = ['Test Error!!', this.message].join('\n');
         });
-        $error.TestError('thrown by BaseClass').throw();
+        $error.TestError.throw('thrown by BaseClass');
       });
     });
     
@@ -143,6 +140,7 @@ describe('Jpex - Default Factories', function(){
         err = e;
       }finally{
         expect(err).toBeDefined();
+        expect(err.code).toBe(1234);
         expect(err.message).toBe('Test Error!!\nthrown by BaseClass');
       }
     });
@@ -165,7 +163,7 @@ describe('Jpex - Default Factories', function(){
       
       var A = BaseClass.extend();
       var B = BaseClass.extend(function($error){
-        $error.TestError('thrown by B').throw();
+        $error.TestError.throw('thrown by B');
       });
       B.Register.Factory('$errorHandler', function($log){
         return function(){
