@@ -3,7 +3,8 @@ module.exports = {
     require('./log'), 
     require('./timeout'), 
     require('./promise'), 
-    require('./error')
+    require('./error'),
+    require('./errorFactory')
   ],
   apply : function(Class){
     this.defaults.forEach(n => {

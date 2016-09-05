@@ -9,6 +9,7 @@ module.exports = function(NewClass){
     $error.define = function(name, fn){
       var NewError = function(message){
         this.message = message;
+        this.name = name;
         
         if (Error.captureStackTrace){
           Error.captureStackTrace(this, this.constructor);
@@ -22,10 +23,6 @@ module.exports = function(NewClass){
       };
       NewError.prototype = Object.create(Error.prototype);
       NewError.prototype.constructor = NewError;
-      NewError.prototype.name = name;
-      NewError.prototype.throw = function(){
-        throw this;
-      };
       NewError.create = function(){
         var args = Array.from(arguments);
         args.unshift(NewError);

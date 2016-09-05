@@ -7,7 +7,8 @@ module.exports = {
     Enum : require('./enum'),
     File : require('./file'),
     Folder : require('./folder'),
-    NodeModule : require('./nodemodule')
+    NodeModule : require('./nodemodule'),
+    ErrorType : require('./errortype')
   },
   apply : function(Class){
     var self = this;

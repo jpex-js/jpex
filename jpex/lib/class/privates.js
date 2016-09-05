@@ -14,18 +14,6 @@ module.exports = {
       }
       return null;
     },
-    // Builds a list of decorators registered for a factory
-    // Looks at parent classes and then this class
-    _getDecorators : function(parentClass, name){
-      var d = [];
-      if (parentClass._getDecorators){
-        d = parentClass._getDecorators(name);
-      }
-      if (this._decorators[name]){
-        d = d.concat(this._decorators[name]);
-      }
-      return d;
-    },
     // Attemps to find a dependency by looking in the registered folders
     _getFileFromFolder : function(parentClass, name){
       var grequire = require('../../grequire');

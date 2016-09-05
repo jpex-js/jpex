@@ -63,7 +63,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   if (ancestoral){
     name = ancestoral;
     if (Class._parent){
-      return resolveDependency(Class._parent, name, localOptions, namedParameters);
+      return resolveDependency(Class._parent, name, localOptions, namedParameters, []);
     }
   }
   var optional = checkOptional(name);
