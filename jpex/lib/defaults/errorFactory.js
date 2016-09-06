@@ -37,8 +37,7 @@ module.exports = function(NewClass){
       return NewError;
     };
     
-    $error.define('Error');
-    $error.default = $error.Error;
+    $error.default = $error.define('Error');
     
     return $error;
   });
