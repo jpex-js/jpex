@@ -119,3 +119,16 @@ MyClass.Register.ErrorType('ChildError');
 
 Handling Errors
 ---------------
+When an error is thrown in your application, Jpex will attempt to handle it using $errorHandler. $errorHandler should be a function that takes a single parameter of the error. The $errorHandler factory is not defined by default, so if Jpex cannot find it, it will just allow the error to bubble up through the application stack. You can then also 
+```javascript
+Jpex.Register.Factory('$errorHandler', function($log){
+  return function(e){
+    $log.error('An error has been caught');
+    throw e;
+  };
+});
+
+var MyClass = Jpex.extend(function($error){
+  $error('This will be caught by $errorHandler');
+});
+```
