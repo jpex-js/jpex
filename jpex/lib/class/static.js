@@ -58,9 +58,14 @@ module.exports = {
     }
   },
   
+  properties : {},
+  
   apply : function(Class){
     Object.keys(this.methods).forEach(n => {
       Class[n] = this.methods[n];
+    });
+    Object.keys(this.properties).forEach(n => {
+      Class[n] = this.properties[n];
     });
   }
 };

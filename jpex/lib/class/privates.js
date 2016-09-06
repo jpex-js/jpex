@@ -83,11 +83,17 @@ module.exports = {
     }
   },
   
+  properties : {},
+  
   apply : function(Class, Parent, dependencies){
     Object.keys(this.getters).forEach(n => {
       Object.defineProperty(Class, n, {
         value : this.getters[n].bind(Class, Parent)
       });
+    });
+    
+    Object.keys(this.properties).forEach(n => {
+      Class[n] = this.properties[n].call(Class);
     });
     
     Object.defineProperties(Class, {
@@ -105,10 +111,6 @@ module.exports = {
         value : {}
       },
       _folders : {
-        writable : true,
-        value : []
-      },
-      _decorators : {
         writable : true,
         value : []
       }
