@@ -47,11 +47,6 @@ module.exports = {
             return 'regexp';
           }
           return 'object';
-        case 'function':
-          if (el.prototype && Object.keys(el.prototype).length){
-            return 'class';
-          }
-          return 'function';
         default:
           return typeof el;
       }
