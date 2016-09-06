@@ -64,7 +64,7 @@ MyClass.Register.Factory('$error', function($errorFactory){
 These steps feel a little convoluted just for defining an error type that may never get used. That's why there is also a shortcut for this:
 
 ###The Easy Way  
-The [ErrorType](./factories/errortype.md) factory will register a new error type for you. It will automatically handle all of the re-registering, making it nice and easy to create an Error specific to your class:
+The [ErrorType](./api/factories/errortype.md) factory will register a new error type for you. It will automatically handle all of the re-registering, making it nice and easy to create an Error specific to your class:
 ```javascript
 var ParentClass = Jpex.extend();
 ParentClass.Register.ErrorType('ParentError');
