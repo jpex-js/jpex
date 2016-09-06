@@ -41,8 +41,8 @@ The constructor function that will be called when the class is instantiated.
 ###dependencies
 *Array[String | Object]*  
 Dependencies to be resolved and injected into the constructor. If omitted, the dependencies are extracted from the constructor function.    
-Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](#object-dependencies) or dependencies that are not valid parameter names.  
-It is also possible to make dependencies [optional](#optional-dependencies).  
+Often the dependencies option isn't required, but there may be some use cases such as [object dependencies](../../di.md#object-dependencies) or dependencies that are not valid parameter names.  
+It is also possible to make dependencies [optional](../../di.md#optional-dependencies).  
 
 ###bindToInstance  
 *Boolean | String*  
