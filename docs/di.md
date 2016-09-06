@@ -30,7 +30,7 @@ module.exports = Jpex.extend(function(path, fs, util){
   ...
 });
 
-require('./myModule)();
+require('./myModule')();
 ```
 
 Declaring dependencies
