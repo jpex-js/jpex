@@ -1,6 +1,6 @@
 Inheritence
 ===========
-Jpex supports class inheritence via the [extend](./jpex/extend.md) function. This method is avaialble on all classes that inherit from Jpex and the result is a new class. Classes can be extended any number of times and support javascript's `instanceof` property.  
+Jpex supports class inheritence via the [extend](./api/jpex/extend.md) function. This method is avaialble on all classes that inherit from Jpex and the result is a new class. Classes can be extended any number of times and support javascript's `instanceof` property.  
 ```javascript
 var ClassA = Jpex.extend();
 var ClassB = ClassA.extend();
