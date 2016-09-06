@@ -14,3 +14,5 @@ Topics
 [Error Handling](./errorhandling.md)  
 Creating Jpex Plugins  
 [API](./api/index.md)  
+
+[Change Log](./changelog.md)
