@@ -30,7 +30,7 @@ module.exports = Jpex.extend(function(path, fs, util){
   ...
 });
 
-require('./myModule)();
+require('./myModule')();
 ```
 
 Declaring dependencies
@@ -64,7 +64,7 @@ Resolving Dependencies
 ----------------------
 When you create an instance of a class it attempts to resolve all its dependencies. Jpex will attempt to resolve a dependency in this order:  
 
-1. [Named parameters](./api/factories/named-parameters.md)
+1. [Named parameters](./api/factories/named-params.md)
 2. [Factories](./api/factories/factory.md) registered against the class
 3. Factories registered against parent classes
 4. [Predefined factories](./api/index.md#default-factories)
