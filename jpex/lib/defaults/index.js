@@ -3,6 +3,7 @@ module.exports = {
     require('./log'), 
     require('./timeout'), 
     require('./promise'), 
+    require('./fs'),
     require('./error'),
     require('./errorFactory')
   ],

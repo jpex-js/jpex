@@ -9,12 +9,8 @@ install :
   - npm install
   - cd ../jpex-folder
   - npm install
-  - cd ../jpex-fs
-  - npm install
 script :
   - cd ../jpex
   - jasmine-node ../spec
   - cd ../jpex-folder
-  - jasmine-node ../spec
-  - cd ../jpex-fs
   - jasmine-node ../spec
