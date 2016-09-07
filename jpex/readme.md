@@ -1,5 +1,6 @@
 JPEX - Javascipt Protoype Extension
 ===================================
+[![Build Status](https://travis-ci.org/jackmellis/jpex.svg?branch=master)](https://travis-ci.org/jackmellis/jpex)
 
 Jpex is a Class wrapper and Inversion of Control framework.
 
