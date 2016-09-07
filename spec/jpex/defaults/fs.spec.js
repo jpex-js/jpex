@@ -3,9 +3,8 @@ describe('JPEX - $fs', function(){
   var grequire;
   var Jpex, Base, $fs;
   beforeEach(function(){
-    grequire = require('../../jpex/grequire');
-    Jpex = grequire('node_modules/jpex');
-    grequire('.')();
+    grequire = require('../../../jpex/grequire');
+    Jpex = grequire('.');
     
     Base = Jpex.extend(function(_$fs_){
       $fs = _$fs_;

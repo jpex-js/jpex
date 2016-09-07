@@ -1,12 +1,8 @@
 {
   "name": "jpex-fs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "JPEX File System factory",
   "main": "index.js",
-  "scripts": {
-    "cover": "istanbul cover --include-all-sources .\\node_modules\\jasmine-node\\bin\\jasmine-node ../spec/jpex-fs",
-    "spec": "jasmine-node ../spec/jpex-fs --autotest --watch ../jpex-fs --color"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jackmellis/jpex.git"
@@ -16,10 +12,5 @@
   "bugs": {
     "url": "https://github.com/jackmellis/jpex/issues"
   },
-  "homepage": "https://github.com/jackmellis/jpex#readme",
-  "devDependencies": {
-    "istanbul": "^0.4.5",
-    "jasmine-node": "^1.14.5",
-    "jpex": "file:..\\jpex"
-  }
+  "homepage": "https://github.com/jackmellis/jpex#readme"
 }

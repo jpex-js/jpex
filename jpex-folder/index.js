@@ -116,7 +116,7 @@ function toPascal(arr){
 
 module.exports = function(){
   var jpex = require('jpex');
-  var factories = require('jpex/factories');
+  var factories = require('jpex/lib/factories');
   factories.factories.SmartFolder = smartfolder;
   factories.apply(jpex);
 };
