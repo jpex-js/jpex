@@ -26,3 +26,5 @@ MyClass.Register.Factory('myFactory', function($log){
 
 new MyClass();
 ```
+
+There is also an extended version of folders [here](https://github.com/jackmellis/jpex/blob/master/jpex-folder/readme.md)
