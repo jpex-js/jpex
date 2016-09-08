@@ -1,4 +1,9 @@
 #JPEX Advanced Folders
+
+`npm install jpex-folder`
+
+
+`Jpex.Register.Folder('factories', {});`. 
 *(Path, Options)*  
 
 It is also possible to have the folder factory automatically register all files in a folder. This means you can organise your application in a logical manner and then have all dependencies automatically loaded and injected into your jpex classes.  
