@@ -103,6 +103,27 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
         expect(lastObj).toBeDefined();
       });
+      it('should store the instance against the original class', function(){
+        var result = [];
+        var A = First.extend(function(test){
+          result.push(test);
+        });
+        var B = A.extend(function(test){
+          result.push(test);
+        });
+        var C = B.extend(function(test){
+          result.push(test);
+        });
+        
+        A.Register.Factory('test', null, () => ({}), true);
+        
+        new C();
+        new B();
+        new A();
+        
+        expect(result[0]).toBe(result[1]);
+        expect(result[0]).toBe(result[2]);
+      });
     });
   });
 });

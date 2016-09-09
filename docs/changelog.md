@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+##Unreleased
+###Feaures
+- Added $require  
+
 ##1.2.0  
 ###Features  
 - Added detailed documentation  

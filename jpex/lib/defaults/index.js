@@ -5,7 +5,8 @@ module.exports = {
     require('./promise'), 
     require('./fs'),
     require('./error'),
-    require('./errorFactory')
+    require('./errorFactory'),
+    require('./require')
   ],
   apply : function(Class){
     this.defaults.forEach(n => {

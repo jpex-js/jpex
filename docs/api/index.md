@@ -33,3 +33,4 @@ Jpex comes with several default factories that can be injected into your classes
 [$promise](./defaults/promise.md)  
 [$fs](./defaults/fs.md)
 [$error](./defaults/error.md)
+[$require](./defaults/require.md)
