@@ -19,6 +19,7 @@ Factories are small modules that can be injected into a class or another factory
 [File](./factories/file.md)  
 [Folder](./factories/folder.md)  
 [Enum](./factories/enum.md)  
+[Interface](./factories/interface.md)  
 [node_module](./factories/node_module.md)  
 [named parameters](./factories/named-params.md)  
 

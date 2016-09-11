@@ -8,7 +8,8 @@ module.exports = {
     File : require('./file'),
     Folder : require('./folder'),
     NodeModule : require('./nodemodule'),
-    ErrorType : require('./errortype')
+    ErrorType : require('./errortype'),
+    Interface : require('./interface')
   },
   apply : function(Class){
     var self = this;

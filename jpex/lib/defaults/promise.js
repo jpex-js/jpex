@@ -1,4 +1,12 @@
 module.exports = function(NewClass){
+  // interface
+  var ipromise = () => {};
+  ipromise.all = () => {};
+  ipromise.race = () => {};
+  ipromise.reject = () => {};
+  ipromise.resolve = () => {};
+  NewClass.Register.Interface('$promise', ipromise);
+  
   // wraps the Promise class
   NewClass.Register.Factory('$promise', null, function(){
     var $promise = function(fn){

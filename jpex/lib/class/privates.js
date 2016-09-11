@@ -14,6 +14,16 @@ module.exports = {
       }
       return null;
     },
+    // Attemps to find an interface for a module
+    _getInterface : function(parentClass, name){
+      if (this._interfaces[name]){
+        return this._interfaces[name];
+      }
+      if (parentClass._getInterface){
+        return parentClass._getInterface(name);
+      }
+      return null;
+    },
     // Attemps to find a dependency by looking in the registered folders
     _getFileFromFolder : function(parentClass, name){
       var grequire = require('../../grequire');
@@ -108,6 +118,10 @@ module.exports = {
       },
       _factories : {
         writable : true,
+        value : {}
+      },
+      _interfaces : {
+        writeable : true,
         value : {}
       },
       _folders : {

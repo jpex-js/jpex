@@ -80,6 +80,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     return namedParameters;
   }
   if (namedParameters && namedParameters[name] !== undefined){
+    validateInterface(Class, name, namedParameters[name]);
     return namedParameters[name];
   }
   
@@ -96,6 +97,10 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   
   // Constant values don't need any more calculations
   if (factory.constant){
+    if (!factory.valid){
+      validateInterface(Class, name, factory.value);
+      factory.valid = true;
+    }
     return factory.value;
   }
   
@@ -115,7 +120,11 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   }
 
   //Run the factory function and return the result
-  return factory.fn.apply(this, args); 
+  var result = factory.fn.apply(this, args);
+  
+  validateInterface(Class, name, result);
+  
+  return result;
 }
 
 // Check for _name_ syntax
@@ -164,4 +173,79 @@ function getFactory(Class, name, optional){
 // Check if the factory is valid
 function isValidFactory(factory){
   return factory && ((factory.fn && typeof factory.fn === 'function') || factory.constant);
+}
+
+function validateInterface(Class, name, value){
+  var interface = Class._getInterface(name);
+  if (interface === null){
+    return true;
+  }
+  var stack = crossReferenceInterface(Class, interface, value);
+  
+  if (stack){
+    var message = ['Factory', name, 'does not match interface pattern.'].concat(stack).join(' ');
+    throw new Error(message);
+  }
+}
+
+function crossReferenceInterface(Class, interface, obj){
+  var stack = [];
+  var itype = Class.Typeof(interface);
+  var otype = Class.Typeof(obj);
+  
+  if (itype === 'null'){
+    // Any type accepted
+    return;
+  }
+  
+  if (itype === 'array' && interface.iCanBeEither){
+    // Value can be any value in the array
+    for (var z = 0; z < interface.length; z++){
+      var t = crossReferenceInterface(Class, interface[z], obj);
+      if (t){
+        stack.push(Class.Typeof(interface[z]));
+      }else{
+        return;
+      }
+    }
+    return [stack.join('/')];
+  }
+  
+  if (itype !== otype){
+    // Type mismatch
+    stack.push('Not a', itype);
+    return stack;
+  }
+  
+  switch(itype){
+    case 'function':
+    case 'object':
+      var keys = Object.keys(interface);
+      for (var x = 0, l = keys.length; x < l; x++){
+        var key = keys[x];
+        var result = crossReferenceInterface(Class, interface[key], obj[key]);
+        if (result){
+          stack = stack.concat([key, ':']).concat(result);
+        }
+      }
+      break;
+      
+    case 'array':
+      if (!interface.length || !obj.length){
+        //Empty
+        return;
+      }
+      interface = interface[0];
+      for (var y = 0; y < obj.length; y++){
+        var result = crossReferenceInterface(Class, interface, obj[y]);
+        if (result){
+          stack = stack.concat(result);
+        }
+      }
+      break;
+  }
+  
+  if (stack.length){
+    return stack;
+  }
 }
