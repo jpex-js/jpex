@@ -13,7 +13,7 @@ describe('Interfaces', function(){
     Base.Register.Interface('test', () => obj);
     
     expect(Base._interfaces.test).toBeDefined();
-    expect(Base._interfaces.test).toBe(obj);
+    expect(Base._interfaces.test.pattern).toBe(obj);
   });
   
   it('should ensure the type matches on an interface', function(){
@@ -29,7 +29,7 @@ describe('Interfaces', function(){
     
     arr.forEach(a => {
       Base.Register.Interface('test', () => ({any : a.i}));
-      Base.Register.Constant('test', {any : a.o});
+      Base.Register.Constant('test', {any : a.o}, 'test');
       new Base();
     });
     
@@ -46,7 +46,7 @@ describe('Interfaces', function(){
     arr.forEach(a => {
       var err;
       Base.Register.Interface('test', () => ({any : a.i}));
-      Base.Register.Constant('test', {any : a.o});
+      Base.Register.Constant('test', {any : a.o}, 'test');
       try{
         new Base();
       }catch(e){
@@ -134,7 +134,7 @@ describe('Interfaces', function(){
           ]
         }
       }];
-    });
+    }, 'test');
     
     new Base();
     
