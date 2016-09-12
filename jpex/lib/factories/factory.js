@@ -1,17 +1,18 @@
 var extractParameters = require('../resolver').extractParameters;
 
 // Return a factory function
-module.exports = function(name, dependencies, fn, singleton){
+module.exports = function(name, dependencies, fn, interface, singleton){
   var self = this;
   
-  if (singleton === undefined && typeof fn === 'boolean'){
-    singleton = fn;
-    fn = undefined;
-  }
-  
-  if (fn === undefined){
+  if (typeof dependencies === 'function'){
+    singleton = interface;
+    interface = fn;
     fn = dependencies;
     dependencies = null;
+  }
+  if (typeof interface === 'boolean'){
+    singleton = interface;
+    interface = null;
   }
   
   if (typeof fn !== 'function'){
@@ -27,18 +28,25 @@ module.exports = function(name, dependencies, fn, singleton){
     dependencies = null;
   }
   
+  if (interface){
+    interface = [].concat(interface);
+  }else{
+    interface = null;
+  }
+  
   if (singleton){
     var oldFn = fn;
     fn = function(){
       var instance = oldFn.apply(null, arguments);
-      self.Register.Constant(name, instance);
+      self.Register.Constant(name, instance, interface);
       return instance;
     };
   }
   
   this._factories[name] = {
     fn : fn,
-    dependencies : dependencies
+    dependencies : dependencies,
+    interface : interface
   };
   return this;
 };

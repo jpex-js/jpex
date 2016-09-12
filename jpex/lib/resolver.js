@@ -72,6 +72,14 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     optional = true;
   }
   
+  var interface = checkInterface(Class, name);
+  if (interface){
+    var t = name;
+    name = interface;
+    interface = t;
+    t = null;
+  }
+  
   // Special cases
   if (name === '$options'){
     return localOptions;
@@ -80,7 +88,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     return namedParameters;
   }
   if (namedParameters && namedParameters[name] !== undefined){
-    validateInterface(Class, name, namedParameters[name]);
+    validateInterface(Class, interface, namedParameters[name]);
     return namedParameters[name];
   }
   
@@ -98,7 +106,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   // Constant values don't need any more calculations
   if (factory.constant){
     if (!factory.valid){
-      validateInterface(Class, name, factory.value);
+      validateInterface(Class, interface, factory.value);
       factory.valid = true;
     }
     return factory.value;
@@ -122,7 +130,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   //Run the factory function and return the result
   var result = factory.fn.apply(this, args);
   
-  validateInterface(Class, name, result);
+  validateInterface(Class, interface, result);
   
   return result;
 }
@@ -146,6 +154,47 @@ function checkAncestoral(name){
   if (name[0] === '^'){
     return name.substr(1);
   }
+}
+
+// Check if name is an interface and return the corresponding factory
+function checkInterface(Class, name){
+  var interface = Class._getInterface(name);
+  
+  if (!interface){
+    return;
+  }
+  
+  var filterFn = function(f){
+    f = Class._factories[f];
+    return f.interface && f.interface.indexOf(name) > -1 && subFilter(f);
+  };
+  var subFilter = function(f){
+    // Need to check for multiple nested interfaces...
+    for (var x = 0; x < interface.interface.length; x++){
+      if (f.indexOf(interface.interface[0]) < 0){
+        return false;
+      }
+    }
+    return true;
+  };
+  
+  var factory, factories;
+  while (!factory && Class){
+    if (!Class._factories){
+      return;
+    }
+    
+    factories = Object.keys(Class._factories).filter(filterFn);
+    
+    if (factories.length){
+      factory = factories[0];
+      break;
+    }else{
+      Class = Class._Parent;
+    }
+  }
+  
+  return factory;
 }
 
 // Get the factory from the class factories (which will also scan the parent classes)
@@ -180,11 +229,15 @@ function validateInterface(Class, name, value){
   if (interface === null){
     return true;
   }
-  var stack = crossReferenceInterface(Class, interface, value);
+  var stack = crossReferenceInterface(Class, interface.pattern, value);
   
   if (stack){
     var message = ['Factory', name, 'does not match interface pattern.'].concat(stack).join(' ');
     throw new Error(message);
+  }
+  
+  if (interface.interface){
+    interface.interface.forEach(i => validateInterface(Class, i, value));
   }
 }
 
@@ -193,22 +246,28 @@ function crossReferenceInterface(Class, interface, obj){
   var itype = Class.Typeof(interface);
   var otype = Class.Typeof(obj);
   
-  if (itype === 'null'){
-    // Any type accepted
-    return;
-  }
-  
-  if (itype === 'array' && interface.iCanBeEither){
-    // Value can be any value in the array
-    for (var z = 0; z < interface.length; z++){
-      var t = crossReferenceInterface(Class, interface[z], obj);
-      if (t){
-        stack.push(Class.Typeof(interface[z]));
-      }else{
-        return;
-      }
+  if (itype === 'array'){
+    switch(interface.iType){
+      case 'any':
+        if (otype === 'undefined'){
+          stack.push('Must be defined');
+          return stack;
+        }else{
+          return;
+        }
+        break;
+        
+      case 'either':
+        for (var z = 0; z < interface.length; z++){
+          var t = crossReferenceInterface(Class, interface[z], obj);
+          if (t){
+            stack.push(Class.Typeof(interface[z]));
+          }else{
+            return;
+          }
+        }
+        return [stack.join('/')];
     }
-    return [stack.join('/')];
   }
   
   if (itype !== otype){

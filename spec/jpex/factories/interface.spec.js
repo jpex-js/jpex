@@ -16,13 +16,6 @@ describe('Interfaces', function(){
     expect(Base._interfaces.test).toBe(obj);
   });
   
-  it('should allow any value as a null interface', function(){
-    Base.Register.Interface('test', () => ({any : null}));
-    Base.Register.Factory('test', () => ({any : 1234}));
-    
-    new Base();
-  });
-  
   it('should ensure the type matches on an interface', function(){
     var arr = [
       {i : '', o : 'string'},
@@ -30,7 +23,8 @@ describe('Interfaces', function(){
       {i : {}, o : {}},
       {i : [], o : []},
       {i : new Date(), o : new Date()},
-      {i : new RegExp(), o : /abc/}
+      {i : new RegExp(), o : /abc/},
+      {i : null, o : null}
     ];
     
     arr.forEach(a => {
@@ -45,7 +39,8 @@ describe('Interfaces', function(){
       {i : {}, o : []},
       {i : [], o : {}},
       {i : new Date(), o : {}},
-      {i : new RegExp(), o : Object.create({})}
+      {i : new RegExp(), o : Object.create({})},
+      {i : null, o : 'string'}
     ];
     
     arr.forEach(a => {
@@ -158,6 +153,77 @@ describe('Interfaces', function(){
     }).toThrow();
   });
   
+  it('should have a utlity object with primitive types', function(){
+    Base.Register.Interface('test', i => {
+      return {
+        a : i.string,
+        b : i.number,
+        c : i.boolean,
+        d : i.null,
+        e : i.object,
+        f : i.array,
+        g : i.function
+      };
+    });
+    Base.Register.Constant('test', {
+      a : 'string',
+      b : 1234,
+      c : true,
+      d : null,
+      e : {},
+      f : [],
+      g : () => {}
+    });
+    
+    new Base();
+  });
+  
+  it('should allow any value', function(){
+    Base.Register.Interface('test', i => ({
+      any : i.any()
+    }));
+    
+    new Base({test : {any : 'string'}});
+  });
+  
+  it('should allow different type', function(){
+    Base.Register.Interface('test', function(i){
+      return {
+        either : i.either(i.string, i.number, i.array)
+      };
+    });
+    
+    var arr = ['string', 1234, [{}]];
+    
+    arr.forEach(function(a){
+      new Base({test : {either : a}});
+    });
+    
+    expect(function(){
+      new Base({test : {either : {}}});
+    }).toThrow();
+  });
+  
+  it('should create an array of a specific type', function(){
+    Base.Register.Interface('test', i => ({
+      arr : i.arrayOf('')
+    }));
+    Base.Register.Constant('test', {arr : []});
+    
+    new Base({test : {arr : []}});
+    new Base({test : {arr : ['string', 'strong']}});
+    
+    expect(function(){
+      new Base({test : {arr : ['string', function(){}]}});
+    }).toThrow();
+  });
+  it('should work with the EITHER method', function(){
+    Base.Register.Interface('test', i => ({
+      arr : i.arrayOf(i.string, i.function, i.object)
+    }));
+    new Base({test : {arr : ['string', function(){}, {}]}});
+  });
+  
   it('should give meaningful errors', function(){
     Base.Register.Interface('test', () => 'string');
     Base.Register.Constant('test', 123);
@@ -170,6 +236,18 @@ describe('Interfaces', function(){
     }finally{
       expect(message.indexOf('test')).toBeGreaterThan(-1);
       expect(message.indexOf('Not a string')).toBeGreaterThan(-1);
+    }
+    
+    message = null;
+    Base.Register.Interface('test', i => i.either(i.string, i.null, i.function));
+    
+    try{
+      new Base();
+    }catch(e){
+      message = e.message;
+    }finally{
+      expect(message.indexOf('test')).toBeGreaterThan(-1);
+      expect(message.indexOf('string/null/function')).toBeGreaterThan(-1);
     }
   });
 });

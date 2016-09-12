@@ -1,15 +1,14 @@
-var extractParameters = require('../resolver').extractParameters;
-
 // Return a new instance
-module.exports = function(name, dependencies, fn, singleton){
-  if (singleton === undefined && typeof fn === 'boolean'){
-    singleton = fn;
-    fn = undefined;
-  }
-
-  if (fn === undefined){
+module.exports = function(name, dependencies, fn, interface, singleton){
+  if (typeof dependencies === 'function'){
+    singleton = interface;
+    interface = fn;
     fn = dependencies;
     dependencies = null;
+  }
+  if (typeof interface === 'boolean'){
+    singleton = interface;
+    interface = null;
   }
   
   if (typeof fn !== 'function'){
@@ -17,13 +16,7 @@ module.exports = function(name, dependencies, fn, singleton){
   }
   
   if(fn.extend && fn.Register && fn.Register.Factory){
-      return jaas.call(this, name, dependencies, fn, singleton);
-  }
-  
-  if (dependencies){
-    dependencies = [].concat(dependencies);
-  }else{
-    dependencies = extractParameters(fn);
+      return jaas.call(this, name, dependencies, fn, interface, singleton);
   }
   
   function instantiator(){
@@ -32,13 +25,13 @@ module.exports = function(name, dependencies, fn, singleton){
     return new (Function.prototype.bind.apply(fn, args));
   }
   
-  return this.Register.Factory(name, dependencies, instantiator, singleton);
+  return this.Register.Factory(name, dependencies, instantiator, interface, singleton);
 };
 
 // -----------------------------------------
 
 // Jpex Class As A Service
-function jaas(name, dependencies, Fn, singleton){
+function jaas(name, dependencies, Fn, interface, singleton){
   // Assuming the parameters have been validated and sorted already
   dependencies = dependencies ? [].concat(dependencies) : [];
   dependencies.unshift('$namedParameters');
@@ -82,5 +75,5 @@ function jaas(name, dependencies, Fn, singleton){
     return new Fn(params);
   }
   
-  return this.Register.Factory(name, dependencies, instantiator, singleton);
+  return this.Register.Factory(name, dependencies, instantiator, interface, singleton);
 }
