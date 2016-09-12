@@ -22,7 +22,7 @@ module.exports = {
       if (parentClass._getInterface){
         return parentClass._getInterface(name);
       }
-      return null;
+      return;
     },
     // Attemps to find a dependency by looking in the registered folders
     _getFileFromFolder : function(parentClass, name){

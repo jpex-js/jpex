@@ -1,6 +1,4 @@
-module.exports = function(Class){
-  Class.Register.Interface('$require', () => {});
-  
+module.exports = function(Class){  
   Class.Register.Factory('$require', 'path', function(Path){
     return function(path){
       var result = Path.resolve('./' + path);

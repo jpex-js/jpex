@@ -37,6 +37,7 @@ module.exports = function(name, fn, interface){
     interface = [].concat(interface);
   }
   this._interfaces[name] = {
+    name : name,
     pattern : fn(util),
     interface : interface
   };

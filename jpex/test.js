@@ -1,33 +1,32 @@
-var Jpex = require('.');
-var Class = Jpex.extend(function(myService, myConstant, myFactory){
+/* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
+
+  var Base;
   
-});
-Class.Register.Interface('myService', {
-  name : '',
-  count : 0,
-  arr : [
-    {
-      any : null
-    }
-  ],
-  reg : new RegExp()
-});
-Class.Register.Service('myService', function(){
-  this.name = 'my service';
-  this.count = 1234;
-  this.arr = [
-    {
-      any : 123
-    }
-  ];
-  this.reg = /abc/;
-});
 
-Class.Register.Interface('myConstant', Function);
-Class.Register.Constant('myConstant', () => {});
+    var service, Class;
+      service = undefined;
+      
+      Base = require('.').extend(function(){});
+      Base.Register.Interface('iService', function(i){
+        return {
+          a : i.any()
+        };
+      });
+      
+      Class = Base.extend({
+        dependencies : 'iService',
+        constructor : function(s){
+          service = s;
+        }
+      });
 
-Class.Register.Factory('myFactory', function(myConstant){
-  return {};
-}, true);
 
-new Class();
+      Class.Register.Interface('iService', i => ({a : i.any()}), 'iFactory');
+      Class.Register.Interface('iFactory', i => ({b : i.any()}), 'iObject');
+      Class.Register.Interface('iObject', i => ({c : i.any()}));
+      
+//      new Class({iService : {a : true}});
+//        new Class({iService : {a : true, b : true,}});
+//        new Class({iService : {a : true, c : true}});
+      
+//      new Class({iService : {a : true, b : true, c : true}});

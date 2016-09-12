@@ -33,6 +33,7 @@ function createOptions(opt){
     prototype : null,
     static : null,
     dependencies : [],
+    interface : [],
     bindToInstance : false
   };
   
@@ -53,6 +54,13 @@ function createOptions(opt){
   }
   if (!options.dependencies.length){
     options.dependencies = null;
+  }
+  
+  if (options.interface){
+    options.interface = [].concat(options.interface);
+  }
+  if (!options.interface.length){
+    options.interface = null;
   }
   
   return options;
@@ -83,8 +91,13 @@ function createClass(Parent, options){
     }
   });
   
-  Object.defineProperty(Class, 'Dependencies', {
-    get : () => options.dependencies
+  Object.defineProperties(Class, {
+    Dependencies : {
+      get : () => (options.dependencies)
+    },
+    Interface : {
+      get : () => (options.interface)
+    }
   });
   
   return Class;

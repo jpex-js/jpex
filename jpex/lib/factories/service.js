@@ -1,3 +1,5 @@
+var extractParameters = require('../resolver').extractParameters;
+
 // Return a new instance
 module.exports = function(name, dependencies, fn, interface, singleton){
   if (typeof dependencies === 'function'){
@@ -17,6 +19,12 @@ module.exports = function(name, dependencies, fn, interface, singleton){
   
   if(fn.extend && fn.Register && fn.Register.Factory){
       return jaas.call(this, name, dependencies, fn, interface, singleton);
+  }
+  
+  if (dependencies){
+    dependencies = [].concat(dependencies);
+  }else{
+    dependencies = extractParameters(fn);
   }
   
   function instantiator(){
@@ -73,6 +81,12 @@ function jaas(name, dependencies, Fn, interface, singleton){
     
     // Instantiate the class
     return new Fn(params);
+  }
+  
+  // Get interface
+  interface = [].concat(interface || []);
+  if (Fn.Interface){
+    interface = interface.concat(Fn.Interface);
   }
   
   return this.Register.Factory(name, dependencies, instantiator, interface, singleton);
