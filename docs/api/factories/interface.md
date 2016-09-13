@@ -4,30 +4,35 @@ Interface
 |---------------|---------------|-----------|
 | Name          | String        |           |
 | Function      | Function      |           |
+| Implements    | String/Array  |           |
 
 Interfaces are a sort of contract for your dependencies. It defines how how a module should be structured and what properties and methods it should have.  
 Once you have registered an interface, the related factory must resolve to a similar object and type. If you overwrite a factory at any point, you must still provide an object with the same structure. This means that you can guarentee that a dependency will always have certian methods available.  
 If a factory does not match the interface when resolved, an error is thrown describing the properties that must be addressed.  
 
 ```javascript
-// Any time myFactory is registered, it must be an object with a string-type a property, a numeric-type b propety, and an array-type c property.
-MyClass.Register.Interface('myFactory', function(i){ return {a : i.string, b : i.number, c : i.array};});
+var MyClass = Jpex.extend(function(iFactory){...});
+var ChildClass = MyClass.extend(function(iFactory){...})
+
+MyClass.Register.Interface('iFactory', function(i){ return {a : i.string, b : i.number, c : i.array};});
 
 MyClass.Register.Service('myFactory', function(){
   this.a = 'string';
   this.b = 4;
   this.c = [];
-});
+}, 'iFactory');
 
 // When ChildClass overrides this factory, if it does not have the same format it will throw an error
 ChildClass.Register.Factory('myFactory', function(){
   return {};
-});
+}, 'iFactory');
 
 new MyClass(); // okay
 new ChildClass(); // error - myFactory does not match interface pattern.
 ```
 
+i
+-
 The constructor function takes a single parameter, an *interface utility* which provides a number of methods for defining your interface.  
 ###string  
 This will define a string-type. This can also be declared using a string literal.
@@ -80,7 +85,31 @@ To specify the type of elements the array can hold, use the `arrayOf` method or 
 MyClass.Register.Interface('foo', i => [i.number]);
 ```
 ###arrayOf  
+This will define an array that must be a specific type. You can enter multiple types.
+```javascript
+MyClass.Register.Interface('foo' i => i.arrayOf(i.string, i.number));
+```
 
 ###functionWith  
+This will define a function that must also have certain properties attached to it. The parameter must be an object.
+```javascript
+MyClass.Register.Interface('foo' i => i.functionWith({a : i.object}));
+```
 ###any  
+This will create a property of any type as long as it is defined.
+```javascript
+MyClass.Register.Interface('foo' i => ({a : i.any()}));
+```
 ###either  
+This define a property that can be on several types.
+```javascript
+MyClass.Register.Interface('foo' i => ({a : i.either(i.string, i.array)}));
+```
+
+Implements
+----------
+The implements property allows you to define another interface that this interface uses. This allows you to create an inheritence structure. When resolving an interface, all the implemented interfaces must be validated.  
+
+Declaring with Factories
+Declaring with Named Parameters
+Interface derivites (ienumerable)
