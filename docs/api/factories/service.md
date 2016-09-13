@@ -5,6 +5,7 @@ Service
 | Name          | String        |           |
 | Dependencies  | Array[String] | null      |
 | Function      | Function      |           |
+| Interface     | String/Array  | null      |
 | Singleton     | boolean       | false     |
 
 Services are simple classes that are instantiated and the instance returned when injected.  

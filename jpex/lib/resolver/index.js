@@ -98,9 +98,18 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     return namedParameters;
   }
   if (namedParameters){
-    factory = (iname && namedParameters[iname] !== undefined) ? 
-              namedParameters[iname] : 
-              namedParameters[name];
+    if (iname){
+      factory = namedParameters[iname];
+      if (factory === undefined){
+        Object.keys(namedParameters).forEach(function(n){
+          if (interfaceService.factoryImplements(Class, n, iname)){
+            factory = namedParameters[n];
+          }
+        });
+      }
+    }else{
+      factory = namedParameters[name];
+    }
     if (factory !== undefined){
       interfaceService.validateInterface(Class, interface, factory);
       return factory;

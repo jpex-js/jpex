@@ -337,6 +337,14 @@ describe('Interfaces', function(){
       
       expect(service.a).toBe('hi');
     });
+    it('should resolve a named parameter if it implements the interface', function(){
+      Base.Register.Constant('named', {a : 'hi'}, 'iService');
+      var obj = {a : 'howdy'};
+      
+      new Class({named : obj});
+      
+      expect(service.a).toBe('howdy');
+    });
     it('should resolve a Jpex Class Service using an interface', function(){
       var Service = Base.extend(function(){
         this.a = 'hey';

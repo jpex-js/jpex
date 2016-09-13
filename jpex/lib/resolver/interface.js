@@ -2,16 +2,8 @@ exports.getInterface = function(Class, name){
   return Class._getInterface(name);
 };
 
-
-
-// Check if name is an interface and then find and return the name of a matching factory (if there is one)
-exports.findFactory = function(Class, iname){  
-  if (!iname){
-    return;
-  }
-  
-  var filterFn = function(factoryName){
-    var factory = Class._factories[factoryName];
+exports.factoryImplements = function(Class, fname, iname){
+    var factory = Class._getDependency(fname);
     
     // Check that factory has any interfaces
     if (!(factory && factory.interface && factory.interface.length)){
@@ -25,6 +17,16 @@ exports.findFactory = function(Class, iname){
     }
     
     return factory.interface.indexOf(iname) > -1;
+};
+
+// Check if name is an interface and then find and return the name of a matching factory (if there is one)
+exports.findFactory = function(Class, iname){  
+  if (!iname){
+    return;
+  }
+  
+  var filterFn = function(fname){
+    return exports.factoryImplements(Class, fname, iname);
   };
   
   // Find a factory that matches the interface

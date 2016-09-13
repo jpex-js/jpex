@@ -4,6 +4,7 @@ Constant
 |---------------|---------------|-----------|
 | Name          | String        |           |
 | Value         | Any           |           |
+| Interface     | String/Array  | null      |
 
 Returns a constant value. This is useful for passing a static object into classes, such as a database connection.  
 

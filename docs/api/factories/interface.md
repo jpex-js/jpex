@@ -7,32 +7,10 @@ Interface
 | Implements    | String/Array  |           |
 
 Interfaces are a sort of contract for your dependencies. It defines how how a module should be structured and what properties and methods it should have.  
-Any factories that implement an interfacr must adhere to the interface's pattern. This means that you can guarentee that a dependency will always have certian methods available.  
-If a factory does not match the interface when resolved, an error is thrown describing the properties that must be addressed.  
-
-```javascript
-var MyClass = Jpex.extend(function(iFactory){...});
-var ChildClass = MyClass.extend(function(iFactory){...})
-
-MyClass.Register.Interface('iFactory', function(i){ return {a : i.string, b : i.number, c : i.array};});
-
-MyClass.Register.Service('myFactory', function(){
-  this.a = 'string';
-  this.b = 4;
-  this.c = [];
-}, 'iFactory');
-
-// When ChildClass overrides this factory, if it does not have the same format it will throw an error
-ChildClass.Register.Factory('myFactory', function(){
-  return {};
-}, 'iFactory');
-
-new MyClass(); // okay
-new ChildClass(); // error - myFactory does not match interface pattern.
-```
+For details on usage and practices, see the [Interfaces](../../interfaces.md) section. 
 
 i
--
+---
 The constructor function takes a single parameter, an *interface utility* which provides a number of methods for defining your interface.  
 ###string  
 This will define a string-type. This can also be declared using a string literal.
@@ -109,15 +87,7 @@ MyClass.Register.Interface('foo' i => ({a : i.either(i.string, i.array)}));
 Implements
 ----------
 The implements property allows you to define another interface that this interface uses. This allows you to create an inheritence structure. When resolving an interface, all the implemented interfaces must be validated.  
-
-Implementing Interfaces
------------------------
-When registering a factory you can set which interfaces it implements.
-Then when you want to inject your factory you can use the interface to to find, validate, and inject the factory.
-You can still inject the factory directly and it will ignore the interface validation.
-
-
-Declaring with Named Parameters
-Interface derivites (ienumerable)
-
-named params should check if any of its values are factories that implement the interface
+```javascript
+MyClass.Register.Interface('foo' i => ({a : i.string}));
+MyClass.Register.Interface('bah' i => ({b : i.number}), 'foo');
+```

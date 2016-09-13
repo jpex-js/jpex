@@ -5,6 +5,7 @@ Factory
 | Name          | String        |           |
 | Dependencies  | Array[String] | null      |
 | Function      | Function      |           |
+| Interface     | String/Array  | null      |
 | Singleton     | boolean       | false     |
 
 These are functions that return an object that is then injected into the class instance. Think angular Factories.  

@@ -4,6 +4,7 @@ File
 |---------------|---------------|-----------|
 | Name          | String        |           |
 | Path          | String        |           |
+| Interface     | String/Array  | null      |
 
 This will attempt to load the provided path when injected. Once loaded, the result is returned as is, there is no additional processing, just the object in the file. If Path is a relative path, it will be resolved in relation to the current working directory.
 
