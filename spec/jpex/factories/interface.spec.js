@@ -228,6 +228,19 @@ describe('Interfaces', function(){
       }));
       new Base({test : {arr : ['string', function(){}, {}]}});
     });
+    
+    it('should create a function with properties', function(){
+      Base.Register.Interface('test', i => i.functionWith({a : i.number}));
+      
+      var fn = function(){};
+      fn.a = 123;
+      
+      new Base({test : fn});
+      
+      expect(function(){
+        new Base({test : function(){}});
+      }).toThrow();
+    });
 
     it('should give meaningful errors', function(){
       Base.Register.Interface('test', () => 'string');
@@ -406,8 +419,6 @@ describe('Interfaces', function(){
       });
       
       new Child();
-    });
-    
-    it('should store that a singleton or constant has met the interface requirements');
+    });    
   });
 });

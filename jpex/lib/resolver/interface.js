@@ -2,22 +2,7 @@ exports.getInterface = function(Class, name){
   return Class._getInterface(name);
 };
 
-exports.listInterfaces = function(Class, name){
-  var list = [name];
-  var interface = Class._getInterface(name);
-  if (!interface){
-    return;
-  }
-  
-  if (interface.interface && interface.interface.length){
-    var arr = interface.interface.map(i => exports.listInterfaces(Class, i));
-    if (arr && arr.length){
-      list = list.concat.apply(list, arr);
-    }
-  }
-  
-  return list;
-};
+
 
 // Check if name is an interface and then find and return the name of a matching factory (if there is one)
 exports.findFactory = function(Class, iname){  
@@ -31,6 +16,12 @@ exports.findFactory = function(Class, iname){
     // Check that factory has any interfaces
     if (!(factory && factory.interface && factory.interface.length)){
       return false;
+    }
+    
+    // Expand to include all interfaces
+    if (!factory.interface.resolved){
+      factory.interface = listInterfaces(Class, factory.interface);
+      factory.interface.resovled = true;
     }
     
     return factory.interface.indexOf(iname) > -1;
@@ -137,4 +128,20 @@ function crossReferenceInterface(Class, interface, obj){
   if (stack.length){
     return stack;
   }
+}
+
+function listInterfaces(Class, name){
+  var list = [].concat(name);
+  
+  list.forEach(function(n){
+    var interface = Class._getInterface(n);
+    if (interface && interface.interface && interface.interface.length){
+      var arr = interface.interface.map(i => listInterfaces(Class, i));
+      if (arr && arr.length){
+        list = list.concat.apply(list, arr);
+      }
+    }
+  });
+  
+  return list;
 }
