@@ -7,7 +7,7 @@ Interface
 | Implements    | String/Array  |           |
 
 Interfaces are a sort of contract for your dependencies. It defines how how a module should be structured and what properties and methods it should have.  
-Once you have registered an interface, the related factory must resolve to a similar object and type. If you overwrite a factory at any point, you must still provide an object with the same structure. This means that you can guarentee that a dependency will always have certian methods available.  
+Any factories that implement an interfacr must adhere to the interface's pattern. This means that you can guarentee that a dependency will always have certian methods available.  
 If a factory does not match the interface when resolved, an error is thrown describing the properties that must be addressed.  
 
 ```javascript
@@ -101,7 +101,7 @@ This will create a property of any type as long as it is defined.
 MyClass.Register.Interface('foo' i => ({a : i.any()}));
 ```
 ###either  
-This define a property that can be on several types.
+This defines a property that can be of several types.
 ```javascript
 MyClass.Register.Interface('foo' i => ({a : i.either(i.string, i.array)}));
 ```
@@ -110,6 +110,14 @@ Implements
 ----------
 The implements property allows you to define another interface that this interface uses. This allows you to create an inheritence structure. When resolving an interface, all the implemented interfaces must be validated.  
 
-Declaring with Factories
+Implementing Interfaces
+-----------------------
+When registering a factory you can set which interfaces it implements.
+Then when you want to inject your factory you can use the interface to to find, validate, and inject the factory.
+You can still inject the factory directly and it will ignore the interface validation.
+
+
 Declaring with Named Parameters
 Interface derivites (ienumerable)
+
+named params should check if any of its values are factories that implement the interface
