@@ -91,3 +91,7 @@ The implements property allows you to define another interface that this interfa
 MyClass.Register.Interface('foo' i => ({a : i.string}));
 MyClass.Register.Interface('bah' i => ({b : i.number}), 'foo');
 ```
+This is the same as:
+```javascript
+MyClass.Register.Interface('bah' i => ({b : i.number})).interface('foo');
+```

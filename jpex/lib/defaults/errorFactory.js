@@ -40,5 +40,5 @@ module.exports = function(NewClass){
     $error.default = $error.define('Error');
     
     return $error;
-  });
+  }, null, false);
 };

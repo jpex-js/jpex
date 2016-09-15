@@ -1,5 +1,27 @@
 module.exports = function(Class){
-  Class.Register.Factory('$fs', ['fs', '$promise'], function(fs, $promise){
+  Class.Register.Interface('$ifs', function(i){
+    var $ifs = {};
+    [
+      'access', 'appendFile', 'chmod', 'chown', 'close', 'exists', 
+      'fchmod', 'fchown', 'fdatasync', 'fstat', 'fsync', 'ftruncate', 'futimes',
+      'lchmod', 'lchown', 'link', 'lstat',
+      'mkdir', 'mkdtmp',
+      'open', 'read', 'readdir', 'readFile', 'readlink', 'realpath', 'rename', 'rmdir',
+      'stat', 'symlink', 'truncate', 'unlink', 'utimes', 'write', 'writeFile'
+    ].forEach(function(n){
+      $ifs[n] = i.function;
+    });
+    
+    [
+      'createReadStream', 'createWriteStream', 'unwatchFile', 'watch', 'watchFile'
+    ].forEach(function(n){
+      $ifs[n] = i.any();
+    });
+    
+    return $ifs;
+  });
+  
+  Class.Register.Factory('$fs', ['fs', '$ipromise'], function(fs, $promise){
     
     var $fs = {};
     
@@ -40,5 +62,7 @@ module.exports = function(Class){
     
     
     return $fs;
-  }, true);
+  }, true)
+    .interface('$ifs')
+    .lifecycle(true);
 };

@@ -11,9 +11,9 @@ exports.factoryImplements = function(Class, fname, iname){
     }
     
     // Expand to include all interfaces
-    if (!factory.interface.resolved){
+    if (!factory.interfaceResolved){
       factory.interface = listInterfaces(Class, factory.interface);
-      factory.interface.resovled = true;
+      factory.interfaceResolved = true;
     }
     
     return factory.interface.indexOf(iname) > -1;
@@ -36,10 +36,10 @@ exports.findFactory = function(Class, iname){
       break;
     }
     
-    var factories = Object.keys(Class._factories).filter(filterFn);
+    var factory = Object.keys(Class._factories).find(filterFn);
     
-    if (factories.length){
-      return factories[0];
+    if (factory !== undefined){
+      return factory;
     }else{
       Class = Class._parent;
     }

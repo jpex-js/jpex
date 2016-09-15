@@ -33,7 +33,7 @@ describe('Interfaces', function(){
 
       arr.forEach(a => {
         Base.Register.Interface('test', () => ({any : a.i}));
-        Base.Register.Constant('test', {any : a.o}, 'test');
+        Base.Register.Constant('test', {any : a.o}).interface('test');
         new Base();
       });
 
@@ -51,7 +51,7 @@ describe('Interfaces', function(){
       arr.forEach(a => {
         var err;
         Base.Register.Interface('test', () => ({any : a.i}));
-        Base.Register.Constant('test', {any : a.o}, 'test');
+        Base.Register.Constant('test', {any : a.o}).interface('test');
         try{
           new Base();
         }catch(e){
@@ -293,7 +293,7 @@ describe('Interfaces', function(){
     it('should resolve a factory using an interface', function(){
       Class.Register.Factory('factory', function(){
         return {a : 'hola'};
-      }, 'iService');
+      }).interface('iService');
       new Class();
       
       expect(service.a).toBe('hola');
@@ -304,7 +304,7 @@ describe('Interfaces', function(){
       expect(() => (new Class())).toThrow();
     });
     it('should resolve a constant using an interface', function(){
-      Class.Register.Constant('constant', {a : 'yo'}, 'iService');
+      Class.Register.Constant('constant', {a : 'yo'}).interface('iService');
       new Class();
       
       expect(service.a).toBe('yo');
@@ -314,7 +314,7 @@ describe('Interfaces', function(){
       expect(() => (new Class())).toThrow();
     });
     it('should resolve a named parameter using an interface', function(){
-      Class.Register.Constant('named', {a : 'hi'}, 'iService');
+      Class.Register.Constant('named', {a : 'hi'}).interface('iService');
       var obj = {a : 'sup'};
       
       new Class({iService : obj});
@@ -322,7 +322,7 @@ describe('Interfaces', function(){
       expect(service.a).toBe('sup');
     });
     it('should resolve a named parameter that matches the name but not the interface', function(){
-      Class.Register.Constant('named', {a : 'hi'}, 'iService');
+      Class.Register.Constant('named', {a : 'hi'}).interface('iService');
       var obj = {a : 'howdy'};
       
       new Class({named : obj});
@@ -330,7 +330,7 @@ describe('Interfaces', function(){
       expect(service.a).toBe('howdy');
     });
     it('should ignore a named parameter if it does not match the interface', function(){
-      Class.Register.Constant('named', {a : 'hi'}, 'iService');
+      Class.Register.Constant('named', {a : 'hi'}).interface('iService');
       var obj = {a : 'howdy'};
       
       new Class({other : obj});
@@ -338,7 +338,7 @@ describe('Interfaces', function(){
       expect(service.a).toBe('hi');
     });
     it('should resolve a named parameter if it implements the interface', function(){
-      Base.Register.Constant('named', {a : 'hi'}, 'iService');
+      Base.Register.Constant('named', {a : 'hi'}).interface('iService');
       var obj = {a : 'howdy'};
       
       new Class({named : obj});
@@ -350,7 +350,7 @@ describe('Interfaces', function(){
         this.a = 'hey';
       });
       
-      Base.Register.Service('service', Service, ['iService']);
+      Base.Register.Service('service', Service).interface(['iService']);
       
       new Class();
       
@@ -374,7 +374,7 @@ describe('Interfaces', function(){
     it('it should resolve a factory that has spurious interfaces', function(){
       Class.Register.Factory('factory', function(){
         return {a : 'salut'};
-      }, ['iApple', 'iService', 'iPod']);
+      }).interface(['iApple', 'iService', 'iPod']);
       new Class();
       
       expect(service.a).toBe('salut');
@@ -388,7 +388,7 @@ describe('Interfaces', function(){
       });
       Class.Register.Factory('factory', function(){
         return 'hello';
-      }, 'iService');
+      }).interface('iService');
       
       new Class();
       
@@ -420,7 +420,7 @@ describe('Interfaces', function(){
       Class.Register.Interface('IArray', () => [], 'IEnumerable');
       Class.Register.Interface('IArray<Number>', i => [i.number], 'IArray');
       
-      Class.Register.Constant('NumberArray', [1, 2, 3], 'IArray<Number>');
+      Class.Register.Constant('NumberArray', [1, 2, 3]).interface('IArray<Number>');
       
       var Child = Class.extend(function(IEnumerable){
         service = IEnumerable;

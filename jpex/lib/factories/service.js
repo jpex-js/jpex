@@ -1,16 +1,11 @@
 var extractParameters = require('../resolver').extractParameters;
 
 // Return a new instance
-module.exports = function(name, dependencies, fn, interface, singleton){
+module.exports = function(name, dependencies, fn, singleton){
   if (typeof dependencies === 'function'){
-    singleton = interface;
-    interface = fn;
+    singleton = fn;
     fn = dependencies;
     dependencies = null;
-  }
-  if (typeof interface === 'boolean'){
-    singleton = interface;
-    interface = null;
   }
   
   if (typeof fn !== 'function'){
@@ -18,7 +13,7 @@ module.exports = function(name, dependencies, fn, interface, singleton){
   }
   
   if(fn.extend && fn.Register && fn.Register.Factory){
-      return jaas.call(this, name, dependencies, fn, interface, singleton);
+      return jaas.call(this, name, dependencies, fn, singleton);
   }
   
   if (dependencies){
@@ -33,13 +28,13 @@ module.exports = function(name, dependencies, fn, interface, singleton){
     return new (Function.prototype.bind.apply(fn, args));
   }
   
-  return this.Register.Factory(name, dependencies, instantiator, interface, singleton);
+  return this.Register.Factory(name, dependencies, instantiator, singleton);
 };
 
 // -----------------------------------------
 
 // Jpex Class As A Service
-function jaas(name, dependencies, Fn, interface, singleton){
+function jaas(name, dependencies, Fn, singleton){
   // Assuming the parameters have been validated and sorted already
   dependencies = dependencies ? [].concat(dependencies) : [];
   dependencies.unshift('$namedParameters');
@@ -83,11 +78,9 @@ function jaas(name, dependencies, Fn, interface, singleton){
     return new Fn(params);
   }
   
-  // Get interface
-  interface = [].concat(interface || []);
+  var service = this.Register.Factory(name, dependencies, instantiator, singleton);
   if (Fn.Interface){
-    interface = interface.concat(Fn.Interface);
+    service.interface(Fn.Interface);
   }
-  
-  return this.Register.Factory(name, dependencies, instantiator, interface, singleton);
+  return service;
 }

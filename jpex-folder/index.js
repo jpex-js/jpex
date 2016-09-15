@@ -1,6 +1,6 @@
 var grequire = require('./grequire'),
-glob = require('glob'),
-Path = require('path');
+    glob = require('glob'),
+    Path = require('path');
 
 function smartfolder(path, opt){
   var self = this;
@@ -13,7 +13,8 @@ function smartfolder(path, opt){
     prefixFolder : opt.prefixFolder !== undefined ? opt.prefixFolder : true,
     pattern : opt.pattern || '**/*.js',
     transform : opt.transform,
-    register : opt.register
+    register : opt.register,
+    interface : opt.interface
   };
   if (!opt.transform){
     opt.transform = function(file, folders){
@@ -41,23 +42,31 @@ function smartfolder(path, opt){
   if (!opt.register){
     opt.register = function(name, obj){
       // Register the dependency
+      var f;
       switch (opt.type.toLowerCase()){
         case 'factory':
           if (typeof obj !== 'function'){
             throw new Error('Factory type expected but got ' + typeof obj);
           }
-          self.Register.Factory(name, null, obj, opt.singleton);
+          f = self.Register.Factory(name, null, obj, opt.singleton);
           break;
           
         case 'service':
           if (typeof obj !== 'function'){
             throw new Error('Service type expected but got ' + typeof obj);
           }
-          self.Register.Service(name, null, obj, opt.singleton);
+          f = self.Register.Service(name, null, obj, opt.singleton);
+          break;
+          
+        case 'interface':
+          if (typeof obj !== 'function'){
+            throw new Error('Interface type expected but got ' + typeof obj);
+          }
+          f = self.Register.Interface(name, obj);
           break;
           
         case 'constant':
-          self.Register.Constant(name, obj);
+          f = self.Register.Constant(name, obj);
           break;
           
         case 'enum':
@@ -66,11 +75,19 @@ function smartfolder(path, opt){
           
         case 'auto':
           if (typeof obj === 'function'){
-            self.Register.Factory(name, null, obj, opt.singleton);
+            if (obj.extend && obj.Register && obj.Register.Factory){
+              f = self.Register.Service(name, null, obj, opt.singleton);
+            }else{
+              f = self.Register.Factory(name, null, obj, opt.singleton);
+            }
           }else{
-            self.Register.Constant(name, obj);
+            f = self.Register.Constant(name, obj);
           }
           break;
+      }
+      
+      if (opt.interface && f){
+        f.interface(opt.interface);
       }
     };
   }

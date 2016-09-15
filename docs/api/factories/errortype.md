@@ -4,6 +4,7 @@ ErrorType
 |---------------|---------------|-----------|
 | Name          | String        |           |
 | Constructor   | Function      | Optional  |
+
 The *ErrorType* factory will register a new error type against the class. It can then be accessed via the $error factory.
 
 ```javascript

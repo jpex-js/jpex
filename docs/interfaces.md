@@ -15,12 +15,12 @@ MyClass.Register.Service('myFactory', function(){
   this.a = 'string';
   this.b = 4;
   this.c = [];
-}, 'iFactory');
+}).interface('iFactory');
 
 // When ChildClass overrides this factory, if it does not have the same format it will throw an error
 ChildClass.Register.Factory('myFactory', function(){
   return {};
-}, 'iFactory');
+}).interface('iFactory');
 
 new MyClass(); // okay
 new ChildClass(); // error - myFactory does not match interface pattern.
@@ -30,7 +30,7 @@ Implementing Interfaces
 -----------------------
 When registering a factory you can set which interfaces it implements.
 ```javascript
-MyClass.Register.Factory('myFactory', function(){...}, 'iService', true);
+MyClass.Register.Factory('myFactory', function(){...}, true).interface('iService');
 ```
 Then when you want to inject your factory you can use the interface to find, validate, and inject the factory.
 ```javascript
@@ -44,6 +44,10 @@ var ChildClass = MyClass.extend(function(myFactory){...});
 
 Declaring with Named Parameters
 -------------------------------
+When you pass in [named parameters](./api/factories/named-params.md) you can either pass in the interface name, or a factory that implements the interface, and it will be picked up by the class. The named parameter will have to meet the interface requirements in order to be accepted.
+```javascript
+new MyClass({iService : {}, factoryThatImplementsAnInterface : {}});
+```
 
 Jpex Class Interfaces
 ---------------------
@@ -59,7 +63,7 @@ MyClass.Register.Factory('usesMyService', function(iService){...});
 ```
 Alternatively you can still provide your own interface options to the `Service` function:
 ```javascript
-MyClass.Register.Service('myService', ServiceClass, 'iService');
+MyClass.Register.Service('myService', ServiceClass).interface('iService');
 ```
 
 Interface Derivitives
@@ -77,7 +81,7 @@ MyClass.Register.Factory('List', function(){
   var arr = [];
   arr.Add = function(){...};
   arr.Remove = function(){...};
-}, 'IList');
+}).interface('IList');
 
 MyClass.Register.Factory('lister', function(IEnumerable){...});
 ```

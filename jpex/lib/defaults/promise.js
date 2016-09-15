@@ -1,4 +1,11 @@
 module.exports = function(NewClass){
+  NewClass.Register.Interface('$ipromise', i => i.functionWith({
+    all : i.function,
+    race : i.function,
+    reject : i.function,
+    resolve : i.function
+  }));
+  
   // wraps the Promise class
   NewClass.Register.Factory('$promise', null, function(){
     var $promise = function(fn){
@@ -9,5 +16,7 @@ module.exports = function(NewClass){
     $promise.reject = Promise.reject;
     $promise.resolve = Promise.resolve;
     return $promise;
-  }, true);
+  }, true)
+    .interface('$ipromise')
+    .lifecycle(true);
 };

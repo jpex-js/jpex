@@ -1,3 +1,4 @@
+var wrapper = require('./wrapper');
 var util = {
   string : '',
   number : 0,
@@ -41,5 +42,5 @@ module.exports = function(name, fn, interface){
     pattern : fn(util),
     interface : interface
   };
-  return this;
+  return wrapper(this._interfaces[name]);
 };

@@ -5,7 +5,6 @@ Factory
 | Name          | String        |           |
 | Dependencies  | Array[String] | null      |
 | Function      | Function      |           |
-| Interface     | String/Array  | null      |
 | Singleton     | boolean       | false     |
 
 These are functions that return an object that is then injected into the class instance. Think angular Factories.  
@@ -28,4 +27,9 @@ MyClass.Register.Factory('myFactory', function($log){
 new MyClass();
 ```
 
-There is also an extended version of folders [here](https://github.com/jackmellis/jpex/blob/master/jpex-folder/readme.md)
+All main factories (except *Enum* and *ErrorType*) return a chainable object that allows you to specify additional options.  
+####interface  
+Specify which interfaces the factory implements
+```javascript
+MyClass.Register.Factory('myFactory', () => {}).interface('iFactory').interface(['multiple', 'interfaces']);
+```

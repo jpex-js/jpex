@@ -55,7 +55,8 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
       });
       it('should accept a custom name transformer', function(){
-        var expected = ['index', 'first', 'second', 'first', 'second', 'constant', 'factory', 'service', 'enums'];
+        var expected = ['index', 'first', 'second', 'first', 'second', 'constant', 'factory', 
+                        'service', 'enums', 'iinterface', 'jpexservice'];
         
         First.Register.Folder('../spec/jpex-folder/smart', {
           pattern : '**/*.{js,json}',
@@ -164,6 +165,24 @@ describe('Base Class - Dependency Injection', function(){
         new Second();
       });
       
+      it('should register an interface', function(done){
+        First.Register.Folder('../spec/jpex-folder/smart', {
+          type : 'interface',
+          pattern : 'iinterface.js'
+        });
+        First.Register.Folder('../spec/jpex-folder/smart', {
+          pattern : 'jpexservice.js'
+        });
+        
+        var Second = First.extend(function(iinterface){
+          expect(iinterface).toBeDefined();
+          expect(iinterface.test).toBe('jpex service');
+          done();
+        });
+        
+        new Second();
+      });
+      
       it('should determine how to register a file automatically', function(){
         First.Register.Folder('../spec/jpex-folder/smart', {pattern : '{constant,factory}.*'});
         var Second = First.extend(function(constant, factory){
@@ -186,6 +205,17 @@ describe('Base Class - Dependency Injection', function(){
         
         expect(First._factories.first).toBeDefined();
         expect(Object.keys(First._factories).length).toBe(1);
+      });
+      
+      it('should attach an interface to the factory', function(){
+        First.Register.Folder('../spec/jpex-folder/smart', {
+          type : 'constant', 
+          pattern : 'constant.json', 
+          interface : 'iinterface'
+        });
+        
+        expect(First._factories.constant.interface).toBeDefined();
+        expect(First._factories.constant.interface).toEqual(['iinterface']);
       });
     });
   });

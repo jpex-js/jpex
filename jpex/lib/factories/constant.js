@@ -1,9 +1,10 @@
+var wrapper = require('./wrapper');
+
 // Return an object
-module.exports = function(name, obj, interface){
-  if (interface){
-    interface = [].concat(interface);
-  }
-  
-  this._factories[name] = {value : obj, interface : interface, constant : true};
-  return this;
+module.exports = function(name, obj){  
+  this._factories[name] = {
+    value : obj, 
+    constant : true
+  };
+  return wrapper(this._factories[name]);
 };
