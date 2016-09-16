@@ -18,6 +18,13 @@ describe('Base Class - Dependency Injection', function(){
         expect(First._factories.test.fn).toBe(fn);
       });
       
+      it('should add an instance lifecycle', function(){
+        var fn = function(){};
+        First.Register.Factory('test', fn);
+        expect(First._factories.test).toBeDefined();
+        expect(First._factories.test.lifecycle).toBe(3);
+      });
+      
       it('should register a factory by calling register', function(){
         var fn = function(){};
         First.Register('test', fn);
@@ -73,11 +80,11 @@ describe('Base Class - Dependency Injection', function(){
     });
     
     describe('Factory (singleton)', function(){
-      it('should wrap the function in a singleton method', function(){
+      it('should add a singleton lifecycle', function(){
         var fn = function(){};
         First.Register.Factory('test', fn, true);
         expect(First._factories.test).toBeDefined();
-        expect(First._factories.test.fn).not.toBe(fn);
+        expect(First._factories.test.lifecycle).toBe(1);
       });
       it('should only create one instance of the factory function', function(){
         var fn = function(){

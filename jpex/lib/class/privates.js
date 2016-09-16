@@ -120,6 +120,10 @@ module.exports = {
         writable : true,
         value : {}
       },
+      _resolved : {
+        writeable : true,
+        value : {}
+      },
       _interfaces : {
         writeable : true,
         value : {}

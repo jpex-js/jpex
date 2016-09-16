@@ -130,7 +130,7 @@ function classBody(options){
       }
     }
     catch(e){
-      var errorHandler = resolver.resolve(Class, '_$errorHandler_', namedParameters)[0];
+      var errorHandler = resolver.resolve(Class, '_$errorHandler_', namedParameters);
       if (errorHandler){
         errorHandler(e);
       }else{

@@ -17,6 +17,5 @@ module.exports = function(NewClass){
     $promise.resolve = Promise.resolve;
     return $promise;
   }, true)
-    .interface('$ipromise')
-    .lifecycle(true);
+    .interface('$ipromise');
 };

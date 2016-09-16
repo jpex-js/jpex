@@ -21,10 +21,6 @@ exports.factoryImplements = function(Class, fname, iname){
 
 // Check if name is an interface and then find and return the name of a matching factory (if there is one)
 exports.findFactory = function(Class, iname){  
-  if (!iname){
-    return;
-  }
-  
   var filterFn = function(fname){
     return exports.factoryImplements(Class, fname, iname);
   };
@@ -75,10 +71,8 @@ function crossReferenceInterface(Class, interface, obj){
         if (otype === 'undefined'){
           stack.push('Must be defined');
           return stack;
-        }else{
-          return;
         }
-        break;
+        return;
         
       case 'either':
         for (var z = 0; z < interface.length; z++){
@@ -102,14 +96,12 @@ function crossReferenceInterface(Class, interface, obj){
   switch(itype){
     case 'function':
     case 'object':
-      var keys = Object.keys(interface);
-      for (var x = 0, l = keys.length; x < l; x++){
-        var key = keys[x];
+      Object.keys(interface).forEach(function(key){
         var result = crossReferenceInterface(Class, interface[key], obj[key]);
         if (result){
           stack = stack.concat([key, ':']).concat(result);
         }
-      }
+      });
       break;
       
     case 'array':

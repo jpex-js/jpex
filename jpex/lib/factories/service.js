@@ -1,4 +1,5 @@
 var extractParameters = require('../resolver').extractParameters;
+var instantiator = require('../instantiator');
 
 // Return a new instance
 module.exports = function(name, dependencies, fn, singleton){
@@ -22,13 +23,13 @@ module.exports = function(name, dependencies, fn, singleton){
     dependencies = extractParameters(fn);
   }
   
-  function instantiator(){
+  function factory(){
     var args = Array.from(arguments);
     args.unshift({});
-    return new (Function.prototype.bind.apply(fn, args));
+    return instantiator(fn, args);
   }
   
-  return this.Register.Factory(name, dependencies, instantiator, singleton);
+  return this.Register.Factory(name, dependencies, factory, singleton);
 };
 
 // -----------------------------------------

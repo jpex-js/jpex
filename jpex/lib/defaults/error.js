@@ -8,6 +8,5 @@ module.exports = function(NewClass){
   NewClass.Register.Factory('$error', '$errorFactory', function($errorFactory){
     return $errorFactory;
   }, true)
-    .interface('$ierror')
-    .lifecycle(true);
+    .interface('$ierror');
 };

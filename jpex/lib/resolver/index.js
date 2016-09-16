@@ -36,8 +36,7 @@ exports.resolveDependencies = function(Class, definition, namedParameters){
 
 // Resolve a single dependency for a class
 exports.resolve = function(Class, name, namedParameters){
-  var definition = {dependencies : [name]};
-  return resolveMany(Class, definition, namedParameters);
+  return resolveDependency(Class, name, null, namedParameters, []);
 };
 
 // Resolves all dependencies for a factory
@@ -47,6 +46,9 @@ function resolveMany(Class, definition, namedParameters, globalOptions, stack){
   }
   if (!stack){
     stack = [];
+  }
+  if (!namedParameters){
+    namedParameters = {};
   }
   
   var args = [].concat(definition.dependencies).map(name => {
@@ -65,6 +67,10 @@ function resolveMany(Class, definition, namedParameters, globalOptions, stack){
 // Resolves a single dependency
 function resolveDependency(Class, name, localOptions, namedParameters, stack){
   var factory;
+  
+  if (!namedParameters){
+    namedParameters = {};
+  }
   
   var ancestoral = checkAncestoral(name);
   if (ancestoral){
@@ -97,23 +103,23 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   if (name === '$namedParameters'){
     return namedParameters;
   }
-  if (namedParameters){
-    if (iname){
-      factory = namedParameters[iname];
-      if (factory === undefined){
-        Object.keys(namedParameters).forEach(function(n){
-          if (interfaceService.factoryImplements(Class, n, iname)){
-            factory = namedParameters[n];
-          }
-        });
-      }
-    }else{
-      factory = namedParameters[name];
+  
+  // Check Named Parameters
+  if (iname){
+    factory = namedParameters[iname];
+    if (factory === undefined){
+      Object.keys(namedParameters).forEach(function(n){
+        if (interfaceService.factoryImplements(Class, n, iname)){
+          factory = namedParameters[n];
+        }
+      });
     }
-    if (factory !== undefined){
-      interfaceService.validateInterface(Class, interface, factory);
-      return factory;
-    }
+  }else{
+    factory = namedParameters[name];
+  }
+  if (factory !== undefined){
+    interfaceService.validateInterface(Class, interface, factory);
+    return factory;
   }
   
   // Check for recursive loop
@@ -127,13 +133,16 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     return factory;
   }
   
+  if (factory.resolved){ // Already been resolved within its lifecycle
+    return factory.value;
+  }
+  
   // Constant values don't need any more calculations
   if (factory.constant){
-    if (!factory.valid){
-      interfaceService.validateInterface(Class, interface, factory.value);
-      factory.valid = true;
-    }
-    return factory.value;
+    var value = factory.value;
+    interfaceService.validateInterface(Class, interface, value);
+    namedParameters = factoryService.cacheResult(Class, name, factory, value, namedParameters);
+    return value;
   }
   
   var args;
@@ -155,6 +164,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   var result = factory.fn.apply(this, args);
   
   interfaceService.validateInterface(Class, interface, result);
+  namedParameters = factoryService.cacheResult(Class, name, factory, result, namedParameters);
   
   return result;
 }

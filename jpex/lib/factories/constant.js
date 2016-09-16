@@ -6,5 +6,5 @@ module.exports = function(name, obj){
     value : obj, 
     constant : true
   };
-  return wrapper(this._factories[name]);
+  return wrapper(this._factories[name]).lifecycle.application();
 };

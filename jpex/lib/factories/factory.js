@@ -2,9 +2,7 @@ var extractParameters = require('../resolver').extractParameters;
 var wrapper = require('./wrapper');
 
 // Return a factory function
-module.exports = function(name, dependencies, fn, singleton){
-  var self = this;
-  
+module.exports = function(name, dependencies, fn, singleton){  
   if (typeof dependencies === 'function'){
     singleton = fn;
     fn = dependencies;
@@ -24,25 +22,12 @@ module.exports = function(name, dependencies, fn, singleton){
     dependencies = null;
   }
   
-  if (singleton){
-    var oldFn = fn;
-    fn = function(){
-      var instance = oldFn.apply(null, arguments);
-      self.Register.Constant(name, instance);
-      self._factories[name].interface = factoryObj.interface;
-      if (factoryObj.interfaceResolved){
-        self._factories[name].interfaceResolved = true;
-      }
-      return instance;
-    };
-  }
-  
   var factoryObj = {
     fn : fn,
-    dependencies : dependencies,
-    lifecycle : !!singleton
+    dependencies : dependencies
   };
-  
+//  var result = wrapper(factoryObj);
   this._factories[name] = factoryObj;
-  return wrapper(factoryObj);
+  
+  return wrapper(factoryObj).lifecycle[singleton ? 'application' : 'instance']();
 };

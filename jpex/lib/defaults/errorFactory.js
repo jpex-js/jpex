@@ -1,3 +1,5 @@
+var instantiator = require('../instantiator');
+
 module.exports = function(NewClass){  
   NewClass.Register.Factory('$errorFactory', null, function(){  
     // Throw the standard error
@@ -26,7 +28,7 @@ module.exports = function(NewClass){
       NewError.create = function(){
         var args = Array.from(arguments);
         args.unshift(NewError);
-        var err = new (Function.prototype.bind.apply(this, args));
+        var err = instantiator(this, args);
         return err;
       };
       NewError.throw = function(){

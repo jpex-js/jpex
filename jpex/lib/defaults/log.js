@@ -17,6 +17,5 @@ module.exports = function(NewClass){
       $log.error = console.error;
       return $log;
   }, true)
-    .interface('$ilog')
-    .lifecycle(true);
+    .interface('$ilog');
 };

@@ -63,6 +63,5 @@ module.exports = function(Class){
     
     return $fs;
   }, true)
-    .interface('$ifs')
-    .lifecycle(true);
+    .interface('$ifs');
 };
