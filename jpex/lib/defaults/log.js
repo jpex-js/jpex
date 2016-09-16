@@ -7,7 +7,8 @@ module.exports = function(NewClass){
   }));
   
   // Log a message to the console
-  NewClass.Register.Factory('$log', null, function(){
+  NewClass.Register
+    .Factory('$log', null, function(){
       var $log = function(){
         console.log.apply(console, arguments);
       };
@@ -16,6 +17,7 @@ module.exports = function(NewClass){
       $log.warn = console.warn;
       $log.error = console.error;
       return $log;
-  }, true)
-    .interface('$ilog');
+  })
+  .interface('$ilog')
+  .lifecycle.application();
 };

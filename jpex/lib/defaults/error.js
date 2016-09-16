@@ -5,8 +5,10 @@ module.exports = function(NewClass){
     Error : i.function
   }));
   
-  NewClass.Register.Factory('$error', '$errorFactory', function($errorFactory){
-    return $errorFactory;
-  }, true)
-    .interface('$ierror');
+  NewClass.Register
+    .Factory('$error', '$errorFactory', function($errorFactory){
+      return $errorFactory;
+    })
+    .interface('$ierror')
+    .lifecycle.application();
 };

@@ -12,8 +12,9 @@ It's not readable, maintainable, or fun. Proper dependency injection should be a
 
 Topics
 ------
-[Inheritence](./inheritence.md)  
 [Dependency Injection](./di.md)  
+[Inheritence](./inheritence.md)  
+[Interfaces](./interfaces.md)
 [Error Handling](./errorhandling.md)  
 [Creating Jpex Plugins](./plugins.md)  
 

@@ -23,6 +23,8 @@ Factories are small modules that can be injected into a class or another factory
 [node_module](./factories/node_module.md)  
 [named parameters](./factories/named-params.md)  
 
+[Factory Lifecycles](./factories/lifecycles.md)
+
 Default factories
 -----------------
 Jpex comes with several default factories that can be injected into your classes.  

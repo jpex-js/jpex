@@ -4,5 +4,6 @@ module.exports = function(Class){
       var result = Path.resolve('./' + path);
       return require(result);
     };
-  }, true);
+  })
+  .lifecycle.application();
 };

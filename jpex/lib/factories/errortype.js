@@ -21,7 +21,9 @@ module.exports = function(name, fn){
   if (!this._factories.$error){
     this.Register.Factory('$error', '$errorFactory', function($errorFactory){
       return $errorFactory;
-    }, true);
+    })
+    .interface('$ierror')
+    .lifecycle.application();
   }
   
   return this;

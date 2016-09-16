@@ -21,7 +21,8 @@ module.exports = function(Class){
     return $ifs;
   });
   
-  Class.Register.Factory('$fs', ['fs', '$ipromise'], function(fs, $promise){
+  Class.Register
+    .Factory('$fs', ['fs', '$ipromise'], function(fs, $promise){
     
     var $fs = {};
     
@@ -62,6 +63,7 @@ module.exports = function(Class){
     
     
     return $fs;
-  }, true)
-    .interface('$ifs');
+  })
+  .interface('$ifs')
+  .lifecycle.class(); // not created per-application as it depends on the overwritable $ipromise
 };

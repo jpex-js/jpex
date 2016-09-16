@@ -33,3 +33,14 @@ Specify which interfaces the factory implements
 ```javascript
 MyClass.Register.Factory('myFactory', () => {}).interface('iFactory').interface(['multiple', 'interfaces']);
 ```
+
+####lifecycle  
+Specify the lifecycle of the factory. The lifecycle property is an object with the following methods:  
+- application  
+- class  
+- instance  
+- none  
+More information can be found in the [lifecycles](./lifecycles.md) section.
+```javascript
+MyClass.Register.Factory('myFactory'), function(){...}).lifecycle.class();
+```

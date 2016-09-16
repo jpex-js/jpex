@@ -1,7 +1,8 @@
 var instantiator = require('../instantiator');
 
 module.exports = function(NewClass){  
-  NewClass.Register.Factory('$errorFactory', null, function(){  
+  NewClass.Register
+    .Factory('$errorFactory', null, function(){  
     // Throw the standard error
     var $error = function(){
       $error.default.throw.apply($error.default, arguments);
@@ -42,5 +43,6 @@ module.exports = function(NewClass){
     $error.default = $error.define('Error');
     
     return $error;
-  }, null, false);
+  })
+  .lifecycle.none();
 };
