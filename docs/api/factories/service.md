@@ -5,7 +5,6 @@ Service
 | Name          | String        |           |
 | Dependencies  | Array[String] | null      |
 | Function      | Function      |           |
-| Singleton     | boolean       | false     |
 
 Services are simple classes that are instantiated and the instance returned when injected.  
 It is also possible to register another Jpex class as a service, meaning that you can inject classes into each other.
