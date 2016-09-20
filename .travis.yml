@@ -9,10 +9,11 @@ install :
   - npm install
   - cd ../jpex-folder
   - npm install
+  - npm install jasmine-node -g
 script :
   - cd ../jpex
   - jasmine-node ../spec/jpex
   - cd ../jpex-folder
   - jasmine-node ../spec/jpex-folder
   - cd ../jpex
-  - npm run cover
+  - istanbul cover --include-all-sources jasmine-node ../spec/jpex
