@@ -15,4 +15,4 @@ script :
   - cd ../jpex-folder
   - jasmine-node ../spec/jpex-folder
   - cd ../jpex
-  - istanbul cover --include-all-sources jasmine-node ../spec/jpex
+  - npm run cover
