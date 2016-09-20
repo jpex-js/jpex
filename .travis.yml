@@ -19,4 +19,5 @@ script :
   - cd ../jpex
   - istanbul cover --include-all-sources jasmine-node ../spec/jpex
 after_script :
-  - codeclimate-test-reporter < coverage/lcov.info
+  - cd coverage
+  - codeclimate-test-reporter < lcov.info
