@@ -9,6 +9,7 @@ install :
   - npm install
   - cd ../jpex-folder
   - npm install
+  - cd ../
   - npm install jasmine-node -g
   - npm install codeclimate-test-reporter -g
 script :
@@ -16,7 +17,10 @@ script :
   - jasmine-node ../spec/jpex
   - cd ../jpex-folder
   - jasmine-node ../spec/jpex-folder
+
   - cd ../jpex
   - istanbul cover --include-all-sources jasmine-node ../spec/jpex
+  - cd ../
+  - node lcov-fix
 after_script :
-  - cd coverage
+  - codeclimate-test-reporter < lcov.info
