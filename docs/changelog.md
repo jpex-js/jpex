@@ -1,8 +1,8 @@
-Change Logep
+Change Log
 ==========
 
-##Unreleased
-###Feaures
+##1.3.0
+###Features
 - Interfaces functionality added  
 - Registering a factory returns an object with additional option methods (currently only contains the *interface()* method)  
 - It is now possible to specify the life cycle of a factory or service using the `.lifecycle.x()` syntax. Possible options are `application`, `class`, `instance`, `none`  

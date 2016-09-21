@@ -2,6 +2,8 @@ JPEX - Javascipt Protoype Extension
 ===================================
 [![Build Status](https://travis-ci.org/jackmellis/jpex.svg?branch=master)](https://travis-ci.org/jackmellis/jpex)
 [![npm version](https://badge.fury.io/js/jpex.svg)](https://badge.fury.io/js/jpex)
+[![Code Climate](https://codeclimate.com/github/jackmellis/jpex/badges/gpa.svg)](https://codeclimate.com/github/jackmellis/jpex)
+[![Test Coverage](https://codeclimate.com/github/jackmellis/jpex/badges/coverage.svg)](https://codeclimate.com/github/jackmellis/jpex/coverage)
 
 Jpex is a Class wrapper and Inversion of Control framework.
 
