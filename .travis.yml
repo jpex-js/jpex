@@ -13,7 +13,7 @@ install :
   - npm install jasmine-node -g
   - npm install codeclimate-test-reporter -g
 script :
-  - cd ../jpex
+  - cd jpex
   - jasmine-node ../spec/jpex
   - cd ../jpex-folder
   - jasmine-node ../spec/jpex-folder
