@@ -20,4 +20,3 @@ script :
   - istanbul cover --include-all-sources jasmine-node ../spec/jpex
 after_script :
   - cd coverage
-  - codeclimate-test-reporter < lcov.info
