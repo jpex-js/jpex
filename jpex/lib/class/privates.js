@@ -52,6 +52,9 @@ module.exports = {
         return this._factories[name];
       }
       catch(e){
+        if (!(e && e.message && e.message.substr(0, 6) === 'Cannot')){
+          throw e;
+        }
       }
     }
   },
