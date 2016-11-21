@@ -3,10 +3,10 @@
 `npm install jpex-folder`
 
 
-`Jpex.Register.Folder('factories', {});`. 
+`Jpex.Register.Folder('factories', {});`.
 *(Path, Options)*  
 
-It is also possible to have the folder factory automatically register all files in a folder. This means you can organise your application in a logical manner and then have all dependencies automatically loaded and injected into your jpex classes.  
+Extends Jpex's Folder function to register all files in a folder against a class. This means you can organise your application in a logical manner and then have all dependencies automatically loaded and injected into your jpex classes.  
 The Options parameter takes the following options:
 ######type
 The type of dependency you want to register them as. If not specified it will register all functions as factories and anything else as a constant. Valid values are *'Factory', 'Service', 'Constant', 'Enum'*

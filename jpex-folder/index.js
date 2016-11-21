@@ -4,7 +4,7 @@ var grequire = require('./grequire'),
 
 function smartfolder(path, opt){
   var self = this;
-  
+
   opt = {
     type : opt.type || 'auto',
     singleton : opt.singleton,
@@ -20,7 +20,7 @@ function smartfolder(path, opt){
     opt.transform = function(file, folders){
       // Build up the name of the dependency
       var result = [];
-      
+
       if (opt.prefix){
         result.push(toPascal(opt.prefix));
       }
@@ -33,9 +33,9 @@ function smartfolder(path, opt){
       if (opt.suffix){
         result.push(toPascal(opt.suffix));
       }
-      
+
       result = result.join('');
-      return result.length ? 
+      return result.length ?
         result[0].toLowerCase() + result.substring(1) : '';
     };
   }
@@ -50,29 +50,29 @@ function smartfolder(path, opt){
           }
           f = self.Register.Factory(name, null, obj, opt.singleton);
           break;
-          
+
         case 'service':
           if (typeof obj !== 'function'){
             throw new Error('Service type expected but got ' + typeof obj);
           }
           f = self.Register.Service(name, null, obj, opt.singleton);
           break;
-          
+
         case 'interface':
           if (typeof obj !== 'function'){
             throw new Error('Interface type expected but got ' + typeof obj);
           }
           f = self.Register.Interface(name, obj);
           break;
-          
+
         case 'constant':
           f = self.Register.Constant(name, obj);
           break;
-          
+
         case 'enum':
           self.Register.Enum(name, obj);
           break;
-          
+
         case 'auto':
           if (typeof obj === 'function'){
             if (obj.extend && obj.Register && obj.Register.Factory){
@@ -85,15 +85,16 @@ function smartfolder(path, opt){
           }
           break;
       }
-      
+
       if (opt.interface && f){
         f.interface(opt.interface);
       }
     };
   }
-  
+
   // Get the absolute path of the search folder
-  var root = Path.resolve(path);
+  var root = Path.isAbsolute(path) ? path : Path.resolve(path);
+  
   // Retrieve all files that match the pattern
   glob.sync(opt.pattern, {cwd : root})
   .map(function(file){
@@ -119,7 +120,7 @@ function smartfolder(path, opt){
     var content = grequire(file.path);
     opt.register.call(self, file.name, content);
   });
-  
+
   return self;
 }
 function toPascal(arr){

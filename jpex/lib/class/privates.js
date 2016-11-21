@@ -47,11 +47,14 @@ module.exports = {
     // Attempt to require a dependency as a node module
     _getFromNodeModules : function(parentClass, name){
       try{
-        var result = require(name);
+        var result = require.main.require(name);
         this.Register.Constant(name, result);
         return this._factories[name];
       }
       catch(e){
+        if (!(e && e.message && e.message.substr(0, 6) === 'Cannot')){
+          throw e;
+        }
       }
     }
   },
@@ -92,20 +95,20 @@ module.exports = {
       parentClass.call(instance, args);
     }
   },
-  
+
   properties : {},
-  
+
   apply : function(Class, Parent, dependencies){
     Object.keys(this.getters).forEach(n => {
       Object.defineProperty(Class, n, {
         value : this.getters[n].bind(Class, Parent)
       });
     });
-    
+
     Object.keys(this.properties).forEach(n => {
       Class[n] = this.properties[n].call(Class);
     });
-    
+
     Object.defineProperties(Class, {
       NamedParameters : {
         value : this.manual.NamedParameters.bind(Class, dependencies)

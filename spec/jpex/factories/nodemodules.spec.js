@@ -3,7 +3,7 @@ var grequire = require('../../../jpex/grequire');
 
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
-  
+
   beforeEach(function(){
     Base = grequire('.');
     First = Base.extend();
@@ -12,34 +12,34 @@ describe('Base Class - Dependency Injection', function(){
   describe('Registration', function(){
     describe('Node Modules', function(){
       it('should try to require the dependency from node_modules', function(done){
-        var Second = First.extend(function(istanbul){
-          expect(istanbul).toBeDefined();
+        var Second = First.extend(function(path){
+          expect(path).toBeDefined();
           done();
         });
-        
+
         new Second();
       });
       it('should cache the node module', function(done){
-        var Second = First.extend(function(istanbul){
-          expect(istanbul).toBeDefined();
-          expect(Second._factories.istanbul).toBeDefined();
+        var Second = First.extend(function(path){
+          expect(path).toBeDefined();
+          expect(Second._factories.path).toBeDefined();
           done();
         });
-        
-        expect(Second._factories.istanbul).toBeUndefined();
+
+        expect(Second._factories.path).toBeUndefined();
         new Second();
       });
       it('should manually add a node module', function(done){
-        First.Register.NodeModule('istanbul');
-        
-        var Second = First.extend(function(istanbul){
-          expect(istanbul).toBeDefined();
-          expect(First._factories.istanbul).toBeDefined();
-          expect(Second._factories.istanbul).toBeUndefined();
+        First.Register.NodeModule('path');
+
+        var Second = First.extend(function(path){
+          expect(path).toBeDefined();
+          expect(First._factories.path).toBeDefined();
+          expect(Second._factories.path).toBeUndefined();
           done();
         });
-        
-        expect(Second._factories.istanbul).toBeUndefined();
+
+        expect(Second._factories.path).toBeUndefined();
         new Second();
       });
     });
