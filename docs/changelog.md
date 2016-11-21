@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+##1.3.1  
+###Bugs  
+- Fixed issues where `require`-based functions were not requiring from the correct location.
+
 ##1.3.0
 ###Features
 - Interfaces functionality added  
