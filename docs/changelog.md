@@ -1,9 +1,16 @@
 Change Log
 ==========
 
+##1.4.0  
+###Features  
+- $typeof factory is available which returns the type of an object.  
+- $copy factory allows you create a deep or shallow copy of an object, or combine multiple objects.  
+- $itypeof and $icopy interfaces  
+- The static methods Jpex.Typeof and Jpex.Copy have been deprecated and will be removed in a future release.  
+
 ##1.3.1  
 ###Bugs  
-- Fixed issues where `require`-based functions were not requiring from the correct location.
+- Fixed issues where `require`-based functions were not requiring from the correct location.  
 
 ##1.3.0
 ###Features

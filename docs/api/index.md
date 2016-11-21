@@ -7,8 +7,6 @@ The following static properties and methods are available on the Jpex class obje
 [Register](./jpex/register.md)  
 [NamedParameters](./jpex/namedparameters.md)  
 [InvokeParent](./jpex/invokeparent.md)  
-[Copy](./jpex/copy.md)  
-[Typeof](./jpex/typeof.md)  
 
 Factories
 ---------
@@ -36,4 +34,5 @@ Jpex comes with several default factories that can be injected into your classes
 [$promise](./defaults/promise.md)  
 [$fs](./defaults/fs.md)
 [$error](./defaults/error.md)
-[$require](./defaults/require.md)
+[$typeof](./defaults/typeof.md)
+[$copy](./defaults/copy.md)

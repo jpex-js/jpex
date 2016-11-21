@@ -115,5 +115,15 @@ describe('Jpex - Default Factories', function(){
 
       expect(o1.obj.x).toBe('second');
     });
+    it('should combine objects', function () {
+      var o1 = {obj : {a : 'first'}};
+      var o2 = {obj : {b : 'second'}};
+      var o3 = {obj : {c : 'third'}};
+      $copy.extend(o1, o2, o3);
+
+      expect(o1.obj.a).toBe('first');
+      expect(o1.obj.b).toBe('second');
+      expect(o1.obj.c).toBe('third');
+    });
   });
 });
