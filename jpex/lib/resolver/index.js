@@ -162,7 +162,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   }
 
   //Run the factory function and return the result
-  var result = factory.fn.apply(this, args);
+  var result = factory.fn.apply(Class, args);
 
   interfaceService.validateInterface(Class, interface, result);
   namedParameters = factoryService.cacheResult(Class, name, factory, result, namedParameters);

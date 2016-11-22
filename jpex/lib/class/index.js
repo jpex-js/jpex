@@ -107,6 +107,10 @@ function createClass(Parent, options){
 function classBody(options){
   var Class;
   Class = function(namedParameters){
+    if (!(this instanceof Class)){
+      return new Class(options);
+    }
+
     try{
       // Resolve dependencies
       var args = resolver.resolveDependencies(Class, {dependencies : options.dependencies}, namedParameters);

@@ -7,6 +7,7 @@ Change Log
 - $copy factory allows you create a deep or shallow copy of an object, or combine multiple objects.  
 - $itypeof and $icopy interfaces  
 - The static methods Jpex.Typeof and Jpex.Copy have been deprecated and will be removed in a future release.  
+- $resolve factory which allows lazy loading of dependencies.  
 
 ##1.3.1  
 ###Bugs  

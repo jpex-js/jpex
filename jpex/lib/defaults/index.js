@@ -8,7 +8,8 @@ module.exports = {
     require('./errorFactory'),
     require('./require'),
     require('./typeof'),
-    require('./copy')
+    require('./copy'),
+    require('./resolve')
   ],
   apply : function(Class){
     this.defaults.forEach(n => {
