@@ -1,3 +1,4 @@
+var jpexError = require('../jpexError');
 // Get the factory from the class factories (which will also scan the parent classes)
 exports.getFactory = function(Class, name, optional){
   var factory = Class._resolved[name];
@@ -15,12 +16,12 @@ exports.getFactory = function(Class, name, optional){
           if (optional){
             return undefined;
           }
-          throw new Error(['Unable to find required dependency:', name].join(' '));
+          jpexError(['Unable to find required dependency:', name].join(' '));
         }
       }
     }
   }
-  
+
   return factory;
 };
 
