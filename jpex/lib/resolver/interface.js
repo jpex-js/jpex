@@ -1,11 +1,7 @@
 var jpexError = require('../jpexError');
 
-exports.getInterface = function(Class, name){
-  return Class._getInterface(name);
-};
-
 exports.factoryImplements = function(Class, fname, iname){
-    var factory = Class._getDependency(fname);
+    var factory = Class._factories[fname];
 
     // Check that factory has any interfaces
     if (!(factory && factory.interface && factory.interface.length)){
@@ -23,23 +19,9 @@ exports.factoryImplements = function(Class, fname, iname){
 
 // Check if name is an interface and then find and return the name of a matching factory (if there is one)
 exports.findFactory = function(Class, iname){
-  var filterFn = function(fname){
-    return exports.factoryImplements(Class, fname, iname);
-  };
-
-  // Find a factory that matches the interface
-  while (Class){
-
-    if (!Class._factories){
-      break;
-    }
-
-    var factory = Object.keys(Class._factories).find(filterFn);
-
-    if (factory !== undefined){
-      return factory;
-    }else{
-      Class = Class._parent;
+  for (var fname in Class._factories){
+    if (exports.factoryImplements(Class, fname, iname)){
+      return fname;
     }
   }
 
@@ -58,7 +40,7 @@ exports.validateInterface = function(Class, interface, value){
   }
 
   if (interface.interface){
-    interface.interface.forEach(i => exports.validateInterface(Class, exports.getInterface(Class, i), value));
+    interface.interface.forEach(i => exports.validateInterface(Class, Class._interfaces[i], value));
   }
 };
 
@@ -130,7 +112,7 @@ function listInterfaces(Class, name){
   var list = [].concat(name);
 
   list.forEach(function(n){
-    var interface = Class._getInterface(n);
+    var interface = Class._interfaces[n];
     if (interface && interface.interface && interface.interface.length){
       var arr = interface.interface.map(i => listInterfaces(Class, i));
       if (arr && arr.length){

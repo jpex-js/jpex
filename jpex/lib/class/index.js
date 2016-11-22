@@ -39,6 +39,7 @@ function createOptions(opt){
 
   // Merge options with defaults
   if (opt && typeof opt === 'object'){
+    var keys = Object.keys(opt);
     Object.keys(opt).forEach(key => {
       if (options[key] !== undefined){
         options[key] = opt[key];

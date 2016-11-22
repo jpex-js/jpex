@@ -35,11 +35,12 @@ describe('Base Class - Dependency Injection', function(){
         var Second = First.extend(function(path){
           expect(path).toBeDefined();
           expect(First._factories.path).toBeDefined();
-          expect(Second._factories.path).toBeUndefined();
+          expect(Object.hasOwnProperty.call(First._factories, 'path')).toBe(true);
+          expect(Object.hasOwnProperty.call(Second._factories, 'path')).toBe(false);
           done();
         });
 
-        expect(Second._factories.path).toBeUndefined();
+        expect(Object.hasOwnProperty.call(Second._factories, 'path')).toBe(false);
         new Second();
       });
     });

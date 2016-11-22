@@ -3,27 +3,6 @@
 
 module.exports = {
   getters : {
-    // Check if a factory has been registered on this class, if not,
-    // check the parent class and so on
-    _getDependency : function(parentClass, name){
-      if (this._factories[name]){
-        return this._factories[name];
-      }
-      if (parentClass._getDependency){
-        return parentClass._getDependency(name);
-      }
-      return null;
-    },
-    // Attemps to find an interface for a module
-    _getInterface : function(parentClass, name){
-      if (this._interfaces[name]){
-        return this._interfaces[name];
-      }
-      if (parentClass._getInterface){
-        return parentClass._getInterface(name);
-      }
-      return;
-    },
     // Attemps to find a dependency by looking in the registered folders
     _getFileFromFolder : function(parentClass, name){
       var grequire = require('../../grequire');
@@ -117,11 +96,11 @@ module.exports = {
         value : this.manual.InvokeParent.bind(Class, Parent)
       },
       _parent : {
-        get : () => Parent
+        value : Parent
       },
       _factories : {
         writable : true,
-        value : {}
+        value : Object.create(Parent._factories || null)
       },
       _resolved : {
         writeable : true,
@@ -129,12 +108,18 @@ module.exports = {
       },
       _interfaces : {
         writeable : true,
-        value : {}
+        value : Object.create(Parent._interfaces || null)
       },
       _folders : {
         writable : true,
         value : []
       }
     });
+
+    Class._parent = Parent;
+    Class._factories = Object.create(Parent._factories || null);
+    Class._interfaces = Object.create(Parent._interfaces || null);
+    Class._resolved = {};
+    Class._folders = [];
   }
 };

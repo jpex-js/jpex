@@ -4,7 +4,7 @@ exports.getFactory = function(Class, name, optional){
   var factory = Class._resolved[name];
 
   if (!isValidFactory(factory)){
-    factory = Class._getDependency(name);
+    factory = Class._factories[name];
 
     if (!isValidFactory(factory)){
       factory = Class._getFileFromFolder(name);

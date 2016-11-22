@@ -73,6 +73,14 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     namedParameters = {};
   }
 
+  // Special cases
+  if (name === '$options'){
+    return localOptions;
+  }
+  if (name === '$namedParameters'){
+    return namedParameters;
+  }
+
   var ancestoral = checkAncestoral(name);
   if (ancestoral){
     name = ancestoral;
@@ -86,7 +94,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     optional = true;
   }
 
-  var interface = interfaceService.getInterface(Class, name), iname;
+  var interface = Class._interfaces[name], iname;
   if (interface){
     iname = interfaceService.findFactory(Class, name);
     if (iname && iname !== name){
@@ -95,14 +103,6 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
       iname = t;
       t = null;
     }
-  }
-
-  // Special cases
-  if (name === '$options'){
-    return localOptions;
-  }
-  if (name === '$namedParameters'){
-    return namedParameters;
   }
 
   // Check Named Parameters
