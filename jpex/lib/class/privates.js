@@ -111,15 +111,9 @@ module.exports = {
         value : Object.create(Parent._interfaces || null)
       },
       _folders : {
-        writable : true,
+        writeable : true,
         value : []
       }
     });
-
-    Class._parent = Parent;
-    Class._factories = Object.create(Parent._factories || null);
-    Class._interfaces = Object.create(Parent._interfaces || null);
-    Class._resolved = {};
-    Class._folders = [];
   }
 };
