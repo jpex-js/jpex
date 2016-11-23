@@ -8,6 +8,8 @@ Change Log
 - $itypeof and $icopy interfaces  
 - The static methods Jpex.Typeof and Jpex.Copy have been deprecated and will be removed in a future release.  
 - $resolve factory which allows lazy loading of dependencies.  
+###Breaking Changes  
+- Calling `Class()` is now the same as calling `new Class()` so calls like `Class.call(obj)===obj` will no longer work.  
 
 ##1.3.1  
 ###Bugs  
