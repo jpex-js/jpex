@@ -48,14 +48,14 @@ function smartfolder(path, opt){
           if (typeof obj !== 'function'){
             throw new Error('Factory type expected but got ' + typeof obj);
           }
-          f = self.Register.Factory(name, null, obj, opt.singleton);
+          f = self.Register.Factory(name, obj.dependencies, obj, opt.singleton);
           break;
 
         case 'service':
           if (typeof obj !== 'function'){
             throw new Error('Service type expected but got ' + typeof obj);
           }
-          f = self.Register.Service(name, null, obj, opt.singleton);
+          f = self.Register.Service(name, obj.dependencies, obj, opt.singleton);
           break;
 
         case 'interface':
@@ -76,9 +76,9 @@ function smartfolder(path, opt){
         case 'auto':
           if (typeof obj === 'function'){
             if (obj.extend && obj.Register && obj.Register.Factory){
-              f = self.Register.Service(name, null, obj, opt.singleton);
+              f = self.Register.Service(name, obj.dependencies, obj, opt.singleton);
             }else{
-              f = self.Register.Factory(name, null, obj, opt.singleton);
+              f = self.Register.Factory(name, obj.dependencies, obj, opt.singleton);
             }
           }else{
             f = self.Register.Constant(name, obj);
@@ -86,15 +86,25 @@ function smartfolder(path, opt){
           break;
       }
 
-      if (opt.interface && f){
-        f.interface(opt.interface);
+      if (f){
+        if (opt.interface){
+          f.interface(opt.interface);
+        }
+        if (obj){
+          if (obj.interface){
+            f.interface(obj.interface);
+          }
+          if (obj.lifecycle && f.lifecycle[obj.lifecycle]){
+            f.lifecycle[obj.lifecycle]();
+          }
+        }
       }
     };
   }
 
   // Get the absolute path of the search folder
   var root = Path.isAbsolute(path) ? path : Path.resolve(path);
-  
+
   // Retrieve all files that match the pattern
   glob.sync(opt.pattern, {cwd : root})
   .map(function(file){
