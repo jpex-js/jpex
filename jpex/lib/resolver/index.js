@@ -94,8 +94,8 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     optional = true;
   }
 
-  var interface = Class._interfaces[name], iname;
-  if (interface){
+  var ifc = Class._interfaces[name], iname;
+  if (ifc){
     iname = interfaceService.findFactory(Class, name);
     if (iname && iname !== name){
       var t = name;
@@ -119,7 +119,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
     factory = namedParameters[name];
   }
   if (factory !== undefined){
-    interfaceService.validateInterface(Class, interface, factory);
+    interfaceService.validateInterface(Class, ifc, factory);
     return factory;
   }
 
@@ -141,7 +141,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   // Constant values don't need any more calculations
   if (factory.constant){
     var value = factory.value;
-    interfaceService.validateInterface(Class, interface, value);
+    interfaceService.validateInterface(Class, ifc, value);
     namedParameters = factoryService.cacheResult(Class, name, factory, value, namedParameters);
     return value;
   }
@@ -164,7 +164,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack){
   //Run the factory function and return the result
   var result = factory.fn.apply(Class, args);
 
-  interfaceService.validateInterface(Class, interface, result);
+  interfaceService.validateInterface(Class, ifc, result);
   namedParameters = factoryService.cacheResult(Class, name, factory, result, namedParameters);
 
   return result;
