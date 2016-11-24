@@ -28,29 +28,29 @@ exports.findFactory = function(Class, iname){
   return iname; // no corresponding factory but it is an interface
 };
 
-exports.validateInterface = function(Class, interface, value){
-  if (interface === undefined){
+exports.validateInterface = function(Class, ifc, value){
+  if (ifc === undefined){
     return;
   }
-  var stack = crossReferenceInterface(Class, interface.pattern, value);
+  var stack = crossReferenceInterface(Class, ifc.pattern, value);
 
   if (stack){
-    var message = ['Factory', interface.name, 'does not match interface pattern.'].concat(stack).join(' ');
+    var message = ['Factory', ifc.name, 'does not match interface pattern.'].concat(stack).join(' ');
     jpexError(message);
   }
 
-  if (interface.interface){
-    interface.interface.forEach(i => exports.validateInterface(Class, Class._interfaces[i], value));
+  if (ifc.interface){
+    ifc.interface.forEach(i => exports.validateInterface(Class, Class._interfaces[i], value));
   }
 };
 
-function crossReferenceInterface(Class, interface, obj){
+function crossReferenceInterface(Class, ifc, obj){
   var stack = [];
-  var itype = Class.Typeof(interface);
+  var itype = Class.Typeof(ifc);
   var otype = Class.Typeof(obj);
 
   if (itype === 'array'){
-    switch(interface.iType){
+    switch(ifc.iType){
       case 'any':
         if (otype === 'undefined'){
           stack.push('Must be defined');
@@ -59,10 +59,10 @@ function crossReferenceInterface(Class, interface, obj){
         return;
 
       case 'either':
-        for (var z = 0; z < interface.length; z++){
-          var t = crossReferenceInterface(Class, interface[z], obj);
+        for (var z = 0; z < ifc.length; z++){
+          var t = crossReferenceInterface(Class, ifc[z], obj);
           if (t){
-            stack.push(Class.Typeof(interface[z]));
+            stack.push(Class.Typeof(ifc[z]));
           }else{
             return;
           }
@@ -80,8 +80,8 @@ function crossReferenceInterface(Class, interface, obj){
   switch(itype){
     case 'function':
     case 'object':
-      Object.keys(interface).forEach(function(key){
-        var result = crossReferenceInterface(Class, interface[key], obj[key]);
+      Object.keys(ifc).forEach(function(key){
+        var result = crossReferenceInterface(Class, ifc[key], obj[key]);
         if (result){
           stack = stack.concat([key, ':']).concat(result);
         }
@@ -89,13 +89,13 @@ function crossReferenceInterface(Class, interface, obj){
       break;
 
     case 'array':
-      if (!interface.length || !obj.length){
+      if (!ifc.length || !obj.length){
         //Empty
         return;
       }
-      interface = interface[0];
+      ifc = ifc[0];
       for (var y = 0; y < obj.length; y++){
-        var result = crossReferenceInterface(Class, interface, obj[y]);
+        var result = crossReferenceInterface(Class, ifc, obj[y]);
         if (result){
           stack = stack.concat(result);
         }
@@ -112,9 +112,9 @@ function listInterfaces(Class, name){
   var list = [].concat(name);
 
   list.forEach(function(n){
-    var interface = Class._interfaces[n];
-    if (interface && interface.interface && interface.interface.length){
-      var arr = interface.interface.map(i => listInterfaces(Class, i));
+    var ifc = Class._interfaces[n];
+    if (ifc && ifc.interface && ifc.interface.length){
+      var arr = ifc.interface.map(i => listInterfaces(Class, i));
       if (arr && arr.length){
         list = list.concat.apply(list, arr);
       }

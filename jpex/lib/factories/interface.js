@@ -7,7 +7,7 @@ var util = {
   object : {},
   array : [],
   function : () => {},
-  
+
   arrayOf : function(){
     return [util.either.apply(util, arguments)];
   },
@@ -33,14 +33,14 @@ var util = {
   }
 };
 
-module.exports = function(name, fn, interface){
-  if (interface){
-    interface = [].concat(interface);
+module.exports = function(name, fn, ifc){
+  if (ifc){
+    ifc = [].concat(ifc);
   }
   this._interfaces[name] = {
     name : name,
     pattern : fn(util),
-    interface : interface
+    interface : ifc
   };
   return wrapper(this._interfaces[name]);
 };

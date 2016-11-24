@@ -6,11 +6,11 @@ var App = Jpex.extend(function($fs, path){
       while (data.indexOf(base) > -1){
         data = data.replace(base, '');
       }
-      return data.replace(/\\/g, '/');;
+      return data.replace(/\\/g, '/');
     })
     .then(function(data){
       return $fs.writeFile('./lcov.info', data, 'utf8');
     });
 });
 
-new App();
+App();

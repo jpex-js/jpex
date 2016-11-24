@@ -14,6 +14,7 @@ module.exports = {
           return this._factories[name];
         }
         catch(e){
+          // File does not exist in this folder
         }
       }
 
