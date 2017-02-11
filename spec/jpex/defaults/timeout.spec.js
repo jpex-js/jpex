@@ -14,12 +14,24 @@ describe('Jpex - Default Factories', function(){
       });
       new BaseClass();
     });
-    
-    it('should inject a timeout', function(){
-      expect($timeout).toBe(setTimeout);
-      expect($immediate).toBe(setImmediate);
-      expect($interval).toBe(setInterval);
-      expect($tick).toBe(process.nextTick);
+
+    it("$timeout", function (done) {
+      $timeout(done, 100);
+    });
+
+    it("$interval", function (done) {
+      var t = $interval(function () {
+        $interval.clear(t);
+        done();
+      }, 100);
+    });
+
+    it("$immediate", function (done) {
+      $immediate(done);
+    });
+
+    it("$tick", function (done) {
+      $tick(done);
     });
   });
 });

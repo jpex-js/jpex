@@ -1,31 +1,36 @@
 Change Log
 ==========
+## 1.4.1  
+### Bugs  
+- `$copy.extend` no longer combines arrays, but instead replaces the previous array value.  
+- `$timeout $immediate $interval $tick` bug fixed when attaching to a class instance.  
+- Added a `clear()` method to the timer factories that clear the respective timeouts.  
 
-##1.4.0  
-###Features  
+## 1.4.0  
+### Features  
 - $typeof factory is available which returns the type of an object.  
 - $copy factory allows you create a deep or shallow copy of an object, or combine multiple objects.  
 - $itypeof and $icopy interfaces  
 - The static methods Jpex.Typeof and Jpex.Copy have been deprecated and will be removed in a future release.  
 - $resolve factory which allows lazy loading of dependencies.  
-###Breaking Changes  
+### Breaking Changes  
 - Calling `Class()` is now the same as calling `new Class()` so calls like `Class.call(obj)===obj` will no longer work.  
 
-##1.3.1  
-###Bugs  
+## 1.3.1  
+### Bugs  
 - Fixed issues where `require`-based functions were not requiring from the correct location.  
 
-##1.3.0
-###Features
+## 1.3.0
+### Features
 - Interfaces functionality added  
 - Registering a factory returns an object with additional option methods (currently only contains the *interface()* method)  
 - It is now possible to specify the life cycle of a factory or service using the `.lifecycle.x()` syntax. Possible options are `application`, `class`, `instance`, `none`  
 - Due to the introduction of life cycles, the *singleton* parameter has been deprecated.  
-###Breaking Changes
+### Breaking Changes
 - All $ factories now have interfaces (i.e. *$ipromise*). If you have overwritten a default factory that is used by another default factory, it will need to include the interface in order to work. i.e. *$fs* used to depend on *$promise* but it now depends on $ipromise.  
 
-##1.2.0  
-###Features  
+## 1.2.0  
+### Features  
 - Added detailed documentation  
 - $error factory and $errorFactory factory  
 - ErrorType Factory i.e. `jpex.Register.ErrorType('Custom')`  

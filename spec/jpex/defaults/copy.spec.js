@@ -125,5 +125,12 @@ describe('Jpex - Default Factories', function(){
       expect(o1.obj.b).toBe('second');
       expect(o1.obj.c).toBe('third');
     });
+    it("should overwrite array elements", function () {
+      var o1 = { arr : [1, 2, 3]};
+      var o2 = { arr : [4, 5, 6]};
+      var o3 = { arr : [7, 8, 9]};
+      var o4 = $copy.extend({}, o1, o2, o3);
+      expect(o4).toEqual(o3);
+    });
   });
 });

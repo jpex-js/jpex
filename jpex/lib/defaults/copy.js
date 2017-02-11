@@ -26,9 +26,9 @@ module.exports = function (NewClass) {
           return new RegExp(from.source, flags.join(''));
 
         case 'array':
-          return (to || []).concat(from.map(function (item) {
+          return from.map(function (item) {
             return recur ? copier(item) : item;
-          }));
+          });
 
         case 'object':
           to = to || {};
