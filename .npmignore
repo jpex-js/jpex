@@ -1,0 +1,7 @@
+docs
+spec
+test
+.codeclimate.yml
+.jshintrc
+.travis.yml
+lcov-fix.js

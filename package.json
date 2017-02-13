@@ -1,0 +1,27 @@
+{
+  "name": "jpex",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Javascript Prototype Extension",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackmellis/jpex.git"
+  },
+  "author": "Jack Ellis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackmellis/jpex/issues"
+  },
+  "homepage": "https://github.com/jackmellis/jpex#readme",
+  "devDependencies": {
+    "jasmine": "^2.5.3"
+  }
+}

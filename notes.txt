@@ -1,0 +1,21 @@
+config
+can pass in a config option when extending a class, the options are merged into the default options. If this class is extended, the config options will be picked up.
+
+bindToInstance
+can accept deeply nested value i.e. x.y.z will bind dependencies to instance.x.y.z
+
+webpack
+can be safely webpack-ified
+
+internal variables renamed
+many internal variables have been renamed, are all non-enumerable, and are prefixed with $$
+
+all default factories have been separated from the core module (except $resolve)
+
+Singleton option removed from factories/services
+
+Factory registration methods renamed to camelCase (Jpex.Register.Factory becomes Jpex.register.factory)
+
+Interfaces completely removed
+
+Factory types removed: enum, errorType, file, folder, interface

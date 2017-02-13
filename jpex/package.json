@@ -1,6 +1,7 @@
 {
   "name": "jpex",
-  "version": "1.4.1",
+  "private" : true,
+  "version": "2.0.0",
   "description": "Javascript Prototype Extension",
   "main": "index.js",
   "repository": {
