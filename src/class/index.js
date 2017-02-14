@@ -37,7 +37,7 @@ function createOptions(Parent, options) {
     prototype : null,
     static : null,
     config : null,
-    dependencies : [],
+    dependencies : null,
     bindToInstance : false
   };
 
@@ -53,12 +53,12 @@ function createOptions(Parent, options) {
 
   // Get dependencies
   // Either read them from the options, or extract them from the constructor
-  if (options && !options.dependencies && typeof options.constructor === 'function'){
+  if (!options.dependencies && typeof options.constructor === 'function'){
     options.dependencies = resolver.extractParameters(options.constructor);
-  }else{
+  }else if(options.dependencies){
     options.dependencies = [].concat(options.dependencies);
   }
-  if (!options.dependencies.length){
+  if (options.dependencies && !options.dependencies.length){
     options.dependencies = null;
   }
 
@@ -116,14 +116,14 @@ function classBody(Parent, options) {
     }catch(e){
       if (e && e.jpexInternalError){
         e.stack = (new Error(e.message)).stack;
+      }
 
-        // Use error handler factory if available
-        var errorHandler = resolver.resolve(Class, '_$errorHandler_', namedParameters);
-        if (errorHandler){
-          errorHandler(e);
-        }else{
-          throw e;
-        }
+      // Use error handler factory if available
+      var errorHandler = resolver.resolve(Class, '_$errorHandler_', namedParameters);
+      if (errorHandler){
+        errorHandler(e);
+      }else{
+        throw e;
       }
     }
   };

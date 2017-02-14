@@ -1,11 +1,8 @@
-/* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../../jpex/grequire');
-
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
 
   beforeEach(function(){
-    Base = grequire('.');
+    Base = require('../../src').extend();
     First = Base.extend();
   });
 
@@ -22,25 +19,25 @@ describe('Base Class - Dependency Injection', function(){
       it('should cache the node module', function(done){
         var Second = First.extend(function(path){
           expect(path).toBeDefined();
-          expect(Second._factories.path).toBeDefined();
+          expect(Second.$$factories.path).toBeDefined();
           done();
         });
 
-        expect(Second._factories.path).toBeUndefined();
+        expect(Second.$$factories.path).toBeUndefined();
         new Second();
       });
       it('should manually add a node module', function(done){
-        First.Register.NodeModule('path');
+        First.register.nodeModule('path');
 
         var Second = First.extend(function(path){
           expect(path).toBeDefined();
-          expect(First._factories.path).toBeDefined();
-          expect(Object.hasOwnProperty.call(First._factories, 'path')).toBe(true);
-          expect(Object.hasOwnProperty.call(Second._factories, 'path')).toBe(false);
+          expect(First.$$factories.path).toBeDefined();
+          expect(Object.hasOwnProperty.call(First.$$factories, 'path')).toBe(true);
+          expect(Object.hasOwnProperty.call(Second.$$factories, 'path')).toBe(false);
           done();
         });
 
-        expect(Object.hasOwnProperty.call(Second._factories, 'path')).toBe(false);
+        expect(Object.hasOwnProperty.call(Second.$$factories, 'path')).toBe(false);
         new Second();
       });
     });

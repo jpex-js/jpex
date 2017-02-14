@@ -1,11 +1,8 @@
-/* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../../jpex/grequire');
-
 describe('Base Class - Dependency Injection', function(){
   var Base, First;
-  
+
   beforeEach(function(){
-    Base = grequire('.');
+    Base = require('../../src');
     First = Base.extend();
   });
 
@@ -13,19 +10,19 @@ describe('Base Class - Dependency Injection', function(){
     describe('Constant', function(){
       it('should return a constant value', function(){
         var obj = {};
-        First.Register.Constant('object', obj);
-        
-        expect(First._factories.object).toBeDefined();
-        expect(First._factories.object.value).toBe(obj);
-        expect(First._factories.object.constant).toBe(true);
-        
+        First.register.constant('object', obj);
+
+        expect(First.$$factories.object).toBeDefined();
+        expect(First.$$factories.object.value).toBe(obj);
+        expect(First.$$factories.object.constant).toBe(true);
+
         var Second = First.extend({
           constructor : function(obj2){
             expect(obj2).toBe(obj);
           },
           dependencies : 'object'
         });
-        
+
         new Second();
       });
     });

@@ -1,4 +1,3 @@
-var grequire = require('../grequire');
 var isNode = require('../isNode');
 
 function getFromNodeModules(name) {

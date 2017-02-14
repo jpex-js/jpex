@@ -1,7 +1,9 @@
 docs
 spec
+specx
 test
 .codeclimate.yml
 .jshintrc
 .travis.yml
 lcov-fix.js
+.nycrc

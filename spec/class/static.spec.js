@@ -1,14 +1,11 @@
-/* globals describe, expect, it, beforeEach, afterEach ,spyOn*/
-var grequire = require('../../jpex/grequire');
-
 describe('Base Class - Statics', function(){
   var BaseClass, Parent;
-  
+
   beforeEach(function(){
-    BaseClass = grequire('.');
+    BaseClass = require('../../src').extend();
     Parent = BaseClass.extend();
   });
-  
+
   it('should apply static members of the class', function(){
     var Child = Parent.extend({
       static : {
@@ -30,7 +27,7 @@ describe('Base Class - Statics', function(){
         c : 'c'
       }
     });
-    
+
     expect(B.a).toBe('A');
     expect(B.b).toBe('b');
     expect(B.c).toBe('c');
