@@ -1,4 +1,5 @@
 var isNode = require('../isNode');
+var triggerHook = require('../plugins').trigger;
 
 function getFromNodeModules(name) {
   if (!isNode){
@@ -61,6 +62,9 @@ module.exports = function (Parent, Class, options) {
     $$invokeParent : {
       value : invokeParent
     },
+    $$trigger : {
+      value : triggerHook
+    },
     $$parent : {
       get : function () {
         return Parent;
@@ -77,8 +81,36 @@ module.exports = function (Parent, Class, options) {
     $$config : {
       writable : true,
       value : Object.assign(Object.create(Parent.$$config || null), options.config)
+    },
+    $$hooks : {
+      writable : true,
+      value : Object.create(Parent.$$hooks || null)
     }
   });
 
   // PRIVATES HOOK
+  Class.$$trigger('privateProperties', {
+    Class : Class,
+    options : options,
+    apply : function (opt) {
+      var properties = {};
+      Object.keys(opt).forEach(function (key) {
+        var prop = { configurable : false, enumerable : false };
+        var def = opt[key];
+        if (def && def.get && typeof def.get === 'function'){
+          prop.get = def.get;
+        }
+        if (def && def.set && typeof def.set === 'function'){
+          prop.set = def.set;
+        }
+        if (!prop.get && !prop.set){
+          prop.value = def;
+          prop.writable = true;
+        }
+        properties[key] = prop;
+      });
+
+      Object.defineProperties(Class, properties);
+    }
+  });
 };

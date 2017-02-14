@@ -1,11 +1,13 @@
 var resolver = require('../resolver');
 var privates = require('./privates');
 var factories = require('../factories');
+var plugins = require('../plugins');
 
 module.exports = function () {
   // Start with a basic function constructor
   var Base = function(){};
   Base.extend = extend;
+  Base.use = plugins.use;
 
   // Extend the vanilla constructor to apply all the jpex-ness
   var Jpex = Base.extend();
@@ -26,6 +28,12 @@ function extend(options) {
   factories(Class, options);
 
   // EXTEND HOOK
+  if (Parent.$$trigger){
+    Parent.$$trigger('extend', {
+      Class : Class,
+      options : options
+    });
+  }
 
   return Class;
 }
@@ -63,6 +71,16 @@ function createOptions(Parent, options) {
   }
 
   // MERGE OPTIONS HOOK
+  if (Parent.$$trigger){
+    Parent.$$trigger('options', {
+      options : options,
+      merge : function () {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(options);
+        Object.assign.apply(Object, args);
+      }
+    });
+  }
 
   return options;
 }
@@ -91,6 +109,14 @@ function classBody(Parent, options) {
 
       // BEFORE INSTANTIATE HOOK
       // (check that the class is not a parent of the current instance before hooking)
+      if (this.constructor === Class){
+        Class.$$trigger('beforeCreate', {
+          Class : Class,
+          options : options,
+          instance : this,
+          args : args
+        });
+      }
 
       // Invoke Parent
       if (options.invokeParent && options.invokeParent !== 'after'){
@@ -113,6 +139,14 @@ function classBody(Parent, options) {
       }
 
       // AFTER INSTANTIATE HOOK
+      if (this.constructor === Class){
+        Class.$$trigger('created', {
+          Class : Class,
+          options : options,
+          instance : this,
+          args : args
+        });
+      }
     }catch(e){
       if (e && e.jpexInternalError){
         e.stack = (new Error(e.message)).stack;

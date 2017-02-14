@@ -19,3 +19,18 @@ Factory registration methods renamed to camelCase (Jpex.Register.Factory becomes
 Interfaces completely removed
 
 Factory types removed: enum, errorType, file, folder, interface
+
+Hooks
+Can now hook into events thorughout the class lifecycle:
+extend
+Class, options
+options
+options, merge(...obj)
+beforeCreate
+Class, options, instance, args
+created
+Class, options, instance, args
+privateProperties
+Class, options, apply(opt)
+factories
+Class, options, register(name, fn)

@@ -13,6 +13,13 @@ module.exports = function (Class, options) {
   register.nodeModule = nodeModule.bind(Class);
 
   // FACTORY HOOKS
+  Class.$$trigger('factories', {
+    Class : Class,
+    options : options,
+    register : function (name, fn) {
+      register[name] = fn.bind(Class);
+    }
+  });
 
   Object.defineProperty(Class, 'register', {
     value : register
