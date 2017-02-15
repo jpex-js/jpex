@@ -8,6 +8,6 @@
     "gitTag": true
   },
   "confirm": true,
-  "publishTag": "2.0.0-alpha.0",
+  "publishTag": "alpha",
   "prePublishScript": false
 }
