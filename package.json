@@ -12,7 +12,9 @@
     "test": "jasmine",
     "coverage": "nyc jasmine",
     "build": "node build --entry ./src --output ./dist/jpex.full.js --name Jpex && node build --entry ./src --output ./dist/jpex.min.js --name Jpex  --minify",
-    "lint" : "eslint ./src --fix"
+    "lint": "eslint ./src --fix",
+    "publish-please": "publish-please",
+    "prepublish": "publish-please guard"
   },
   "repository": {
     "type": "git",
@@ -29,8 +31,8 @@
     "jasmine": "^2.5.3",
     "mkdirp": "^0.5.1",
     "nyc": "^10.1.2",
+    "publish-please": "^2.2.0",
     "uglify-js": "^2.7.5",
-    "webpack": "^2.2.1",
     "yargs": "^6.6.0"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "validations": {
+    "vulnerableDependencies": true,
+    "uncommittedChanges": true,
+    "untrackedFiles": true,
+    "sensitiveData": true,
+    "branch": "2.x",
+    "gitTag": true
+  },
+  "confirm": true,
+  "publishTag": "2.0.0-alpha.0",
+  "prePublishScript": false
+}
