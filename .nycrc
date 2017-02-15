@@ -4,7 +4,7 @@
   "branches" : 60,
   "include" : ["src/**/*.js"],
   "extension" : [".js"],
-  "reporter" : ["html", "text-summary"],
+  "reporter" : ["html", "text-summary", "lcov"],
   "cache" : false,
   "all" : true,
   "check-coverage" : true
