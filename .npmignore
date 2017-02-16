@@ -8,3 +8,4 @@ test
 lcov-fix.js
 .nycrc
 lcov.info
+travis-prepublish.js

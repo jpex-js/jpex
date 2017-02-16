@@ -17,4 +17,5 @@ script :
   - node lcov-fix
 after_script :
   - codeclimate-test-reporter < lcov.info
+  - node travis-prepublish
   - npm run publish-please
