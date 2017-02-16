@@ -27,7 +27,7 @@ ratings:
 exclude_paths:
   - spec/**/
   - docs/**/
-  - buid/**/
+  - build/**/
   - jpex/**/
   - specx/**/
   - lcov-fix.js
