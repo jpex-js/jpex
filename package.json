@@ -1,6 +1,6 @@
 {
   "name": "jpex",
-  "private":false,
+  "private": false,
   "version": "2.0.0-alpha.0",
   "description": "Javascript Prototype Extension",
   "main": "src/index.js",
@@ -11,7 +11,9 @@
   "scripts": {
     "test": "jasmine",
     "coverage": "nyc jasmine",
-    "build": "node build --entry ./src --output ./dist/jpex.full.js --name Jpex && node build --entry ./src --output ./dist/jpex.min.js --name Jpex  --minify",
+    "build": "node node_modules/jpex-build-tools/build --entry ./src --output ./dist/jpex.full.js --name Jpex && node node_modules/jpex-build-tools/build --entry ./src --output ./dist/jpex.min.js --name Jpex  --minify",
+    "lcov-fix" : "node node_modules/jpex-build-tools/lcov-fix",
+    "travis-prepublish" : "node node_modules/jpex-build-tools/travis-prepublish",
     "lint": "eslint ./src --fix",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard"
@@ -29,6 +31,7 @@
   "devDependencies": {
     "eslint": "^3.15.0",
     "jasmine": "^2.5.3",
+    "jpex-build-tools": "git+https://github.com/jackmellis/jpex-build-tools.git",
     "mkdirp": "^0.5.1",
     "npm-utils": "^1.11.0",
     "nyc": "^10.1.2",

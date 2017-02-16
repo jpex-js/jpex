@@ -14,8 +14,8 @@ script :
   - npm run coverage
   - npm run build
 
-  - node lcov-fix
+  - node node_modules/jpex-build-tools/lcov-fix
 after_script :
   - codeclimate-test-reporter < lcov.info
-  - node travis-prepublish
+  - node node_modules/jpex-build-tools/travis-prepublish
   - npm run publish-please
