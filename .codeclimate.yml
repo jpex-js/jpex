@@ -24,6 +24,12 @@ engines:
 ratings:
   paths:
   - "src/**/*.js"
+exclude_paths:
+  - spec/**/
+  - docs/**/
+  - buid/**/
+  - jpex/**/
+  - specx/**/
 ecmaFeatures:
   modules: true
   jsx: true

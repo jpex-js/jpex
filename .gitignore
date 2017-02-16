@@ -1,4 +1,5 @@
 dist
+lcov.info
 
 # Code Coverage
 coverage
