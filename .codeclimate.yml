@@ -30,6 +30,7 @@ exclude_paths:
   - buid/**/
   - jpex/**/
   - specx/**/
+  - lcov-fix.js
 ecmaFeatures:
   modules: true
   jsx: true
