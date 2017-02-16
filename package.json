@@ -1,7 +1,7 @@
 {
   "name": "jpex",
   "private":false,
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.5",
   "description": "Javascript Prototype Extension",
   "main": "src/index.js",
   "directories": {
