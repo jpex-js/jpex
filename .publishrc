@@ -8,6 +8,6 @@
     "gitTag": true
   },
   "confirm": false,
-  "publishTag": "alpha",
+  "publishTag": "2",
   "prePublishScript": "npm run build"
 }
