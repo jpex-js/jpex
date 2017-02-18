@@ -27,11 +27,8 @@ ratings:
 exclude_paths:
   - spec/**/
   - docs/**/
-  - build/**/
   - jpex/**/
   - specx/**/
-  - lcov-fix.js
-  - travis-prepublish.js
 ecmaFeatures:
   modules: true
   jsx: true

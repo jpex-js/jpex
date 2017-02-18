@@ -2,10 +2,10 @@ docs
 spec
 specx
 test
+coverage
+.nyc_output
 .codeclimate.yml
-.jshintrc
+.eslintrc.json
 .travis.yml
-lcov-fix.js
 .nycrc
 lcov.info
-travis-prepublish.js
