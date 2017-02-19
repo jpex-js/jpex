@@ -34,5 +34,10 @@ describe('Jpex - Default Factories', function(){
       var test = $resolve('foo', {foo : 'bah'});
       expect(test).toBe('bah');
     });
+
+    it("should be available statically", function () {
+      var path = BaseClass.$resolve('path');
+      expect(path).toBeDefined();
+    });
   });
 });

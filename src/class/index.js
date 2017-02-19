@@ -28,8 +28,8 @@ function extend(options) {
     factories(Class, options);
 
   // EXTEND HOOK
-    if (Parent.$$trigger){
-        Parent.$$trigger('extend', {
+    if (Parent.$trigger){
+        Parent.$trigger('extend', {
             Class : Class,
             options : options
         });
@@ -71,8 +71,8 @@ function createOptions(Parent, options) {
     }
 
   // MERGE OPTIONS HOOK
-    if (Parent.$$trigger){
-        Parent.$$trigger('options', {
+    if (Parent.$trigger){
+        Parent.$trigger('options', {
             options : options,
             merge : function () {
                 var args = Array.prototype.slice.call(arguments);
@@ -110,7 +110,7 @@ function classBody(Parent, options) {
       // BEFORE INSTANTIATE HOOK
       // (check that the class is not a parent of the current instance before hooking)
             if (this.constructor === Class){
-                Class.$$trigger('beforeCreate', {
+                Class.$trigger('beforeCreate', {
                     Class : Class,
                     options : options,
                     instance : this,
@@ -140,7 +140,7 @@ function classBody(Parent, options) {
 
       // AFTER INSTANTIATE HOOK
             if (this.constructor === Class){
-                Class.$$trigger('created', {
+                Class.$trigger('created', {
                     Class : Class,
                     options : options,
                     instance : this,

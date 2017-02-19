@@ -10,6 +10,7 @@ can be safely webpack-ified
 internal variables renamed
 many internal variables have been renamed, are all non-enumerable, and are prefixed with $$
 
+factories
 all default factories have been separated from the core module (except $resolve)
 
 Singleton option removed from factories/services
@@ -18,10 +19,14 @@ Factory registration methods renamed to camelCase (Jpex.Register.Factory becomes
 
 Interfaces completely removed
 
-Factory types removed: enum, errorType, file, folder, interface
+Factory types removed: enum, errorType, file, folder, interface, nodeModule
+
+node_module factory type is included in jpex-node plugin
+
+$resolve can be accessed directly on the class (Jpex.$resolve())
 
 Hooks
-Can now hook into events thorughout the class lifecycle:
+Can now hook into events throughout the class lifecycle:
 extend
 Class, options
 options

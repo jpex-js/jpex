@@ -11,7 +11,7 @@ module.exports = function (Class, options) {
     register.service = service.bind(Class);
 
   // FACTORY HOOKS
-    Class.$$trigger('factories', {
+    Class.$trigger('factories', {
         Class : Class,
         options : options,
         register : function (name, fn) {

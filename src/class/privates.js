@@ -1,5 +1,6 @@
 var isNode = require('../isNode');
 var triggerHook = require('../plugins').trigger;
+var resolve = require('../resolver').resolve;
 
 function getFromNodeModules(name) {
     if (!isNode){
@@ -53,43 +54,47 @@ function invokeParent(instance, values, args) {
 
 module.exports = function (Parent, Class, options) {
     Object.defineProperties(Class, {
-        $$getFromNodeModules : {
-            value : getFromNodeModules
-        },
-        $$namedParameters : {
-            value : namedParameters.bind(null, options.dependencies)
-        },
-        $$invokeParent : {
-            value : invokeParent
-        },
-        $$trigger : {
-            value : triggerHook
-        },
-        $$parent : {
-            get : function () {
-                return Parent;
-            }
-        },
-        $$factories : {
-            writable : true,
-            value : Object.create(Parent.$$factories || null)
-        },
-        $$resolved : {
-            writable : true,
-            value : Object.create(Parent.$$interfaces || null)
-        },
-        $$config : {
-            writable : true,
-            value : Object.assign(Object.create(Parent.$$config || null), options.config)
-        },
-        $$hooks : {
-            writable : true,
-            value : Object.create(Parent.$$hooks || null)
-        }
+      $trigger : {
+          value : triggerHook
+      },
+      $resolve : {
+        value : resolve.bind(null, Class)
+      },
+
+      $$getFromNodeModules : {
+          value : getFromNodeModules
+      },
+      $$namedParameters : {
+          value : namedParameters.bind(null, options.dependencies)
+      },
+      $$invokeParent : {
+          value : invokeParent
+      },
+      $$parent : {
+          get : function () {
+              return Parent;
+          }
+      },
+      $$factories : {
+          writable : true,
+          value : Object.create(Parent.$$factories || null)
+      },
+      $$resolved : {
+          writable : true,
+          value : Object.create(Parent.$$interfaces || null)
+      },
+      $$config : {
+          writable : true,
+          value : Object.assign(Object.create(Parent.$$config || null), options.config)
+      },
+      $$hooks : {
+          writable : true,
+          value : Object.create(Parent.$$hooks || null)
+      }
     });
 
   // PRIVATES HOOK
-    Class.$$trigger('privateProperties', {
+    Class.$trigger('privateProperties', {
         Class : Class,
         options : options,
         apply : function (opt) {
