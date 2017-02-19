@@ -1,7 +1,6 @@
 var constant = require('./constant');
 var factory = require('./factory');
 var service = require('./service');
-var nodeModule = require('./nodemodule');
 
 module.exports = function (Class, options) {
     var register = function () {
@@ -10,7 +9,6 @@ module.exports = function (Class, options) {
     register.constant = constant.bind(Class);
     register.factory = factory.bind(Class);
     register.service = service.bind(Class);
-    register.nodeModule = nodeModule.bind(Class);
 
   // FACTORY HOOKS
     Class.$$trigger('factories', {

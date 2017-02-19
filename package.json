@@ -3,7 +3,7 @@
   "private": false,
   "version": "2.0.0-alpha.0",
   "description": "Javascript Prototype Extension",
-  "main": "dist/jpex.js",
+  "main": "src/index.js",
   "directories": {
     "doc": "docs",
     "test": "test"
