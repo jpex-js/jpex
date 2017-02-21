@@ -4,10 +4,10 @@ var service = require('./service');
 
 module.exports = function (Class, options) {
     var register = function () {
-        return register.factory.apply(Class, arguments);
+        return register.factory.apply(null, arguments);
     };
     register.constant = constant.bind(Class);
-    register.factory = factory.bind(Class);
+    register.factory = factory.bind(Class, options.defaultLifecycle);
     register.service = service.bind(Class);
 
   // FACTORY HOOKS

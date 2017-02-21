@@ -1,7 +1,7 @@
 var extractParameters = require('../resolver').extractParameters;
 var wrapper = require('./wrapper');
 
-module.exports = function (name, dependencies, fn) {
+module.exports = function (lifecycle, name, dependencies, fn) {
     if (typeof dependencies === 'function'){
         fn = dependencies;
         dependencies = null;
@@ -21,8 +21,9 @@ module.exports = function (name, dependencies, fn) {
 
     var f = {
         fn : fn,
-        dependencies : dependencies
+        dependencies : dependencies,
+        lifecycle : lifecycle
     };
     this.$$factories[name] = f;
-    return wrapper(f).lifecycle.instance();
+    return wrapper(f);
 };

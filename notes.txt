@@ -25,6 +25,8 @@ node_module factory type is included in jpex-node plugin
 
 $resolve can be accessed directly on the class (Jpex.$resolve())
 
+default lifecycle for factories and services can be configured
+
 Hooks
 Can now hook into events throughout the class lifecycle:
 extend

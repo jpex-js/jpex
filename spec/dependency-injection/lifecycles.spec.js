@@ -223,7 +223,7 @@ describe('Life Cycles', function(){
       new ClassB();
       new ClassC();
       new ClassD();
-      
+
       expect(resultA).not.toBe(resultB);
       expect(resultB).not.toBe(resultC);
       expect(resultC).not.toBe(resultD);
@@ -271,6 +271,19 @@ describe('Life Cycles', function(){
       new ClassA();
 
       expect(resultA).not.toBe(resultX);
+    });
+  });
+
+  describe("Configure", function () {
+    it("should set the default lifecycle", function () {
+      var constants = require('../../src/constants');
+      var Master = require('../../src').extend();
+      var Class = Master.extend({
+        defaultLifecycle : constants.APPLICATION
+      });
+      Class.register.factory('test', () => ({}));
+
+      expect(Class.$$factories.test.lifecycle).toBe(constants.APPLICATION);
     });
   });
 });

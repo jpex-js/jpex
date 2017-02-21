@@ -1,3 +1,4 @@
+var constants = require('../constants');
 var resolver = require('../resolver');
 var privates = require('./privates');
 var factories = require('../factories');
@@ -46,7 +47,8 @@ function createOptions(Parent, options) {
         static : null,
         config : null,
         dependencies : null,
-        bindToInstance : false
+        bindToInstance : false,
+        defaultLifecycle : constants.INSTANCE
     };
 
     var configOptions = Object.assign(Object.create(Parent.$$config || null), options && options.config);
