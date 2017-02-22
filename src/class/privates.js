@@ -51,6 +51,15 @@ function invokeParent(instance, values, args) {
     var Parent = this.$$parent;
     Parent.call(instance, args);
 }
+function clearCache(names) {
+  names = names ? [].concat(names) : [];
+
+  for (var key in this.$$factories){
+    if (!names.length || names.indexOf(key) > -1){
+      this.$$factories[key].resolved = false;
+    }
+  }
+}
 
 module.exports = function (Parent, Class, options) {
     Object.defineProperties(Class, {
@@ -59,6 +68,9 @@ module.exports = function (Parent, Class, options) {
       },
       $resolve : {
         value : resolve.bind(null, Class)
+      },
+      $clearCache : {
+        value : clearCache
       },
 
       $$getFromNodeModules : {
