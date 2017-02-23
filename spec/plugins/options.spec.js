@@ -4,6 +4,7 @@ describe("Plugins - options hook", function () {
     Jpex = require('../../src').extend();
     fn = jasmine.createSpy().and.callFake(ctx => context = ctx);
     plugin = {
+      name : 'options',
       install : function ({on}) {
         on('options', fn);
       }

@@ -6,6 +6,7 @@ describe("Plugins - factories hook", function () {
     fn = jasmine.createSpy().and.callFake(ctx => context = ctx);
 
     plugin = {
+      name : 'factories',
       install : function ({on}) {
         on('factories', fn);
       }

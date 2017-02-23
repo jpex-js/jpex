@@ -101,6 +101,10 @@ module.exports = function (Parent, Class, options) {
         value : Parent
       },
       // Properties that contain stored factories/settings
+      $$using : {
+        writable : true,
+        value : Object.create(Parent.$$using || null)
+      },
       $$factories : {
         writable : true,
         value : Object.create(Parent.$$factories || null)

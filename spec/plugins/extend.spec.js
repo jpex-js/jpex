@@ -6,6 +6,7 @@ describe("Plugins - extend hook", function () {
     Jpex = require('../../src').extend();
 
     plugin = {
+      name : 'extend',
       install : function (options) {
         options.on('extend', function (ctx) {
           context = ctx;
@@ -39,6 +40,7 @@ describe("Plugins - extend hook", function () {
     context = null;
     var calls = 0;
     Class.use({
+      name : 'extend2',
       install : function ({on}) {
         on('extend', () => calls++);
         on('extend', () => calls++);
@@ -52,6 +54,7 @@ describe("Plugins - extend hook", function () {
   it("should inherit hooks, but they should not propagate up the chain", function () {
     var calls = 0;
     Class.use({
+      name : 'extend2',
       install : function ({on}) {
         on('extend', () => calls++);
         on('extend', () => calls++);

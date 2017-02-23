@@ -7,6 +7,7 @@ describe("Plugins - beforeCreate hook", function () {
     fn2 = jasmine.createSpy();
 
     plugin = {
+      name : 'before-create',
       install : function ({Jpex, on}) {
         Jpex.register.constant('foo', 'bah');
         on('beforeCreate', fn);

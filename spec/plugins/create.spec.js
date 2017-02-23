@@ -7,6 +7,7 @@ describe("Plugins - created hook", function () {
     fn2 = jasmine.createSpy();
 
     plugin = {
+      name : 'create',
       install : function ({Jpex, on}) {
         Jpex.register.constant('foo', 'bah');
         on('created', fn);

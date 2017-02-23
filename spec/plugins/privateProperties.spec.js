@@ -6,6 +6,7 @@ describe("Plugins - privateProperties hook", function () {
     fn = jasmine.createSpy().and.callFake(ctx => context = ctx);
 
     plugin = {
+      name : 'private-properties',
       install : function ({on}) {
         on('privateProperties', fn);
       }

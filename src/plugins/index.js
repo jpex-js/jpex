@@ -4,6 +4,18 @@ exports.use = function (plugin) {
     if (!plugin || !plugin.install || typeof plugin.install !== 'function'){
         throw new Error('Plugin does not have an install method');
     }
+    if (!plugin.name || typeof plugin.name !== 'string'){
+      throw new Error('Plugin must have a name property');
+    }
+
+    if (this.$$using[plugin.name] && !plugin.reuse){
+      if (!plugin.silent){
+        console.warn('Plugin ' + plugin.name + ' skipped as it has already been used');
+      }
+      return;
+    }else{
+      this.$$using[plugin.name] = true;
+    }
 
     var options = {
         Jpex : Jpex,
