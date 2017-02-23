@@ -23,6 +23,16 @@ exports.getFactory = function (Class, name, optional) {
     return factory;
 };
 
+exports.decorate = function (Class, value, decorators) {
+  if (!decorators || !decorators.length){
+    return value;
+  }
+  for (var x = 0, l = decorators.length; x < l; x++){
+    value = decorators[x].call(Class, value);
+  }
+  return value;
+};
+
 exports.cacheResult = function (Class, name, factory, value, namedParameters) {
     switch(factory.lifecycle){
     case constants.APPLICATION:

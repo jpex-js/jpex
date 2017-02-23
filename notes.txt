@@ -31,6 +31,8 @@ $resolve can be called with an array of dependencies to resolve
 
 Cached factories can be cleared with $clearCache
 
+Decorators can now be registered
+
 Hooks
 Can now hook into events throughout the class lifecycle:
 extend

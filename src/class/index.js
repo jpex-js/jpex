@@ -42,7 +42,7 @@ function extend(options) {
 function createOptions(Parent, options) {
     var defaultOptions = {
         constructor : (typeof options === 'function') ? options : null,
-        invokeParent : !(typeof options === 'function' || options && options.constructor),
+        invokeParent : !(typeof options === 'function' || options && Object.hasOwnProperty.call(options, 'constructor') && options.constructor),
         prototype : null,
         static : null,
         config : null,

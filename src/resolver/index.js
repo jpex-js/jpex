@@ -78,13 +78,6 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
         return namedParameters;
     }
 
-  // Resolve the dependency using the parent class
-    var ancestoral = checkAncestoral(name);
-    if (ancestoral){
-        name = ancestoral;
-        return resolveDependency(Class.$$parent, name, localOptions, namedParameters, []);
-    }
-
   // Optional dependency
     var optional = checkOptional(name);
     if (optional){
@@ -116,7 +109,11 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   // Constant values don't need any more evaluation
     if (factory.constant){
         var value = factory.value;
+        // Process decorators
+        value = factoryService.decorate(Class, value, factory.decorators);
+        // Cache the result
         factoryService.cacheResult(Class, name, factory, value, namedParameters);
+
         return value;
     }
 
@@ -138,6 +135,10 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   // Run the factory function
     var result = factory.fn.apply(Class, args);
 
+    // Process decorators
+    result = factoryService.decorate(Class, result, factory.decorators);
+
+    // Cache the result
     factoryService.cacheResult(Class, name, factory, result, namedParameters);
 
     return result;
@@ -154,8 +155,4 @@ function checkOptional(name) {
         }
     }
     return false;
-}
-
-function checkAncestoral(name) {
-    return name[0] === '^' && name.substr(1);
 }

@@ -43,6 +43,7 @@ function namedParameters(keys, values, args) {
 
     return args;
 }
+
 function invokeParent(instance, values, args) {
     if (values && !Array.isArray(values)){
         values = Array.prototype.slice.call(values);
@@ -51,11 +52,13 @@ function invokeParent(instance, values, args) {
     var Parent = this.$$parent;
     Parent.call(instance, args);
 }
+
 function resolve(name, namedParameters) {
   return Array.isArray(name) ?
     resolver.resolveDependencies(this, {dependencies : name}, namedParameters) :
     resolver.resolve(this, name, namedParameters);
 }
+
 function clearCache(names) {
   names = names ? [].concat(names) : [];
 
@@ -73,8 +76,9 @@ function clearCache(names) {
 
 module.exports = function (Parent, Class, options) {
     Object.defineProperties(Class, {
+      // These are all publically documented methods that can be called from the top level
       $trigger : {
-          value : triggerHook
+        value : triggerHook
       },
       $resolve : {
         value : resolve
@@ -83,35 +87,35 @@ module.exports = function (Parent, Class, options) {
         value : clearCache
       },
 
+      // Called from within the Jpex constructor/resolver
       $$getFromNodeModules : {
-          value : getFromNodeModules
+        value : getFromNodeModules
       },
       $$namedParameters : {
-          value : namedParameters.bind(null, options.dependencies)
+        value : namedParameters.bind(null, options.dependencies)
       },
       $$invokeParent : {
-          value : invokeParent
+        value : invokeParent
       },
       $$parent : {
-          get : function () {
-              return Parent;
-          }
+        value : Parent
       },
+      // Properties that contain stored factories/settings
       $$factories : {
-          writable : true,
-          value : Object.create(Parent.$$factories || null)
+        writable : true,
+        value : Object.create(Parent.$$factories || null)
       },
       $$resolved : {
-          writable : true,
-          value : Object.create(Parent.$$interfaces || null)
+        writable : true,
+        value : Object.create(Parent.$$interfaces || null)
       },
       $$config : {
-          writable : true,
-          value : Object.assign(Object.create(Parent.$$config || null), options.config)
+        writable : true,
+        value : Object.assign(Object.create(Parent.$$config || null), options.config)
       },
       $$hooks : {
-          writable : true,
-          value : Object.create(Parent.$$hooks || null)
+        writable : true,
+        value : Object.create(Parent.$$hooks || null)
       }
     });
 

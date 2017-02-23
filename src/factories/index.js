@@ -1,6 +1,7 @@
 var constant = require('./constant');
 var factory = require('./factory');
 var service = require('./service');
+var decorator = require('./decorator');
 
 module.exports = function (Class, options) {
     var register = function () {
@@ -9,6 +10,7 @@ module.exports = function (Class, options) {
     register.constant = constant.bind(Class);
     register.factory = factory.bind(Class, options.defaultLifecycle);
     register.service = service.bind(Class);
+    register.decorator = decorator.bind(Class);
 
   // FACTORY HOOKS
     Class.$trigger('factories', {
