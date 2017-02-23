@@ -1,6 +1,8 @@
 config
 can pass in a config option when extending a class, the options are merged into the default options. If this class is extended, the config options will be picked up.
 
+default lifecycle for factories and services can be configured
+
 bindToInstance
 can accept deeply nested value i.e. x.y.z will bind dependencies to instance.x.y.z
 
@@ -25,7 +27,9 @@ node_module factory type is included in jpex-node plugin
 
 $resolve can be accessed directly on the class (Jpex.$resolve())
 
-default lifecycle for factories and services can be configured
+$resolve can be called with an array of dependencies to resolve
+
+Cached factories can be cleared with $clearCache
 
 Hooks
 Can now hook into events throughout the class lifecycle:

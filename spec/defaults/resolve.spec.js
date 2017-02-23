@@ -39,5 +39,19 @@ describe('Jpex - Default Factories', function(){
       var path = BaseClass.$resolve('path');
       expect(path).toBeDefined();
     });
+
+    it("should resolve multiple dependencies", function () {
+      var deps = $resolve(['path', 'fs']);
+      expect(deps.length).toBe(2);
+      expect(deps[0].dirname).toBeDefined();
+      expect(deps[1].readFile).toBeDefined();
+    });
+
+    it("should resolve multiple dependencies statically", function () {
+      var deps = BaseClass.$resolve(['path', 'fs']);
+      expect(deps.length).toBe(2);
+      expect(deps[0].dirname).toBeDefined();
+      expect(deps[1].readFile).toBeDefined();
+    });
   });
 });

@@ -50,4 +50,13 @@ describe("Jpex.$clearCache", function () {
     expect(Jpex.$$factories.b.resolved).toBe(false);
     expect(Jpex.$$factories.c.resolved).toBe(true);
   });
+  it("should clear Class-based caches", function () {
+    Jpex.register.factory('a', () => ({})).lifecycle.class();
+    Jpex.$resolve('a');
+    expect(Jpex.$$resolved.a).toBeDefined();
+
+    Jpex.$clearCache();
+
+    expect(Jpex.$$resolved.a).toBeUndefined();
+  });
 });

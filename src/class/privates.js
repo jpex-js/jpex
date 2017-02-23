@@ -1,6 +1,6 @@
 var isNode = require('../isNode');
 var triggerHook = require('../plugins').trigger;
-var resolve = require('../resolver').resolve;
+var resolver = require('../resolver');
 
 function getFromNodeModules(name) {
     if (!isNode){
@@ -51,12 +51,22 @@ function invokeParent(instance, values, args) {
     var Parent = this.$$parent;
     Parent.call(instance, args);
 }
+function resolve(name, namedParameters) {
+  return Array.isArray(name) ?
+    resolver.resolveDependencies(this, {dependencies : name}, namedParameters) :
+    resolver.resolve(this, name, namedParameters);
+}
 function clearCache(names) {
   names = names ? [].concat(names) : [];
 
   for (var key in this.$$factories){
     if (!names.length || names.indexOf(key) > -1){
       this.$$factories[key].resolved = false;
+    }
+  }
+  for (var key in this.$$resolved){
+    if (!names.length || names.indexOf(key) > -1){
+      delete this.$$resolved[key];
     }
   }
 }
@@ -67,7 +77,7 @@ module.exports = function (Parent, Class, options) {
           value : triggerHook
       },
       $resolve : {
-        value : resolve.bind(null, Class)
+        value : resolve
       },
       $clearCache : {
         value : clearCache
