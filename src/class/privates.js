@@ -125,7 +125,7 @@ module.exports = function (Parent, Class, options) {
     apply : function (opt) {
       var properties = {};
       Object.keys(opt).forEach(function (key) {
-        var prop = { configurable : true, enumerable : false, writable : false };
+        var prop = { configurable : true, enumerable : false };
         var def = opt[key];
         if (def && def.get && typeof def.get === 'function'){
           prop.get = def.get;
