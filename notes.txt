@@ -47,3 +47,5 @@ privateProperties
 Class, options, apply(opt)
 factories
 Class, options, register(name, fn)
+getFactory
+Class, set(value)

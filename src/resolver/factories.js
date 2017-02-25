@@ -2,25 +2,37 @@ var jpexError = require('../jpexError');
 var constants = require('../constants');
 
 exports.getFactory = function (Class, name, optional) {
-    var factory = Class.$$resolved[name];
+  var factory;
+
+  Class.$trigger('getFactory', {
+    Class : Class,
+    factoryName : name,
+    set : function (value) {
+      factory = value;
+    }
+  });
+
+  if (!isValidFactory(factory)){
+    factory = Class.$$resolved[name];
 
     if (!isValidFactory(factory)){
-        factory = Class.$$factories[name];
+      factory = Class.$$factories[name];
+
+      if (!isValidFactory(factory)){
+        factory = Class.$$getFromNodeModules(name);
 
         if (!isValidFactory(factory)){
-            factory = Class.$$getFromNodeModules(name);
-
-            if (!isValidFactory(factory)){
-                if (optional){
-                    return;
-                }else{
-                    jpexError(['Unable to find required dependency', name].join(' '));
-                }
-            }
+          if (optional){
+            return;
+          }else{
+            jpexError(['Unable to find required dependency', name].join(' '));
+          }
         }
+      }
     }
+  }
 
-    return factory;
+  return factory;
 };
 
 exports.decorate = function (Class, value, decorators) {
@@ -34,26 +46,26 @@ exports.decorate = function (Class, value, decorators) {
 };
 
 exports.cacheResult = function (Class, name, factory, value, namedParameters) {
-    switch(factory.lifecycle){
-    case constants.APPLICATION:
-        factory.resolved = true;
-        factory.value = value;
-        break;
-    case constants.CLASS:
-        Class.$$resolved[name] = {
-            resolved : true,
-            value : value
-        };
-        break;
-    case constants.NONE:
-        break;
-    case constants.INSTANCE:
-    default:
-        namedParameters[name] = value;
-        break;
-    }
+  switch(factory.lifecycle){
+  case constants.APPLICATION:
+    factory.resolved = true;
+    factory.value = value;
+    break;
+  case constants.CLASS:
+    Class.$$resolved[name] = {
+      resolved : true,
+      value : value
+    };
+    break;
+  case constants.NONE:
+    break;
+  case constants.INSTANCE:
+  default:
+    namedParameters[name] = value;
+    break;
+  }
 };
 
 function isValidFactory(factory) {
-    return factory && ((factory.fn && typeof factory.fn === 'function') || factory.constant || factory.resolved);
+  return factory && ((factory.fn && typeof factory.fn === 'function') || factory.constant || factory.resolved);
 }

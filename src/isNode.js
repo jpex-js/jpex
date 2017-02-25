@@ -1,7 +1,7 @@
 var _process;
 
 try{
-    _process = eval('process');
+  _process = eval('process');
 }catch(e){
   // No process variable
 }
