@@ -53,7 +53,9 @@ function addHook(Class, name, fn) {
       trigger : function (payload) {
         payload = Object.assign({ Jpex : Class, eventName : name }, payload);
         Array.prototype.slice.call(this).forEach(function (fn) {
-          fn(payload);
+          if (fn){
+            fn(payload);
+          }
         });
       }
     }, {
