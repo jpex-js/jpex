@@ -39,7 +39,7 @@ describe("Plugins - privateProperties hook", function () {
 
     expect(Object.keys(Class).includes('fred')).toBe(false);
   });
-  it("should be writable", function () {
+  it("should not be writable", function () {
     fn.and.callFake(function ({apply}) {
       apply({fred : 'fred'});
     });
@@ -48,6 +48,17 @@ describe("Plugins - privateProperties hook", function () {
 
     expect(Class.fred).toBe('fred');
     Class.fred = 'bob';
+    expect(Class.fred).toBe('fred');
+  });
+  it("should be configurable", function () {
+    fn.and.callFake(function ({apply}) {
+      apply({fred : 'fred'});
+    });
+
+    Class = Jpex.extend();
+
+    expect(Class.fred).toBe('fred');
+    Object.defineProperty(Class, 'fred', { value : 'bob' });
     expect(Class.fred).toBe('bob');
   });
   it("should add getters and setters", function () {
