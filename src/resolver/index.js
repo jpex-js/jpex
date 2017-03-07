@@ -79,7 +79,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   }
 
   // Optional dependency
-  var optional = checkOptional(name);
+  var optional = exports.checkOptional(name);
   if (optional){
     name = optional;
     optional = true;
@@ -144,15 +144,10 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   return result;
 }
 
-function checkOptional(name) {
-  if (name[0] === '_'){
-    var arr = name.split('_');
-    if (arr[arr.length-1] === ''){
-      arr.shift();
-      arr.pop();
-      name = arr.join('_');
-      return name;
-    }
+exports.checkOptional = function (name) {
+  if (name[0] === '_' && name[name.length-1] === '_'){
+    return name.substring(1, name.length-1);
+  }else{
+    return false;
   }
-  return false;
-}
+};

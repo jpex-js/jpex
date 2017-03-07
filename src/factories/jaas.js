@@ -1,3 +1,5 @@
+var checkOptional = require('../resolver').checkOptional;
+
 // Jpex As A Service
 module.exports = function (name, dependencies, Fn) {
   dependencies = dependencies ? [].concat(dependencies) : [];
@@ -10,17 +12,20 @@ module.exports = function (name, dependencies, Fn) {
 
     // Get factory dependencies
     var i = 1;
-    dependencies.forEach(function (key) {
+    dependencies.slice(1).forEach(function (key) {
       if (typeof key === 'object'){
         Object.keys(key).forEach(function (key2) {
           var val = args[i++];
+          
           if (val !== undefined){
+            key2 = checkOptional(key2) || key2;
             params[key2] = val;
           }
         });
       }else{
         var val = args[i++];
         if (val !== undefined){
+          key = checkOptional(key) || key;
           params[key] = val;
         }
       }
