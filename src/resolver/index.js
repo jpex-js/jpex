@@ -1,3 +1,4 @@
+var hasOwn = require('../hasOwn');
 var factoryService = require('./factories');
 var jpexError = require('../jpexError');
 
@@ -86,7 +87,7 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   }
 
   // Check named Parameters
-  if (Object.hasOwnProperty.call(namedParameters, name)){
+  if (hasOwn(namedParameters, name)){
     return namedParameters[name];
   }
 

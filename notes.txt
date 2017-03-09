@@ -3,6 +3,10 @@ can pass in a config option when extending a class, the options are merged into 
 
 default lifecycle for factories and services can be configured
 
+prototype configuration option has been replaced with methods
+
+properties configuration option allows you to predefine instance properties, getters, setters, and watchers.
+
 bindToInstance
 can accept deeply nested value i.e. x.y.z will bind dependencies to instance.x.y.z
 

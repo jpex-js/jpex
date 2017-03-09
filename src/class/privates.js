@@ -1,4 +1,5 @@
 var isNode = require('../isNode');
+var hasOwn = require('../hasOwn');
 var triggerHook = require('../plugins').trigger;
 var resolver = require('../resolver');
 
@@ -133,7 +134,7 @@ module.exports = function (Parent, Class, options) {
         if (def && def.set && typeof def.set === 'function'){
           prop.set = def.set;
         }
-        if (def && Object.hasOwnProperty.call(def, 'value')){
+        if (def && hasOwn(def, 'value')){
           def = def.value;
         }
         if (!prop.get && !prop.set){

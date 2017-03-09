@@ -49,15 +49,15 @@ describe('Base Class', function(){
 
     expect(hasBeenCalled).toBe(false);
   });
-  it('should contain prototype methods from the parent class', function(){
+  it('should contain methods from the parent class', function(){
     var Parent = BaseClass.extend({
-      prototype : {
+      methods : {
         a : 'A',
         b : 'B'
       }
     });
     var Child = Parent.extend({
-      prototype : {
+      methods : {
         b : 'b',
         c : 'c'
       }

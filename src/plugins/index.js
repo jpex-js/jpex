@@ -1,3 +1,5 @@
+var hasOwn = require('../hasOwn');
+
 exports.use = function (plugin, config) {
   var Jpex = this;
 
@@ -66,7 +68,7 @@ function addHook(Class, name, fn) {
       }
     });
   }
-  if (!Object.hasOwnProperty.call(hooks, name)){
+  if (!hasOwn(hooks, name)){
     hooks[name] = Object.create(Class.$$parent.$$hooks[name] || null);
   }
   hooks[name].push(fn);

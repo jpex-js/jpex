@@ -1,3 +1,4 @@
+var hasOwn = require('../hasOwn');
 var constants = require('../constants');
 var resolver = require('../resolver');
 var privates = require('./privates');
@@ -42,8 +43,9 @@ function extend(options) {
 function createOptions(Parent, options) {
   var defaultOptions = {
     constructor : (typeof options === 'function') ? options : null,
-    invokeParent : !(typeof options === 'function' || options && Object.hasOwnProperty.call(options, 'constructor') && options.constructor),
-    prototype : null,
+    invokeParent : !(typeof options === 'function' || options && hasOwn(options, 'constructor') && options.constructor),
+    methods : null,
+    properties : null,
     static : null,
     config : null,
     dependencies : null,
@@ -70,6 +72,11 @@ function createOptions(Parent, options) {
   }
   if (options.dependencies && !options.dependencies.length){
     options.dependencies = null;
+  }
+
+  // Set properties
+  if (options.properties){
+    options.properties = [].concat(options.properties);
   }
 
   // MERGE OPTIONS HOOK
@@ -130,6 +137,12 @@ function classBody(Parent, options) {
         bindToInstance(this, Class, args, namedParameters, options.bindToInstance);
       }
 
+      // Properties
+      if (options.properties){
+        var properties = createProperties(options.properties);
+        Object.defineProperties(this, properties);
+      }
+
       // Invoke constructor
       if (typeof options.constructor === 'function'){
         options.constructor.apply(this, args);
@@ -171,14 +184,79 @@ function classPrototype(Parent, Class, options) {
   var prototype = Object.create(Parent.prototype);
 
   // Add new prototype methods
-  if (options.prototype){
-    Object.assign(prototype, options.prototype);
+  if (options.methods){
+    Object.assign(prototype, options.methods);
   }
 
   // Set the constructor
   prototype.constructor = Class;
 
   return prototype;
+}
+
+function createProperties(options) {
+  var properties = {};
+
+  options.forEach(function (option) {
+    if (typeof option === 'string'){
+      properties[option] = {
+        configurable : true,
+        enumerable : true,
+        writable : true,
+        value : undefined
+      };
+    }else{
+      Object.keys(option).forEach(function (key) {
+        var def = option[key];
+        var property = {};
+
+        switch (typeof def){
+        case 'object':
+          break;
+        case 'function':
+          def = { watch : def };
+          break;
+        default:
+          def = { value : def };
+          break;
+        }
+
+        var hasValue = hasOwn(def, 'value'),
+          hasGet = hasOwn(def, 'get') && typeof def.get === 'function',
+          hasSet = hasOwn(def, 'set') && typeof def.set === 'function',
+          hasWatch = hasOwn(def, 'watch') && typeof def.watch === 'function',
+          hasDefault = hasOwn(def, 'default') && typeof def.default === 'function';
+
+        if (hasValue || hasDefault || hasGet || hasSet || hasWatch){
+          var value = hasValue ? def.value : (hasDefault ? def.default() : undefined);
+
+          property.get = function () {
+            return hasGet ? def.get.call(this, value) : value;
+          };
+          if (!hasOwn(def, 'writable') || def.writable){
+            property.set = function (v) {
+              var newValue = hasSet ? def.set.call(this, v, value) : v;
+              if (hasWatch && newValue !== value){
+                def.watch.call(this, newValue, value);
+              }
+              value = newValue;
+            };
+          }
+          property.configurable = hasOwn(def, 'configurable') ? def.configurable : true;
+          property.enumerable = hasOwn(def, 'enumerable') ? def.enumerable : true;
+        }else{
+          property.configurable = true;
+          property.enumerable = true;
+          property.writable = true;
+          property.value = def;
+        }
+
+        properties[key] = property;
+      });
+    }
+  });
+
+  return properties;
 }
 
 function bindToInstance(instance, Class, args, namedParameters, option) {

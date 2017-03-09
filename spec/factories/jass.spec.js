@@ -48,7 +48,7 @@ describe('Base Class - Dependency Injection', function(){
         var Service = Base.extend({
           dependencies : 'factory',
           bindToInstance : true,
-          prototype : {
+          methods : {
             do : function(){
               this.factory.do();
               service = 'service';
@@ -85,7 +85,7 @@ describe('Base Class - Dependency Injection', function(){
         var Service = Base.extend({
           dependencies : 'factory',
           bindToInstance : true,
-          prototype : {
+          methods : {
             do : function(){
               this.factory.do();
               service = 'service';
@@ -123,7 +123,7 @@ describe('Base Class - Dependency Injection', function(){
         var Service = Base.extend({
           dependencies : 'factory',
           bindToInstance : true,
-          prototype : {
+          methods : {
             do : function(){
               this.factory.do();
               service = 'service';
