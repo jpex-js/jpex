@@ -53,5 +53,11 @@ describe('Jpex - Default Factories', function(){
       expect(deps[0].dirname).toBeDefined();
       expect(deps[1].readFile).toBeDefined();
     });
+    it("should have access to the class instance's named parameters", function () {
+      $resolve = null;
+      BaseClass({namedDependency : 123456});
+      var result = $resolve('namedDependency');
+      expect(result).toBe(123456);
+    });
   });
 });
