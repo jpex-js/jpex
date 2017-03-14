@@ -134,7 +134,7 @@ function classBody(Parent, options) {
 
       // Bind dependencies
       if (options.bindToInstance){
-        bindToInstance(this, Class, args, namedParameters, options.bindToInstance);
+        bindToInstance(this, Class, args, options.bindToInstance);
       }
 
       // Properties
@@ -259,7 +259,7 @@ function createProperties(options) {
   return properties;
 }
 
-function bindToInstance(instance, Class, args, namedParameters, option) {
+function bindToInstance(instance, Class, args, option) {
   var bindTo = instance;
   // Attach dependencies to a property on the instance
   if (typeof option === 'string'){
@@ -269,6 +269,7 @@ function bindToInstance(instance, Class, args, namedParameters, option) {
     });
   }
   // Get the dependency names
-  var bindParameters = Class.$$namedParameters(args, namedParameters);
+  var bindParameters = Class.$$namedParameters(args);
+
   Object.assign(bindTo, bindParameters);
 }

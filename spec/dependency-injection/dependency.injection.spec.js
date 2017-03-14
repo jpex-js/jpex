@@ -264,5 +264,15 @@ describe('Base Class - Dependency Injection', function(){
       expect(instance._bound.myNamedParameter).toBeDefined();
       expect(instance._bound.fs).toBeDefined();
     });
+    it("should not bind unwanted named properties to the instance", function () {
+      var Second = First.extend({
+        bindToInstance : true,
+        dependencies : ['wanted']
+      });
+      var instance = new Second({wanted : 'wanted', unwanted : 'unwanted'});
+
+      expect(instance.wanted).toBe('wanted');
+      expect(instance.unwanted).toBeUndefined();
+    });
   });
 });

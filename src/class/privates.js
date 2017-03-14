@@ -1,5 +1,6 @@
 var isNode = require('../isNode');
 var hasOwn = require('../hasOwn');
+var unsafeRequire = require('../unsafeRequire');
 var triggerHook = require('../plugins').trigger;
 var resolver = require('../resolver');
 
@@ -9,7 +10,7 @@ function getFromNodeModules(name) {
   }
   // In order to stop webpack and browserify from requiring every possible file, we have to wrap the require statement in an eval
   try{
-    var result = eval('require.main.require(name)');
+    var result = unsafeRequire(name);
     this.register.constant(name, result);
     return this.$$factories[name];
   }catch(e){
