@@ -24,7 +24,17 @@ module.exports = function (name, dependencies, fn) {
 
   function factory() {
     var args = Array.prototype.slice.call(arguments);
-    args.unshift({});
+    var context = {};
+
+    if (factory.bindToInstance) {
+      dependencies.forEach(function (key, i) {
+        context[key] = args[i];
+      });
+      fn.apply(context, args);
+      return context;
+    }
+
+    args.unshift(context);
     return instantiator(fn, args);
   }
 

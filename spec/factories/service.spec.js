@@ -80,6 +80,24 @@ describe('Base Class - Dependency Injection', function(){
       });
     });
 
+    describe('bind to instance', function (){
+      it('should bind dependencies to the service', function(){
+        var factory = () => 'A';
+        var service = function () {
+          this.val = this.a;
+        };
+        First.register.factory('a', factory);
+        First.register.service('b', 'a', service).bindToInstance();
+
+        var Second = First.extend(function (b) {
+          expect(b.val).toBe('A');
+          expect(b.a).toBe('A');
+        });
+
+        new Second();
+      });
+    });
+
     describe('Service (singleton)', function(){
       it('should only create a single instance', function(){
         var fn = function(){};

@@ -19,7 +19,11 @@ module.exports = function (factory) {
         factory.lifecycle = constants.NONE;
         return wrapper;
       }
-    }
+    },
+    bindToInstance: function () {
+      factory.fn.bindToInstance = true;
+      return wrapper;
+    },
   };
 
   // WRAPPER HOOKS

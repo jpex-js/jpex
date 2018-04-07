@@ -1,8 +1,9 @@
 Change Log
 ==========
-## 2.0.1
+## 2.1.0
 - if an option in the `properties` config is null, jpex will no longer throw an error
 - Passing `$options` into a `Jpex as a Service` service now works
+- `Jpex.register.service().bindToInstance()` allows you to bind dependencies to a service instance
 
 ## 2.0.0  
 ### Features  
