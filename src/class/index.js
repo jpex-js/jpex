@@ -205,10 +205,14 @@ function createProperties(options) {
         writable : true,
         value : undefined
       };
-    }else{
+    }else if (option != null){
       Object.keys(option).forEach(function (key) {
         var def = option[key];
         var property = {};
+
+        if (def == null) {
+          return;
+        }
 
         switch (typeof def){
         case 'object':

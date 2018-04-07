@@ -1,5 +1,8 @@
 Change Log
 ==========
+## 2.0.1
+- if an option in the `properties` config is null, jpex will no longer throw an error
+
 ## 2.0.0  
 ### Features  
 - Can now pass in a `config` option when extending a class. Any properties of the config option will be used as default values for that class and its descendants.  
