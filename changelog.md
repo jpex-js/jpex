@@ -2,6 +2,7 @@ Change Log
 ==========
 ## 2.0.1
 - if an option in the `properties` config is null, jpex will no longer throw an error
+- Passing `$options` into a `Jpex as a Service` service now works
 
 ## 2.0.0  
 ### Features  

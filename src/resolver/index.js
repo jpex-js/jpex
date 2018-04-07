@@ -71,14 +71,6 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
     namedParameters = {};
   }
 
-  // Special cases
-  switch(name){
-  case '$options':
-    return localOptions;
-  case '$namedParameters':
-    return namedParameters;
-  }
-
   // Optional dependency
   var optional = exports.checkOptional(name);
   if (optional){
@@ -89,6 +81,14 @@ function resolveDependency(Class, name, localOptions, namedParameters, stack) {
   // Check named Parameters
   if (hasOwn(namedParameters, name)){
     return namedParameters[name];
+  }
+
+  // Special cases
+  switch(name){
+  case '$options':
+    return localOptions;
+  case '$namedParameters':
+    return namedParameters;
   }
 
   // Check for recursive loop
