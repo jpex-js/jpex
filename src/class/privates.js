@@ -61,6 +61,20 @@ function resolve(name, namedParameters) {
     resolver.resolve(this, name, namedParameters);
 }
 
+function encase(dependencies, fn) {
+  var self = this;
+  if (typeof dependencies === 'function') {
+    fn = dependencies;
+    dependencies = resolver.extractParameters(fn);
+  }
+  return function () {
+    var context = this;
+    var args = Array.prototype.slice.call(arguments);
+    var deps = self.$resolve(dependencies);
+    return fn.apply(context, deps).apply(context, args);
+  };
+}
+
 function clearCache(names) {
   names = names ? [].concat(names) : [];
   var key;
@@ -84,6 +98,9 @@ module.exports = function (Parent, Class, options) {
     },
     $resolve : {
       value : resolve
+    },
+    $encase: {
+      value: encase,
     },
     $clearCache : {
       value : clearCache

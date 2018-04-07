@@ -4,6 +4,7 @@ Change Log
 - if an option in the `properties` config is null, jpex will no longer throw an error
 - Passing `$options` into a `Jpex as a Service` service now works
 - `Jpex.register.service().bindToInstance()` allows you to bind dependencies to a service instance
+- `Jpex.$encase` method allos you to wrap a function with a number of dependencies
 
 ## 2.0.0  
 ### Features  
