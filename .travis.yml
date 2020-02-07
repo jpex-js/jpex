@@ -3,19 +3,19 @@ branches :
     - master
 language : node_js
 node_js :
-  - 6
+  - 10
 install :
-  - npm install
+  - yarn install
 
   - npm install codeclimate-test-reporter -g
 script :
-  - npm run lint
-  - npm test
-  - npm run coverage
-  - npm run build
+  - yarn lint
+  - yarn test
+  - yarn coverage
+  - yarn build
 
-  - npm run lcov-fix
+  - yarn lcov-fix
 after_script :
   - codeclimate-test-reporter < lcov.info
-  - npm run travis-prepublish
-  - npm run publish-please
+  - yarn travis-prepublish
+  - npm publish

@@ -1,21 +1,36 @@
 {
   "name": "jpex",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Javascript Prototype Extension",
-  "main": "src/index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
+  "main": "dist/cjs/jpex.js",
+  "module": "dist/es/jpex.js",
+  "types": "dist/es/index.d.ts",
   "scripts": {
-    "test": "jasmine",
-    "coverage": "nyc jasmine",
-    "build": "node node_modules/jpex-build-tools/build --entry ./src --output ./dist/jpex.js --name Jpex && node node_modules/jpex-build-tools/build --entry ./src --output ./dist/jpex.min.js --name Jpex  --minify",
+    "test": "ava",
+    "coverage": "nyc ava",
+    "lint": "eslint './src/**/*.ts' && tsc",
+    "build:cleanup": "rm -rf dist && rm -rf tmp",
+    "build:pre": "babel src --out-dir tmp --extensions \".ts\" --keep-file-extension --config-file ./prebuild.babel.config.js",
+    "build:js": "rollup --config ./rollup.config.js && cp -r tmp/types dist/es",
+    "build:post": "rm -rf tmp",
+    "build": "yarn build:cleanup && yarn build:pre && yarn build:js && yarn build:post",
     "lcov-fix": "node node_modules/jpex-build-tools/lcov-fix",
     "travis-prepublish": "node node_modules/jpex-build-tools/travis-prepublish",
-    "lint": "eslint ./src --fix",
-    "publish-please": "publish-please",
-    "prepublish": "publish-please guard"
+    "prepublishOnly": "yarn build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint --edit"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.{js,ts}": [
+        "eslint -c ./.eslintrc.js",
+        "git add"
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -28,10 +43,36 @@
   },
   "homepage": "https://jpex-js.github.io",
   "devDependencies": {
-    "eslint": "^3.15.0",
-    "jasmine": "^2.5.3",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-external-helpers": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
+    "@babel/plugin-syntax-class-properties": "^7.8.3",
+    "@babel/plugin-syntax-typescript": "^7.8.3",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-typescript": "^7.8.3",
+    "@babel/register": "^7.7.7",
+    "@commitlint/cli": "^8.3.4",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@team-griffin/eslint-config": "^3.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.5.0",
+    "@types/sinon": "^7.5.1",
+    "ava": "^3.0.0",
+    "browser-env": "^3.3.0",
+    "eslint": "^4.0.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "husky": "^4.0.3",
     "jpex-build-tools": "git+https://github.com/jackmellis/jpex-build-tools.git",
+    "lint-staged": "^8.1.5",
     "nyc": "^10.1.2",
-    "publish-please": "^2.2.0"
+    "rollup": "^1.29.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "sinon": "^8.1.0",
+    "typescript": "^3.8.0-dev.20200206",
+    "typescript-eslint-parser": "^22.0.0"
   }
 }
