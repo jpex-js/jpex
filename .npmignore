@@ -1,11 +1,6 @@
-docs
-spec
-test
-coverage
-.nyc_output
-.codeclimate.yml
-.eslintrc.json
-.travis.yml
-.nycrc
-.publishrc
-lcov.info
+*
+.*
+
+!dist/**
+!plugin/**
+!babel-plugin.js

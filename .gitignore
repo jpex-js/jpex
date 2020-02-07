@@ -1,4 +1,6 @@
-dist
+.rpt2_cache/
+dist/
+tmp/
 lcov.info
 
 # Code Coverage
