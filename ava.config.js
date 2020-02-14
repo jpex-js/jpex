@@ -3,5 +3,7 @@ export default {
   extensions: [ 'ts' ],
   require: [ './test-setup.js' ],
   verbose: true,
-  compileEnhancements: false,
+  babel: {
+    compileEnhancements: false,
+  },
 };
