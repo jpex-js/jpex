@@ -8,12 +8,13 @@ function alias(
   alias: any,
   name: any,
 ) {
-  const factory = jpex.$$factories[name];
-  if (!isValidFactory(factory)) {
-    throw new Error(`Cannot create an alias for [${name}] as it does not exist`);
+  if (isValidFactory(jpex.$$factories[name])) {
+    jpex.$$factories[alias] = jpex.$$factories[name];
+  } else if (isValidFactory(jpex.$$factories[alias])) {
+    jpex.$$factories[name] = jpex.$$factories[alias];
+  } else {
+    throw new Error(`Cannot create an alias for [${name}|${alias}] as it does not exist`);
   }
-
-  jpex.$$factories[alias] = factory;
 }
 
 export default alias;
