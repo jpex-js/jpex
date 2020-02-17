@@ -1,5 +1,8 @@
 Change Log
 ==========
+## 3.0.1
+- encase now caches the wrapped function for better performance
+
 ## 3.0.0
 - Complete rewrite of the entire library
 - Typescript support

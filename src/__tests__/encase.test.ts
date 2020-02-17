@@ -1,4 +1,5 @@
 import anyTest, { TestInterface } from 'ava';
+import { stub } from 'sinon';
 import jpex, { JpexInstance } from '..';
 
 const test: TestInterface<{
@@ -46,4 +47,29 @@ test('exposes the inner function', (t) => {
   const result = fn2('injected')('provided');
 
   t.is(result, 'injectedprovided');
+});
+
+test('caches the inner function', (t) => {
+  const { jpex } = t.context;
+  type Foo = string;
+
+  jpex.constant<Foo>('injected');
+
+  const inner = stub().callsFake((foo) => {
+    return (bah: string) => {
+      return foo + bah;
+    };
+  });
+  const fn = jpex.encase([ jpex.infer<Foo>() ], inner);
+
+  fn('provided');
+  t.is(inner.callCount, 1);
+
+  fn('xxx');
+  t.is(inner.callCount, 1);
+
+  jpex.clearCache();
+
+  fn('yyy');
+  t.is(inner.callCount, 2);
 });

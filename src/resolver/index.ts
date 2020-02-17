@@ -33,3 +33,20 @@ export const resolveDependencies = (
     [],
   );
 };
+
+export const isResolved = (jpex: JpexInstance, dependency: Dependency) => {
+  if (typeof dependency !== 'string') {
+    return false;
+  }
+  if (jpex.$$resolved[dependency]) {
+    return true;
+  }
+  if (jpex.$$factories[dependency] && jpex.$$factories[dependency].resolved) {
+    return true;
+  }
+  return false;
+};
+
+export const allResolved = (jpex: JpexInstance, dependencies: Dependency[]) => {
+  return dependencies.every(isResolved.bind(null, jpex));
+};
