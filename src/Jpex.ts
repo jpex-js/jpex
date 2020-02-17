@@ -18,6 +18,7 @@ import {
 import {
   resolve,
   resolveDependencies,
+  allResolved,
 } from './resolver';
 import {
   extractParameters,
@@ -83,13 +84,20 @@ class Jpex implements IJpex {
       }
       return [ _deps, _fn ];
     })();
+    let result: AnyFunction;
     const jpex = this;
 
     const encased = function(...args: Parameters<F>) {
+      /* eslint-disable no-invalid-this */
+      if (result && allResolved(jpex, dependencies)) {
+        return result.apply(this, args);
+      }
       const deps = resolveDependencies(jpex, { dependencies });
 
-      // eslint-disable-next-line no-invalid-this
-      return fn.apply(this, deps).apply(this, args);
+      result = fn.apply(this, deps);
+
+      return result.apply(this, args);
+      /* eslint-enable */
     };
     encased.encased = fn;
 
