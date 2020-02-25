@@ -69,3 +69,9 @@ export const extractParameters = (fn: AnyFunction) => {
 
   return str.split(CHR_DELIMETER).map((s) => s.trim());
 };
+
+interface GetLast {
+  (str: string): string,
+  <T>(arr: T[]): T,
+}
+export const getLast: GetLast = (arr: any[] | string) => arr[arr.length - 1];

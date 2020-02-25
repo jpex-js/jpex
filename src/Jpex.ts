@@ -10,7 +10,6 @@ import {
 } from './constants';
 import {
   constant,
-  decorator,
   factory,
   service,
   alias as createAlias,
@@ -63,9 +62,6 @@ class Jpex implements IJpex {
   }
   service(name: any, deps?: any, fn?: any): any {
     return service(this, name, deps, fn);
-  }
-  decorator(name: any, fn?: any): any {
-    return decorator(this, name, fn);
   }
   alias(alias?: any, name?: any): any {
     return createAlias(this, alias, name);

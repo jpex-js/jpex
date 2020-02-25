@@ -4,7 +4,6 @@ const handleResolveCall = require('./resolve');
 const handleResolveWithCall = require('./resolveWith');
 const handleAliasCall = require('./alias');
 const handleEncaseCall = require('./encase');
-const handleDecoratorCall = require('./decorator');
 const handleInferCall = require('./infer');
 
 const mainVisitor = {
@@ -27,7 +26,6 @@ const mainVisitor = {
     handleResolveWithCall(programPath, path, identifier, filename);
     handleEncaseCall(programPath, path, identifier, filename);
     handleAliasCall(programPath, path, identifier, filename);
-    handleDecoratorCall(programPath, path, identifier, filename);
     handleInferCall(programPath, path, identifier, filename);
   },
 };

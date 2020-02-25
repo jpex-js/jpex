@@ -7,12 +7,12 @@ import JpexError from '../Error';
 import {
   checkOptional,
   getFactory,
-  runDecorators,
   cacheResult,
 } from './utils';
 import {
   hasOwn,
   isObject,
+  getLast,
 } from '../utils';
 
 export const resolveOne = <R extends any>(
@@ -58,6 +58,11 @@ export const resolveOne = <R extends any>(
 
   // Ensure we're not stuck in a recursive loop
   if (stack.indexOf(name) > -1) {
+    if (getLast(stack) === name) {
+      if (jpex.$$parent?.$$factories[name]) {
+        return resolveOne(jpex.$$parent, name, localOptions, namedParameters, []);
+      }
+    }
     throw new JpexError(`Recursive loop for dependency ${name} encountered`);
   }
 
@@ -91,9 +96,7 @@ export const resolveOne = <R extends any>(
   }
 
   // Invoke the factory
-  let value = factory.fn.apply(jpex, args);
-  // Process decorators
-  value = runDecorators(jpex, value, factory.decorators);
+  const value = factory.fn.apply(jpex, args);
   // Cache the result
   cacheResult(jpex, name, factory, value, namedParameters);
 

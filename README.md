@@ -181,11 +181,6 @@ jpex.factory(...args).dependencies('foo', 'bah');
 ```
 Allows you to set a factory's dependencies after-the-fact.
 
-#### jpex.decorator
-```ts
-jpex.decorator(name: string, fn: (dep: any) => any): void
-jpex.decorator<T>(fn: (dep: T) => T): void
-```
 #### jpex.alias
 ```ts
 jpex.alias(alias: string, factory: string): void
