@@ -8,16 +8,17 @@ import { Lifecycle } from '../constants';
 import {
   isNode,
   unsafeRequire,
+  isString,
 } from '../utils';
 
 export const isValidFactory = (factory: Factory) => {
   if (!factory) {
     return false;
   }
-  if (factory.fn && typeof factory.fn === 'function') {
+  if (factory.resolved) {
     return true;
   }
-  if (factory.resolved) {
+  if (factory.fn && typeof factory.fn === 'function') {
     return true;
   }
   return false;
@@ -89,7 +90,7 @@ export const cacheResult = (
     factory.value = value;
     break;
   case Lifecycle.CLASS:
-    jpex.$$resolved[name as string] = {
+    jpex.$$resolved[name] = {
       resolved: true,
       value,
     };
@@ -98,13 +99,13 @@ export const cacheResult = (
     break;
   case Lifecycle.INSTANCE:
   default:
-    namedParameters[name as string] = value;
+    namedParameters[name] = value;
     break;
   }
 };
 
 export const checkOptional = (name: string) => {
-  if (typeof name !== 'string') {
+  if (!isString(name)) {
     return false;
   }
   if ((name[0] === '_' && name[name.length - 1] === '_')) {

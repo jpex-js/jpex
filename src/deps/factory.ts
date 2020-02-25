@@ -1,6 +1,6 @@
 import { JpexInstance, Factory } from '../types';
 import wrapper, { Wrapper } from './wrapper';
-import { extractParameters } from '../utils';
+import { extractParameters, isString, isFunction } from '../utils';
 
 function factory(
   jpex: JpexInstance,
@@ -8,14 +8,14 @@ function factory(
   dependencies: any,
   fn?: any,
 ): Wrapper {
-  if (typeof name !== 'string') {
+  if (!isString(name)) {
     throw new Error(`Factories must be given a name, but was called with [${typeof name}]`);
   }
-  if (typeof dependencies === 'function') {
+  if (isFunction(dependencies)) {
     fn = dependencies;
     dependencies = void 0;
   }
-  if (typeof fn !== 'function') {
+  if (!isFunction(fn)) {
     throw new Error(`Factory ${name} must be a [Function]`);
   }
   if (dependencies) {

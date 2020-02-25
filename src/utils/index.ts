@@ -4,6 +4,8 @@ const getType = (obj: any) => Object.prototype.toString.call(obj);
 export const isObject = (obj: any): obj is object => getType(obj) === '[object Object]';
 
 export const isSymbol = (obj: any): boolean => getType(obj) === '[object Symbol]';
+export const isString = (obj: any): obj is string => typeof obj === 'string';
+export const isFunction = (obj: any): obj is Function => typeof obj === 'function';
 
 export const hasOwn = <T>(obj: T, name: string | Symbol): boolean => {
   return Object.hasOwnProperty.call(obj, name);
@@ -27,6 +29,7 @@ export const isNode = (() => {
   return typeof _process === 'object' && _process.toString && _process.toString() === '[object process]';
 })();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const unsafeRequire = (target: string) => {
   return eval('require.main.require(target)'); // eslint-disable-line no-eval
 };

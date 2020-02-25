@@ -1,5 +1,5 @@
 import { JpexInstance } from '../types';
-import { extractParameters, instantiate } from '../utils';
+import { extractParameters, instantiate, isFunction } from '../utils';
 
 function service(
   jpex: JpexInstance,
@@ -7,11 +7,11 @@ function service(
   dependencies: any,
   fn?: any,
 ) {
-  if (typeof dependencies === 'function') {
+  if (isFunction(dependencies)) {
     fn = dependencies;
     dependencies = void 0;
   }
-  if (typeof fn !== 'function') {
+  if (!isFunction(fn)) {
     throw new Error(`Service ${name} must be a [Function]`);
   }
 
@@ -28,8 +28,6 @@ function service(
       (dependencies as string[]).forEach((key, i) => {
         context[key] = args[i];
       });
-      fn.apply(context, args);
-      return context;
     }
 
     args.unshift(context);
