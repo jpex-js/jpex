@@ -36,10 +36,10 @@ class Jpex implements IJpex {
   } = {};
 
   constructor({
-    lifecycle = Lifecycle.CLASS,
+    lifecycle,
   }: SetupConfig = {}, parent?: IJpex) {
     this.$$parent = parent;
-    this.$$defaultLifecycle = lifecycle;
+    this.$$defaultLifecycle = lifecycle ?? parent?.$$defaultLifecycle ?? Lifecycle.CLASS;
 
     if (parent) {
       this.$$factories = Object.create(parent.$$factories);
