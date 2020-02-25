@@ -3,6 +3,7 @@ Change Log
 ## 3.0.1
 - encase now caches the wrapped function for better performance
 - alias is now bidirectional, so it determines which is the alias and which is the original
+- default lifecycle should be inherited from the parent
 
 ## 3.0.0
 - Complete rewrite of the entire library
