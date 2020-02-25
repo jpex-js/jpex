@@ -13,7 +13,6 @@ import {
 import {
   hasOwn,
   isObject,
-  isSymbol,
 } from '../utils';
 
 export const resolveOne = <R extends any>(
@@ -21,7 +20,7 @@ export const resolveOne = <R extends any>(
   name: Dependency,
   localOptions: any,
   namedParameters: { [key: string]: any },
-  stack: Dependency[],
+  stack: string[],
 ): R => {
   if (isObject(name)) {
     const key = Object.keys(name)[0];
@@ -32,8 +31,8 @@ export const resolveOne = <R extends any>(
   }
 
   // Optional dependencies
-  const optionalCheck = checkOptional(name);
   let optional = false;
+  const optionalCheck = checkOptional(name);
   if (optionalCheck) {
     name = optionalCheck;
     optional = true;
@@ -42,8 +41,8 @@ export const resolveOne = <R extends any>(
   // Check named parameters
   // if we have a named parameter for this dependency
   // we don't need to do any resolution, we can just return the value
-  if (hasOwn(namedParameters, name as string)) {
-    return namedParameters[name as string];
+  if (hasOwn(namedParameters, name)) {
+    return namedParameters[name];
   }
 
   // Special keys
@@ -79,9 +78,8 @@ export const resolveOne = <R extends any>(
   // Work out dependencies
   let args: any[] = [];
 
-  if (factory.dependencies && factory.dependencies.length) {
+  if (factory?.dependencies?.length) {
     try {
-      // @ts-ignore
       // eslint-disable-next-line no-use-before-define
       args = resolveMany(jpex, factory, namedParameters, localOptions, stack.concat(name));
     } catch (e) {
@@ -107,9 +105,9 @@ export const resolveMany = <R extends any[]>(
   definition: Definition,
   namedParameters: { [key: string]: any },
   globalOptions: any,
-  stack: Dependency[],
+  stack: string[],
 ): R => {
-  if (!definition || !definition.dependencies) {
+  if (!definition?.dependencies) {
     return [] as R;
   }
   if (!stack) {
@@ -121,7 +119,7 @@ export const resolveMany = <R extends any[]>(
   const dependencies: Dependency[] = [].concat(definition.dependencies);
 
   const values = dependencies.reduce((value: Dependency[], dependency): Dependency[] => {
-    if (isObject(dependency) && !isSymbol(dependency)) {
+    if (isObject(dependency)) {
       const keys = Object.keys(dependency);
       const x = keys.reduce((value, key) => {
         const options = dependency[key];

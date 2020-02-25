@@ -3,7 +3,7 @@ module.exports = {
       'browser': true,
       'es6': true,
     },
-    'parser': 'typescript-eslint-parser',
+    'parser': '@typescript-eslint/parser',
     'parserOptions': {
       'ecmaFeatures': {
         'experimentalObjectRestSpread': true,
@@ -11,7 +11,7 @@ module.exports = {
       'sourceType': 'module',
     },
     'plugins': [
-      'typescript',
+      '@typescript-eslint',
     ],
     'extends': [
       '@team-griffin/eslint-config/frontend-config/core',
@@ -23,7 +23,7 @@ module.exports = {
     },
     'rules': {
       'no-unused-vars': 'off',
-      'typescript/no-unused-vars': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
       'no-dupe-class-members': 'off',
       'no-param-reassign': 'off',
       'new-cap': [
