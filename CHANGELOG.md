@@ -4,6 +4,7 @@ Change Log
 - encase now caches the wrapped function for better performance
 - alias is now bidirectional, so it determines which is the alias and which is the original
 - default lifecycle should be inherited from the parent
+- removed decorators in favour of self-invoking factories. Decorators were not intended to reach v3. You can decorate a factory from a parent container by doing `jpex.factory('foo', [ 'foo' ], (foo) => { /* decorate here */ })`
 
 ## 3.0.0
 - Complete rewrite of the entire library

@@ -1,6 +1,5 @@
 import JpexError from '../Error';
 import {
-  AnyFunction,
   Factory,
   JpexInstance,
 } from '../types';
@@ -9,6 +8,7 @@ import {
   isNode,
   unsafeRequire,
   isString,
+  getLast,
 } from '../utils';
 
 export const isValidFactory = (factory: Factory) => {
@@ -67,16 +67,6 @@ export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) 
   }
 };
 
-export const runDecorators = (jpex: JpexInstance, value: any, decorators: AnyFunction[]) => {
-  if (!decorators || !decorators.length) {
-    return value;
-  }
-
-  return decorators.reduce((value, decorator) => {
-    return decorator.call(jpex, value);
-  }, value);
-};
-
 export const cacheResult = (
   jpex: JpexInstance,
   name: string,
@@ -108,10 +98,11 @@ export const checkOptional = (name: string) => {
   if (!isString(name)) {
     return false;
   }
-  if ((name[0] === '_' && name[name.length - 1] === '_')) {
+  const first = name[0];
+  const last = getLast(name);
+
+  if (first === '_' && last === '_') {
     return name.substring(1, name.length - 1);
-  } else if (name[name.length - 1] === '?') {
-    return name.substring(0, name.length - 1);
   }
 
   return false;

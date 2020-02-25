@@ -21,5 +21,4 @@ export interface Factory extends Definition {
   resolved?: boolean,
   value?: any,
   lifecycle?: Lifecycle,
-  decorators?: ((...args: any[]) => any)[],
 }

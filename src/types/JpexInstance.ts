@@ -23,9 +23,6 @@ export interface JpexInstance {
 
   service<T>(fn: AnyConstructor<T> | AnyFunction): Wrapper
 
-  decorator<T = any>(name: string, fn: <T>(dep: T) => T): void,
-  decorator<T>(fn: (dep: T) => T): void,
-
   alias<T = any>(alias: string, name: string): void,
   alias<T>(alias: string): void,
 
