@@ -41,13 +41,13 @@ export interface JpexInstance {
     },
   ): T,
 
-  encase<T, F extends AnyFunction<T>>(
-    fn: AnyFunction<F>,
-  ): F & { encased: AnyFunction<F> },
-  encase<T, F extends AnyFunction<T>>(
+  encase<F extends AnyFunction<AnyFunction>>(
+    fn: F,
+  ): ReturnType<F> & { encased : F },
+  encase<F extends AnyFunction<AnyFunction>>(
     dependencies: Dependency[],
-    fn: AnyFunction<F>,
-  ): F & { encased: AnyFunction<F> },
+    fn: F,
+  ): ReturnType<F> & { encased: F },
 
   clearCache(): void,
   clearCache(name: string): void,
