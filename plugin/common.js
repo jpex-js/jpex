@@ -60,6 +60,7 @@ const getConcreteTypeName = (typeNode, filename, programPath) => {
     if (state.name) {
       return `type:${state.name}`;
     }
+    return `type:global:${name}`;
   }
   if (t.isTSTypeLiteral(typeNode) || t.isTSFunctionType(typeNode)) {
     throw new Error('Currently registering with a literal type is not supported');

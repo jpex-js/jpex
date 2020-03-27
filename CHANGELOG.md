@@ -1,5 +1,8 @@
 Change Log
 ==========
+## 3.1.0
+- global types like `Window` and `Document` and now be used to register dependencies
+
 ## 3.0.1
 - encase now caches the wrapped function for better performance
 - alias is now bidirectional, so it determines which is the alias and which is the original

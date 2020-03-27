@@ -37,6 +37,18 @@ test('infers dependencies from function arguments', (t) => {
   t.is(result, 'injectedprovided');
 });
 
+test('works with global interfaces', (t) => {
+  const { jpex } = t.context;
+
+  jpex.constant<Window>(window);
+
+  const fn = jpex.encase((window: Window) => () => window);
+
+  const result = fn();
+
+  t.is(result, window);
+});
+
 test('exposes the inner function', (t) => {
   const { jpex } = t.context;
   type Foo = string;
