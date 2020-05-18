@@ -3,6 +3,7 @@ Change Log
 ## 3.2.0
 - add `jpex.raw` function for extracting a factory function
 - add publicPath babel config option
+- add support for react-jpex's `useResolve` method
 
 ## 3.1.0
 - global types like `Window` and `Document` can now be used to register dependencies

@@ -6,6 +6,7 @@ const handleAliasCall = require('./alias');
 const handleEncaseCall = require('./encase');
 const handleInferCall = require('./infer');
 const handleRawCall = require('./raw');
+const handleUseResolve = require('./useResolve');
 
 const mainVisitor = {
   CallExpression(path, state) {
@@ -30,6 +31,7 @@ const mainVisitor = {
     handleAliasCall(programPath, path, identifier, filename);
     handleInferCall(programPath, path, identifier, filename);
     handleRawCall(programPath, path, identifier, filename);
+    handleUseResolve(programPath, path, identifier, filename);
   },
 };
 
