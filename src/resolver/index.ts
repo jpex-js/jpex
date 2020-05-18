@@ -11,6 +11,8 @@ import {
   isString,
 } from '../utils';
 
+export { getFactory } from './utils';
+
 export const resolve = (
   jpex: JpexInstance,
   name: Dependency,

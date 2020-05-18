@@ -1,5 +1,5 @@
 import Jpex from './Jpex';
-import { resolve } from './factories';
+import { resolve as registerResolveFactory } from './factories';
 import {
   JpexInstance,
   SetupConfig,
@@ -10,7 +10,7 @@ import {
 
 const jpex = new Jpex() as JpexInstance;
 
-resolve(jpex);
+registerResolveFactory(jpex);
 
 export {
   jpex,

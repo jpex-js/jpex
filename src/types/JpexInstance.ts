@@ -49,6 +49,9 @@ export interface JpexInstance {
     fn: F,
   ): ReturnType<F> & { encased: F },
 
+  raw<T = any>(name: Dependency): AnyFunction<T>,
+  raw<T>(): AnyFunction<T>,
+
   clearCache(): void,
   clearCache(name: string): void,
   clearCache(names: string[]): void,

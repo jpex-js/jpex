@@ -47,6 +47,9 @@ export const getFromNodeModules = (jpex: JpexInstance, target: string): Factory 
 };
 
 export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) => {
+  if (typeof name !== 'string') {
+    throw new JpexError(`Name must be a string, but recevied ${typeof name}`);
+  }
   let factory: Factory = jpex.$$resolved[name as string];
   if (isValidFactory(factory)) {
     return factory;

@@ -260,3 +260,14 @@ If you're working with typescript inference, you can use this function to get th
 ```ts
 const dependencyName = jpex.infer<IFactory>(); // something like src/types/IFactory
 ```
+
+#### jpex.raw
+```ts
+jpex.raw<T>(): (...args: any[]) => T
+```
+returns the raw factory function
+```ts
+const factory = jpex.raw<IFactory>;
+
+const result = factory(dep1, dep2)('my-thing');
+```
