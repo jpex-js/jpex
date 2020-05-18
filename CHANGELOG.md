@@ -2,6 +2,7 @@ Change Log
 ==========
 ## 3.2.0
 - add `jpex.raw` function for extracting a factory function
+- add publicPath babel config option
 
 ## 3.1.0
 - global types like `Window` and `Document` can now be used to register dependencies

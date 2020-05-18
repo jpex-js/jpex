@@ -13,9 +13,10 @@ const mainVisitor = {
     let {
       opts: {
         identifier = 'jpex',
+        publicPath,
       } = {},
     } = state;
-    const filename = this
+    const filename = publicPath || this
       .filename
       .split('.')
       .slice(0, -1)

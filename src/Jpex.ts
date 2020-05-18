@@ -18,6 +18,7 @@ import {
   resolve,
   resolveDependencies,
   allResolved,
+  getFactory,
 } from './resolver';
 import {
   extractParameters,
@@ -71,6 +72,10 @@ class Jpex implements IJpex {
   }
   resolveWith(name: any, namedParameters?: any): any {
     return resolve(this, name, namedParameters);
+  }
+
+  raw(name?: any): any {
+    return getFactory(this, name, false).fn;
   }
 
   encase<F extends AnyFunction, G extends AnyFunction<F>>(_deps: any, _fn?: any): any {

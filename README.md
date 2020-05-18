@@ -118,9 +118,20 @@ In order to use the inferred typescript functionality, you need to run your code
 ```js
 plugins: [ 'jpex/babel-plugin' ]
 ```
-By default it only checks for an object named `jpex`. If you decide to rename it to anything else, or have multiple containers, you can pass an identifier option in:
+By default it only checks for an object named `jpex`. If you decide to rename it to anything else, or have multiple containers, you can pass an identifier option in.
+
+By default the types are converted to strings based on the path where they originate from i.e. `type:/src/types/index/MyType`. You can optionally pass in a `publicPath` which will override this behaviour, instead returning `type:myPublicPath/MyType`. This is useful if you want to expose factories via an npm package, for example.
+
 ```js
-plugins: [ [ 'jpex/babel-plugin', { identifier: [ 'jpex', 'ioc' ] } ] ]
+plugins: [
+  [
+    'jpex/babel-plugin',
+    {
+      identifier: [ 'jpex', 'ioc' ],
+      publicPath: 'my-library'
+    }
+  ]
+]
 ```
 
 There are a number of caveats to this method, however:
