@@ -14,7 +14,7 @@ const importVisitor = {
   },
 };
 
-const resolve = (programPath, path, jpex, filename) => {
+const resolve = (programPath, path, { filename, publicPath }) => {
   const callee = path.node.callee;
   const args = path.node.arguments;
 
@@ -38,7 +38,7 @@ const resolve = (programPath, path, jpex, filename) => {
   }
 
   const type = getPath([ 'node', 'typeParameters', 'params', '0' ], path);
-  const name = getConcreteTypeName(type, filename, programPath);
+  const name = getConcreteTypeName(type, filename, publicPath, programPath);
   if (name != null) {
     args.unshift(t.stringLiteral(name));
   } else if (t.isTSTypeLiteral(type) || t.isTSFunctionType(type)) {

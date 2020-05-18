@@ -8,13 +8,13 @@ const FACTORY_METHODS = [
   'constant',
 ];
 
-const factories = (programPath, path, jpex, filename) => {
+const factories = (programPath, path, { identifier, filename, publicPath }) => {
   const callee = path.node.callee;
   const args = path.node.arguments;
 
   const isJpexCall = (
     t.isMemberExpression(callee) &&
-    jpex.includes(callee.object.name) &&
+    identifier.includes(callee.object.name) &&
     FACTORY_METHODS.includes(callee.property.name)
   );
 
@@ -28,7 +28,7 @@ const factories = (programPath, path, jpex, filename) => {
   if (args.length === 1 || !t.isStringLiteral(args[0])) {
     const type = getPath([ 'node', 'typeParameters', 'params', '0' ], path);
 
-    const name = getConcreteTypeName(type, filename, programPath);
+    const name = getConcreteTypeName(type, filename, publicPath, programPath);
     if (name != null) {
       args.unshift(t.stringLiteral(name));
     }
@@ -39,7 +39,7 @@ const factories = (programPath, path, jpex, filename) => {
   // if the second parameter isn't an array of dependencies, it means it's inferred
   if (callee.property.name !== 'constant' && !t.isArrayExpression(path.node.arguments[1])) {
     const arg = path.get('arguments.1');
-    const deps = extractFunctionParameterTypes(programPath, arg, filename);
+    const deps = extractFunctionParameterTypes(programPath, arg, filename, publicPath);
     if (deps.length) {
       path.node.arguments.splice(1, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
     }

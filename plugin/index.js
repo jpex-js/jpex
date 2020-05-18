@@ -17,21 +17,26 @@ const mainVisitor = {
         publicPath,
       } = {},
     } = state;
-    const filename = publicPath || this
+    const filename = this
       .filename
       .split('.')
       .slice(0, -1)
       .join('.')
       .replace(process.cwd(), '');
     identifier = [].concat(identifier);
-    handleFactoryCalls(programPath, path, identifier, filename);
-    handleResolveCall(programPath, path, identifier, filename);
-    handleResolveWithCall(programPath, path, identifier, filename);
-    handleEncaseCall(programPath, path, identifier, filename);
-    handleAliasCall(programPath, path, identifier, filename);
-    handleInferCall(programPath, path, identifier, filename);
-    handleRawCall(programPath, path, identifier, filename);
-    handleUseResolve(programPath, path, identifier, filename);
+    const opts = {
+      identifier,
+      filename,
+      publicPath,
+    };
+    handleFactoryCalls(programPath, path, opts);
+    handleResolveCall(programPath, path, opts);
+    handleResolveWithCall(programPath, path, opts);
+    handleEncaseCall(programPath, path, opts);
+    handleAliasCall(programPath, path, opts);
+    handleInferCall(programPath, path, opts);
+    handleRawCall(programPath, path, opts);
+    handleUseResolve(programPath, path, opts);
   },
 };
 

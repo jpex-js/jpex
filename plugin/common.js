@@ -11,7 +11,8 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      cache[key] = key;
+      const value = `${state.publicPath || state.filename}/${state.typeName}`;
+      cache[key] = value;
     }
     const id = cache[key];
     state.name = id;
@@ -22,7 +23,8 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      cache[key] = key;
+      const value = `${state.publicPath || state.filename}/${state.typeName}`;
+      cache[key] = value;
     }
     const id = cache[key];
     state.name = id;
@@ -37,14 +39,15 @@ const typeSourceVisitor = {
     }
     const key = `${source}/${path.node.imported.name}`;
     if (!cache[key]) {
-      cache[key] = key;
+      const value = state.publicPath ? `${state.publicPath}/${path.node.imported.name}` : key;
+      cache[key] = value;
     }
     const id = cache[key];
     state.name = id;
   },
 };
 
-const getConcreteTypeName = (typeNode, filename, programPath) => {
+const getConcreteTypeName = (typeNode, filename, publicPath, programPath) => {
   if (t.isTSTypeReference(typeNode)) {
     const name = getPath([ 'typeName', 'name' ], typeNode);
     if (name == null) {
@@ -52,6 +55,7 @@ const getConcreteTypeName = (typeNode, filename, programPath) => {
     }
     const state = {
       filename,
+      publicPath,
       programPath,
       typeName: name,
       name: null,
@@ -69,17 +73,18 @@ const getConcreteTypeName = (typeNode, filename, programPath) => {
 
 const tsTypeAnnotationVisitor = {
   TSTypeAnnotation(path, state) {
-    const name = getConcreteTypeName(path.node.typeAnnotation, state.filename, state.programPath);
+    const name = getConcreteTypeName(path.node.typeAnnotation, state.filename, state.publicPath, state.programPath);
     state.key = name == null ? 'unknown' : name;
   },
 };
 
-const getFunctionParams = (path, deps, filename, programPath) => {
+const getFunctionParams = (path, deps, filename, publicPath, programPath) => {
   path.get('params').forEach((path) => {
     const ctx = {
       key: path.node.name,
       filename,
       programPath,
+      publicPath,
     };
     path.traverse(tsTypeAnnotationVisitor, ctx);
     deps.push(ctx.key);
@@ -88,9 +93,9 @@ const getFunctionParams = (path, deps, filename, programPath) => {
 
 const classConstructorVisitor = {
   ClassMethod(path, state) {
-    const { deps, filename, programPath } = state;
+    const { deps, filename, programPath, publicPath } = state;
     if (path.node.key.name === 'constructor') {
-      getFunctionParams(path, deps, filename, programPath);
+      getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
 };
@@ -103,43 +108,44 @@ const linkedVariableVisitor = {
     }
   },
   ArrowFunctionExpression(path, state) {
-    const { deps, name, filename, programPath } = state;
+    const { deps, name, filename, programPath, publicPath } = state;
     const { parent } = path;
     if (parent && parent.id && parent.id.name === name) {
-      getFunctionParams(path, deps, filename, programPath);
+      getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
   FunctionDeclaration(path, state) {
-    const { deps, name, filename, programPath } = state;
+    const { deps, name, filename, programPath, publicPath } = state;
     const { node } = path;
     if (node && node.id && node.id.name === name) {
-      getFunctionParams(path, deps, filename, programPath);
+      getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
   FunctionExpression(path, state) {
-    const { deps, name, filename, programPath } = state;
+    const { deps, name, filename, programPath, publicPath } = state;
     const { parent } = path;
     if (parent && parent.id && parent.id.name === name) {
-      getFunctionParams(path, deps, filename, programPath);
+      getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
 };
 
-const extractFunctionParameterTypes = (programPath, arg, filename) => {
+const extractFunctionParameterTypes = (programPath, arg, filename, publicPath) => {
   const deps = [];
   const ctx = {
     deps,
     programPath,
     filename,
+    publicPath,
   };
   if (t.isIdentifier(arg)) {
     programPath.traverse(linkedVariableVisitor, Object.assign({ name: arg.node.name }, ctx));
   } else if (t.isClass(arg)) {
     arg.traverse(classConstructorVisitor, ctx);
   } else if (t.isArrowFunctionExpression(arg)) {
-    getFunctionParams(arg, deps, filename, programPath);
+    getFunctionParams(arg, deps, filename, publicPath, programPath);
   } else if (t.isFunctionExpression(arg)) {
-    getFunctionParams(arg, deps, filename, programPath);
+    getFunctionParams(arg, deps, filename, publicPath, programPath);
   }
   return deps;
 };
