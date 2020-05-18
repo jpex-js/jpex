@@ -28,8 +28,13 @@ const resolve = (programPath, path, jpex, filename) => {
     return;
   }
 
-  if (args.length) {
+  if (args.length > 1) {
     return;
+  }
+  if (args.length === 1) {
+    if (!t.isArrayExpression(args[0])) {
+      return;
+    }
   }
 
   const type = getPath([ 'node', 'typeParameters', 'params', '0' ], path);

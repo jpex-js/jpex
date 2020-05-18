@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.2.1
+- support `useResolve` taking a dependency array
+
 ## 3.2.0
 - add `jpex.raw` function for extracting a factory function
 - add publicPath babel config option
