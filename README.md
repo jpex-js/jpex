@@ -258,9 +258,12 @@ Clears the cache. If you provide a name, it will only clear that factory's cache
 ```ts
 jpex.extend(config?: {
   lifecycle?: Lifecycle,
+  inherit?: boolean,
 }): Jpex
 ```
 Creates a new container. You will still have access to all factories registered on the parent container.
+
+If you pass `inherit: false` you will not get any of the parent's factories, you will just get a clearn instance.
 
 #### jpex.infer
 ```ts

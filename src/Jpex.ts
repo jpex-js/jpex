@@ -35,23 +35,21 @@ class Jpex implements IJpex {
     [key: string]: any,
   } = {};
 
-  constructor({
-    lifecycle,
-  }: SetupConfig = {}, parent?: IJpex) {
-    this.$$parent = parent;
-    this.$$defaultLifecycle = lifecycle ?? parent?.$$defaultLifecycle ?? Lifecycle.CLASS;
+  constructor(options: SetupConfig = {}, parent?: IJpex) {
+    const {
+      inherit = true,
+      lifecycle = (inherit ? parent?.$$defaultLifecycle : void 0) ?? Lifecycle.CLASS,
+    } = options;
 
-    if (parent) {
+    this.$$parent = parent;
+    this.$$defaultLifecycle = lifecycle;
+
+    if (parent && inherit) {
       this.$$factories = Object.create(parent.$$factories);
     }
   }
 
   extend(config?: SetupConfig): IJpex {
-    config = {
-      lifecycle: this.$$defaultLifecycle,
-      ...config,
-    };
-
     return new Jpex(config, this);
   }
 
