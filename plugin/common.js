@@ -11,7 +11,8 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const value = `${state.publicPath || state.filename}/${state.typeName}`;
+      const usePublicPath = state.publicPath && state.filename[0] === '.';
+      const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }
     const id = cache[key];
@@ -23,7 +24,8 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const value = `${state.publicPath || state.filename}/${state.typeName}`;
+      const usePublicPath = state.publicPath && state.filename[0] === '.';
+      const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }
     const id = cache[key];
@@ -39,7 +41,8 @@ const typeSourceVisitor = {
     }
     const key = `${source}/${path.node.imported.name}`;
     if (!cache[key]) {
-      const value = state.publicPath ? `${state.publicPath}/${path.node.imported.name}` : key;
+      const usePublicPath = state.publicPath && state.filename[0] === '.';
+      const value = usePublicPath ? `${state.publicPath}/${path.node.imported.name}` : key;
       cache[key] = value;
     }
     const id = cache[key];

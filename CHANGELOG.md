@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.2.3
+- publicPath should be operate on relative `.` imports
+
 ### 3.2.2
 - publicPath option was not working correctly for complex relative imports
 
