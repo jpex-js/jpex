@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.3.1
+- publicPath relative imports was checking the incorrect path property
+
 ### 3.3.0
 - add `jpex.extend` option: `inherit` (defaults to `true`). Determines if the extended container should inherit factories
 
