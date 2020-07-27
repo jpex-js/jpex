@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.3.3
+- array dependencies were being incorrectly flattened
+
 ### 3.3.1
 - publicPath relative imports was checking the incorrect path property
 

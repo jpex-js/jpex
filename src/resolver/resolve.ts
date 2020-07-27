@@ -132,7 +132,7 @@ export const resolveMany = <R extends any[]>(
       return value.concat(x);
     }
     const x = resolveOne(jpex, dependency, globalOptions, namedParameters, stack);
-    return value.concat(x);
+    return value.concat([ x ]);
   }, [] as Dependency[]);
 
   return values as R;

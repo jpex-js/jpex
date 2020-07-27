@@ -1,6 +1,6 @@
 {
   "name": "jpex",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Javascript Prototype Extension",
   "main": "dist/cjs/jpex.js",
   "module": "dist/es/jpex.js",
@@ -9,11 +9,9 @@
     "test": "ava",
     "coverage": "nyc ava",
     "lint": "eslint './src/**/*.ts' && tsc",
-    "build:cleanup": "rm -rf dist && rm -rf tmp",
-    "build:pre": "babel src --out-dir tmp --extensions \".ts\" --keep-file-extension --config-file ./prebuild.babel.config.js",
-    "build:js": "rollup --config ./rollup.config.js && cp -r tmp/types dist/es",
-    "build:post": "rm -rf tmp",
-    "build": "yarn build:cleanup && yarn build:pre && yarn build:js && yarn build:post",
+    "build:prepare": "rm -rf dist && rm -rf tmp",
+    "build:js": "rollup --config ./rollup.config.js && cp -r src/types dist/es",
+    "build": "yarn build:prepare && yarn build:js",
     "prepublishOnly": "yarn build"
   },
   "husky": {

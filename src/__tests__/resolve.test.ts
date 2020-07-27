@@ -137,3 +137,15 @@ test('throws if dependency is recurring', (t) => {
 
   t.throws(() => jpex.resolve('a'));
 });
+
+test('resolves array-like dependencies', (t) => {
+  const { jpex } = t.context;
+  type Keys = string[];
+  type Value = string;
+  jpex.constant<Keys>([ 'hello', 'world' ]);
+  jpex.factory<Value>((keys: Keys) => keys[0]);
+
+  const value = jpex.resolve<Value>();
+
+  t.is(value, 'hello');
+});

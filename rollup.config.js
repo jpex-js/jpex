@@ -4,7 +4,7 @@ import typescript from 'rollup-plugin-typescript2';
 import path from 'path';
 
 export default {
-  input: 'tmp/index.ts',
+  input: 'src/index.ts',
   output: [
     {
       file: 'dist/es/jpex.js',
@@ -23,31 +23,8 @@ export default {
       tsconfig: path.resolve('./tsconfig.json'),
     }),
     babel({
-      babelrc: false,
       exclude: 'node_modules/**',
       extensions: [ '.js', '.ts' ],
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: {
-              browsers: [
-                'last 2 versions',
-                'safari >= 7',
-              ],
-            },
-            modules: false,
-            useBuiltIns: false,
-            loose: true,
-          },
-        ],
-      ],
-      plugins: [
-        [ '@babel/plugin-proposal-nullish-coalescing-operator', { loose: true }],
-        [ '@babel/plugin-proposal-optional-chaining', { loose: true }],
-        [ '@babel/plugin-proposal-object-rest-spread', { useBuiltIns: true }],
-        '@babel/plugin-proposal-class-properties',
-      ],
     }),
   ],
 };
