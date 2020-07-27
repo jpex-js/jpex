@@ -14,8 +14,6 @@ script :
   - yarn coverage
   - yarn build
 
-  - yarn lcov-fix
 after_script :
   - codeclimate-test-reporter < lcov.info
-  - yarn travis-prepublish
   - npm publish

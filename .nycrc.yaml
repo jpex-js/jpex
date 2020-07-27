@@ -1,0 +1,15 @@
+lines: 60
+statements: 60
+branches : 60
+all: true
+include:
+  - "src/**/*.*"
+exclude:
+  - "src/**/*.test.*"
+  - "**/__tests__/**/*"
+report-dir: coverage
+check-coverage: true
+reporter:
+  - "html"
+  - "text-summary"
+  - "lcov"
