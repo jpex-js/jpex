@@ -1,3 +1,4 @@
+const { resolve } = require('path');
 const { declare } = require('@babel/helper-plugin-utils');
 const handleFactoryCalls = require('./factories');
 const handleResolveCall = require('./resolve');
@@ -25,6 +26,9 @@ const mainVisitor = {
       .join('.')
       .replace(process.cwd(), '');
     identifier = [].concat(identifier);
+    if (publicPath === true) {
+      publicPath = require(resolve('./package.json')).name;
+    }
     const opts = {
       identifier,
       filename,
