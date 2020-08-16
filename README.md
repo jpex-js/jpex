@@ -250,9 +250,12 @@ getStuff.encased(fakeHttp)('my-thing');
 
 #### jpex.clearCache
 ```ts
-(name?: string | string[]): void
+(): void
+<T>(): void
+(name: string): void
+(name: string[]): void
 ```
-Clears the cache. If you provide a name, it will only clear that factory's cache. If you omit name, it will clear the entire cache.
+Clears the cache. If you provide a name or a type, it will only clear that dependency's cache. If you omit name altogether, it will clear the entire cache.
 
 #### jpex.extend
 ```ts

@@ -7,6 +7,7 @@ const handleEncaseCall = require('./encase');
 const handleInferCall = require('./infer');
 const handleRawCall = require('./raw');
 const handleUseResolve = require('./useResolve');
+const handleClearCache = require('./clearCache');
 
 const mainVisitor = {
   CallExpression(path, state) {
@@ -36,6 +37,7 @@ const mainVisitor = {
     handleAliasCall(programPath, path, opts);
     handleInferCall(programPath, path, opts);
     handleRawCall(programPath, path, opts);
+    handleClearCache(programPath, path, opts);
     handleUseResolve(programPath, path, opts);
   },
 };
