@@ -134,6 +134,8 @@ plugins: [
 ]
 ```
 
+You can also set this to `true` which will automatically use your library's `name` property from its `package.json` as the public path.
+
 There are a number of caveats to this method, however:
 - The plugin only supports named types so you can't do `jpex.factory<{}>()`
 - There is not yet a concept of extending types, so if you do `interface Bah extends Foo {}` you can't then try to resolve `Foo` and expect to be given `Bah`, they are treated as 2 separate things

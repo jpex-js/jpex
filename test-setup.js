@@ -5,7 +5,9 @@ browserEnv();
 babel({
   extensions: [ '.js', '.ts' ],
   plugins: [
-    [ './babel-plugin', { identifier: [ 'jpex', 'jpex2', 'jpex3', 'base', 'base2' ]}],
+    [ './babel-plugin', {
+      identifier: [ 'jpex', 'jpex2', 'jpex3', 'base', 'base2' ],
+    }],
     [ '@babel/plugin-proposal-object-rest-spread', { useBuiltIns: true }],
     '@babel/plugin-proposal-class-properties',
   ],
