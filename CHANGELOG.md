@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.4.0
+- clearCache now supports type inference
+
 ### 3.3.3
 - array dependencies were being incorrectly flattened
 

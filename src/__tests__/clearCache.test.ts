@@ -68,6 +68,23 @@ test('clears specific factories', (t) => {
   t.true(jpex.$$factories.c.resolved);
 });
 
+test('clears a cache using type inference', (t) => {
+  type A = string;
+  type B = string;
+  jpex.factory<A>(() => 'a').lifecycle.application();
+  jpex.factory<B>(() => 'b').lifecycle.application();
+  jpex.resolve<A>();
+  jpex.resolve<B>();
+
+  t.true(jpex.$$factories[jpex.infer<A>()].resolved);
+  t.true(jpex.$$factories[jpex.infer<B>()].resolved);
+
+  jpex.clearCache<A>();
+
+  t.false(jpex.$$factories[jpex.infer<A>()].resolved);
+  t.true(jpex.$$factories[jpex.infer<B>()].resolved);
+});
+
 test('should clear Class-based caches', (t) => {
   jpex.factory('a', () => ({})).lifecycle.class();
   jpex.resolve('a');

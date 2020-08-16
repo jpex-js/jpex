@@ -52,7 +52,7 @@ export interface JpexInstance {
   raw<T = any>(name: Dependency): AnyFunction<T>,
   raw<T>(): AnyFunction<T>,
 
-  clearCache(): void,
+  clearCache<T = any>(): void,
   clearCache(name: string): void,
   clearCache(names: string[]): void,
 
