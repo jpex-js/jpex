@@ -20,7 +20,8 @@ export const isNode = (() => {
   let _process; // eslint-disable-line no-underscore-dangle
 
   try {
-    _process = eval('process'); // eslint-disable-line no-eval
+    // eslint-disable-next-line no-new-func
+    _process = new Function('return process')();
   } catch (e) {
     // No process
   }
@@ -29,9 +30,10 @@ export const isNode = (() => {
   return typeof _process === 'object' && _process.toString && _process.toString() === '[object process]';
 })();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare const require: any;
 export const unsafeRequire = (target: string) => {
-  return eval('require.main.require(target)'); // eslint-disable-line no-eval
+  // eslint-disable-next-line no-new-func
+  return new Function('require', 'target', 'return require.main.require(target)')(require, target);
 };
 
 const REG_COMMENTS = /\/\/(.*?)\n|\/\*([\S\s]*?)\*\//g;
