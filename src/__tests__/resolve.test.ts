@@ -1,5 +1,6 @@
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
+import fs from 'fs';
 import base, { JpexInstance, Options } from '..';
 
 const test: TestInterface<{
@@ -168,4 +169,50 @@ test('resolves array-like dependencies', (t) => {
   const value = jpex.resolve<Value>();
 
   t.is(value, 'hello');
+});
+
+test('resolves a node module', (t) => {
+  const { jpex } = t.context;
+
+  const value = jpex.resolve('fs');
+
+  t.is(value, fs);
+});
+
+test('prefers a registered dependency over a node module', (t) => {
+  const { jpex } = t.context;
+  const fakeFs = {};
+  jpex.factory('fs', () => fakeFs as any);
+
+  const value = jpex.resolve('fs');
+
+  t.not(value, fs);
+  t.is(value, fakeFs);
+});
+
+test('resolves a global property', (t) => {
+  const { jpex } = t.context;
+
+  const value = jpex.resolve('window');
+
+  t.is(value, window);
+});
+
+test('resolves a global type', (t) => {
+  const { jpex } = t.context;
+
+  const value = jpex.resolve<Window>();
+
+  t.is(value, window);
+});
+
+test('prefers a registered dependency over a global', (t) => {
+  const { jpex } = t.context;
+  const fakeWindow = {};
+  jpex.factory<Window>(() => fakeWindow as any);
+
+  const value = jpex.resolve<Window>();
+
+  t.not(value, window);
+  t.is(value, fakeWindow);
 });

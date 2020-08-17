@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 4.0.0
+- global dependencies such as `Window` and `Document` are now automatically resolved (unless you register your own dependency of the same name)
+
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations
 
