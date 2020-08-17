@@ -1,6 +1,6 @@
 {
   "name": "jpex",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "description": "Javascript Prototype Extension",
   "main": "dist/cjs/jpex.js",
   "module": "dist/es/jpex.js",
