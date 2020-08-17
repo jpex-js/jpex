@@ -8,10 +8,11 @@
   "scripts": {
     "test": "ava",
     "coverage": "nyc ava",
-    "lint": "eslint './src/**/*.ts' && tsc",
-    "build:prepare": "rm -rf dist && rm -rf tmp",
-    "build:js": "rollup --config ./rollup.config.js && cp -r src/types dist/es",
-    "build": "yarn build:prepare && yarn build:js",
+    "lint": "eslint './src/**/*.ts' && tsc --noEmit",
+    "build:prepare": "rm -rf dist",
+    "build:js": "rollup --config ./rollup.config.js",
+    "build:ts": "tsc -d --outDir dist/es --emitDeclarationOnly ./src/index.ts",
+    "build": "yarn build:prepare && yarn build:js && yarn build:ts",
     "prepublishOnly": "yarn build"
   },
   "husky": {
@@ -69,7 +70,6 @@
     "rollup": "^2.23.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.27.1",
     "sinon": "^9.0.2",
     "typescript": "^3.8.2"
   }

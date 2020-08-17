@@ -5,7 +5,6 @@
     "allowJs": false,
     "noImplicitAny": true,
     "moduleResolution": "node",
-    "noEmit": true,
     "alwaysStrict": true,
     "declaration": true,
     "esModuleInterop": true,

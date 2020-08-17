@@ -11,7 +11,7 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const usePublicPath = state.publicPath && path.parent.source.value[0] === '.';
+      const usePublicPath = state.publicPath && path.parent.source && path.parent.source.value[0] === '.';
       const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }
@@ -24,7 +24,7 @@ const typeSourceVisitor = {
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const usePublicPath = state.publicPath && path.parent.source.value[0] === '.';
+      const usePublicPath = state.publicPath && path.parent.source && path.parent.source.value[0] === '.';
       const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }

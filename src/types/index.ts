@@ -1,5 +1,6 @@
 import { Lifecycle } from '../constants';
 export * from './JpexInstance';
+export * from './BuiltIns';
 
 export type AnyFunction<R = any> = (...args: any[]) => R;
 export interface AnyConstructor<T = any> {

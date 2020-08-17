@@ -3,6 +3,7 @@ Change Log
 ### 3.4.0
 - clearCache now supports type inference
 - you can now pass `publicPath: true` and it will use the `name` property of your app's `package.json` as the public path
+- built in deps `$options` `$namedParameters` and `$resolve` now have corresponding type exports `Options` `NamedParameters` and `Resolve`
 
 ### 3.3.3
 - array dependencies were being incorrectly flattened
