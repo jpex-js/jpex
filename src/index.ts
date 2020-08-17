@@ -17,12 +17,12 @@ registerResolveFactory(jpex);
 
 export {
   jpex,
+  Lifecycle,
 };
 
 export type {
   JpexInstance,
   SetupConfig,
-  Lifecycle,
   Options,
   NamedParameters,
   Resolve,

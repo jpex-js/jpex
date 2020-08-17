@@ -4,3 +4,5 @@ export enum Lifecycle {
   INSTANCE = 3,
   NONE = 4,
 }
+
+export const GLOBAL_TYPE_PREFIX = 'type:global:';
