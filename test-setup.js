@@ -7,6 +7,7 @@ babel({
   plugins: [
     [ './babel-plugin', {
       identifier: [ 'jpex', 'jpex2', 'jpex3', 'base', 'base2' ],
+      publicPath: true,
     }],
     [ '@babel/plugin-proposal-object-rest-spread', { useBuiltIns: true }],
     '@babel/plugin-proposal-class-properties',

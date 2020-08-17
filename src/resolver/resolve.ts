@@ -2,6 +2,8 @@ import {
   JpexInstance,
   Dependency,
   Definition,
+  Options,
+  NamedParameters,
 } from '../types';
 import JpexError from '../Error';
 import {
@@ -48,8 +50,10 @@ export const resolveOne = <R extends any>(
   // Special keys
   switch (name) {
   case '$options':
+  case jpex.infer<Options>():
     return localOptions;
   case '$namedParameters':
+  case jpex.infer<NamedParameters>():
     // @ts-ignore
     return namedParameters;
   default:

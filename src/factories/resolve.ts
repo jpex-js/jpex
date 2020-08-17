@@ -1,4 +1,4 @@
-import { JpexInstance, Dependency } from '../types';
+import { JpexInstance, Dependency, Resolve } from '../types';
 import { resolve, resolveDependencies } from '../resolver';
 
 interface NamedParameters {
@@ -31,4 +31,5 @@ export default (jpex: JpexInstance) => {
       );
     };
   });
+  jpex.alias<Resolve>('$resolve');
 };

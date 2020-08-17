@@ -1,6 +1,6 @@
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '..';
+import base, { JpexInstance, Options } from '..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -71,6 +71,26 @@ test('resolves object dependencies', (t) => {
   jpex.factory<B>([{ [jpex.infer<A>()]: 'abc' }], (a) => {
     return a;
   });
+  const result = jpex.resolve<B>();
+
+  t.is(result, 'abc');
+});
+
+test('resolves object depndencies (inferred)', (t) => {
+  const { jpex } = t.context;
+
+  type A = string;
+  type B = string;
+  jpex.factory<A>(($options: Options<string>) => $options);
+  jpex.factory<B>(
+    [
+      {
+        [jpex.infer<A>()]: 'abc',
+      },
+    ],
+    (a: A) => a
+  );
+
   const result = jpex.resolve<B>();
 
   t.is(result, 'abc');

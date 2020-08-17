@@ -1,7 +1,5 @@
 import babel from 'rollup-plugin-babel';
 import localResolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript2';
-import path from 'path';
 
 export default {
   input: 'src/index.ts',
@@ -18,9 +16,6 @@ export default {
   plugins: [
     localResolve({
       extensions: [ '.js', '.ts' ],
-    }),
-    typescript({
-      tsconfig: path.resolve('./tsconfig.json'),
     }),
     babel({
       exclude: 'node_modules/**',
