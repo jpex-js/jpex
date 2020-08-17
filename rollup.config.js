@@ -7,10 +7,12 @@ export default {
     {
       file: 'dist/es/jpex.js',
       format: 'es',
+      exports: 'named',
     },
     {
       file: 'dist/cjs/jpex.js',
       format: 'cjs',
+      exports: 'named',
     },
   ],
   plugins: [
