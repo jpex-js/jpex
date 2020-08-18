@@ -34,7 +34,7 @@ export const resolveOne = <R extends any>(
   }
 
   // Optional dependencies
-  let optional = false;
+  let optional = jpex.$$config.optional;
   const optionalCheck = checkOptional(name);
   if (optionalCheck) {
     console.warn('jpex: __ optional syntax has been deprecated and will be removed in v4.0.0');

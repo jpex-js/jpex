@@ -1,5 +1,5 @@
 import { Lifecycle } from '../constants';
-import { Wrapper } from '../deps/wrapper';
+import { Wrapper } from '../registers/wrapper';
 import {
   AnyFunction,
   Dependency,
@@ -62,11 +62,16 @@ export interface JpexInstance {
   infer<T>(): string,
 
   $$parent: JpexInstance,
-  $$defaultLifecycle: Lifecycle,
   $$factories: {
     [key: string]: Factory,
   },
   $$resolved: {
     [key: string]: any,
+  },
+  $$config: {
+    lifecycle: Lifecycle,
+    optional: boolean,
+    nodeModules: boolean,
+    globals: boolean,
   },
 }

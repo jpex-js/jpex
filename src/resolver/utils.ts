@@ -31,6 +31,9 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   if (!isNode) {
     return;
   }
+  if (!jpex.$$config.nodeModules) {
+    return;
+  }
 
   try {
     const value = unsafeRequire(target);
@@ -75,6 +78,10 @@ const getGlobalProperty = (name: string) => {
   }
 };
 const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
+  if (!jpex.$$config.globals) {
+    return;
+  }
+
   const value = getGlobalProperty(name);
 
   if (value !== void 0) {
@@ -87,12 +94,12 @@ export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) 
   if (typeof name !== 'string') {
     throw new JpexError(`Name must be a string, but recevied ${typeof name}`);
   }
-  let factory: Factory = jpex.$$resolved[name as string];
+  let factory: Factory = jpex.$$resolved[name];
   if (isValidFactory(factory)) {
     return factory;
   }
 
-  factory = jpex.$$factories[name as string];
+  factory = jpex.$$factories[name];
   if (isValidFactory(factory)) {
     return factory;
   }
@@ -102,7 +109,7 @@ export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) 
     return factory;
   }
 
-  factory = getFromNodeModules(jpex, name as string);
+  factory = getFromNodeModules(jpex, name);
   if (isValidFactory(factory)) {
     return factory;
   }

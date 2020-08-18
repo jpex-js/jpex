@@ -1,5 +1,5 @@
 import Jpex from './Jpex';
-import { resolve as registerResolveFactory } from './factories';
+import { resolve as registerResolveFactory } from './built-ins';
 import type {
   JpexInstance,
   SetupConfig,
