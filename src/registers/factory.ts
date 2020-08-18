@@ -1,6 +1,6 @@
 import { JpexInstance, Factory } from '../types';
 import wrapper, { Wrapper } from './wrapper';
-import { extractParameters, isString, isFunction } from '../utils';
+import { isString, isFunction } from '../utils';
 
 function factory(
   jpex: JpexInstance,
@@ -21,7 +21,7 @@ function factory(
   if (dependencies) {
     dependencies = [].concat(dependencies);
   } else {
-    dependencies = extractParameters(fn);
+    dependencies = [];
   }
   if (!dependencies.length) {
     dependencies = null;

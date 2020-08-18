@@ -1,5 +1,3 @@
-import { AnyFunction } from '../types';
-
 const getType = (obj: any) => Object.prototype.toString.call(obj);
 export const isObject = (obj: any): obj is object => getType(obj) === '[object Object]';
 
@@ -35,42 +33,6 @@ const doUnsafeRequire = new Function('require', 'target', 'return require.main.r
 export const unsafeRequire = (target: string) => {
   // eslint-disable-next-line no-eval
   return doUnsafeRequire(eval('require'), target);
-};
-
-const REG_COMMENTS = /\/\/(.*?)\n|\/\*([\S\s]*?)\*\//g;
-export const extractParameters = (fn: AnyFunction) => {
-  const CHR_OPEN = '(';
-  const CHR_CLOSE = ')';
-  const CHR_ARROW = '=>';
-  const CHR_DELIMETER = ',';
-
-  let str = fn.toString();
-
-  // Remove comments
-  str = str.replace(REG_COMMENTS, '');
-
-  // Find the start and end of the parameters
-  const open = str.indexOf(CHR_OPEN);
-  const close = str.indexOf(CHR_CLOSE);
-  const arrow = str.indexOf(CHR_ARROW);
-
-  // Arrow functions may or may not contain brackets
-  if (arrow > -1 && (arrow < open || open < 0)) {
-    str = str.substring(0, arrow).trim();
-    if (!str) {
-      return [];
-    }
-    return [ str ];
-  }
-
-  // Pull out the parameters
-  str = str.substring(open + 1, close);
-
-  if (!str) {
-    return [];
-  }
-
-  return str.split(CHR_DELIMETER).map((s) => s.trim());
 };
 
 interface GetLast {

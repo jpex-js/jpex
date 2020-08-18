@@ -1,21 +1,20 @@
 import { JpexInstance, Dependency, AnyFunction } from './types';
-import { extractParameters } from './utils';
 import { allResolved, resolveDependencies } from './resolver';
 
-const encase = (
+const encase = <F extends AnyFunction, G extends AnyFunction<F>>(
   jpex: JpexInstance,
-  _deps: string[],
+  _deps: any,
   _fn?: any,
 ): any => {
-  const [ dependencies, fn ] = ((): [ Dependency[], any ] => {
+  const [ dependencies, fn ] = ((): [ Dependency[], G ] => {
     if (typeof _deps === 'function') {
-      return [ extractParameters(_deps), _deps ];
+      return [ [], _deps ];
     }
     return [ _deps, _fn ];
   })();
   let result: AnyFunction;
 
-  const encased = function(...args: Parameters<any>) {
+  const encased = function(...args: Parameters<F>) {
     /* eslint-disable no-invalid-this */
     if (result && allResolved(jpex, dependencies)) {
       return result.apply(this, args);

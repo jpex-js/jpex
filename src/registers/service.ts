@@ -1,5 +1,5 @@
 import { JpexInstance } from '../types';
-import { extractParameters, instantiate, isFunction } from '../utils';
+import { instantiate, isFunction } from '../utils';
 
 function service(
   jpex: JpexInstance,
@@ -18,7 +18,7 @@ function service(
   if (dependencies) {
     dependencies = [].concat(dependencies);
   } else {
-    dependencies = extractParameters(fn);
+    dependencies = [];
   }
 
   function factory(...args: any[]) {

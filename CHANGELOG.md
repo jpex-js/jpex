@@ -4,6 +4,11 @@ Change Log
 - global dependencies such as `Window` and `Document` are now automatically resolved (unless you register your own dependency of the same name)
 - you can now control dependency resolution with config flags `nodeModules` and `globals`
 - you can also specify whether dependencies should be optional-by-default with an `optional` flag
+- dependencies are no longer determined by reading the factory function. Either use `TS` inference, or explicitly pass an array of deps
+
+#### Breaking Changes
+- if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable
+- You can no longer do `jpex.factory('foo', (depA, depB) => { ... })` as we no longer parse the function and extract the dependencies
 
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations
