@@ -1,7 +1,6 @@
 import {
   JpexInstance as IJpex,
   AnyFunction,
-  Dependency,
   Factory,
   SetupConfig,
 } from './types';
@@ -13,20 +12,17 @@ import {
   factory,
   service,
   alias as createAlias,
-} from './deps';
+} from './registers';
 import {
   resolve,
-  resolveDependencies,
-  allResolved,
   getFactory,
 } from './resolver';
-import {
-  extractParameters,
-} from './utils';
+import encase from './encase';
+import clearCache from './clearCache';
 
 class Jpex implements IJpex {
   decorate: any;
-  $$defaultLifecycle: Lifecycle;
+  $$config: IJpex['$$config'];
   $$parent: IJpex;
   $$factories: {
     [key: string]: Factory,
@@ -38,11 +34,17 @@ class Jpex implements IJpex {
   constructor(options: SetupConfig = {}, parent?: IJpex) {
     const {
       inherit = true,
-      lifecycle = (inherit ? parent?.$$defaultLifecycle : void 0) ?? Lifecycle.CLASS,
+      ...config
     } = options;
 
     this.$$parent = parent;
-    this.$$defaultLifecycle = lifecycle;
+    this.$$config = {
+      lifecycle: inherit ? parent?.$$config.lifecycle : void 0 ?? Lifecycle.CLASS,
+      globals: true,
+      nodeModules: true,
+      optional: false,
+      ...config,
+    };
 
     if (parent && inherit) {
       this.$$factories = Object.create(parent.$$factories);
@@ -76,45 +78,12 @@ class Jpex implements IJpex {
     return getFactory(this, name, false).fn;
   }
 
-  encase<F extends AnyFunction, G extends AnyFunction<F>>(_deps: any, _fn?: any): any {
-    const [ dependencies, fn ] = ((): [ Dependency[], G ] => {
-      if (typeof _deps === 'function') {
-        return [ extractParameters(_deps), _deps ];
-      }
-      return [ _deps, _fn ];
-    })();
-    let result: AnyFunction;
-    const jpex = this;
-
-    const encased = function(...args: Parameters<F>) {
-      /* eslint-disable no-invalid-this */
-      if (result && allResolved(jpex, dependencies)) {
-        return result.apply(this, args);
-      }
-      const deps = resolveDependencies(jpex, { dependencies });
-
-      result = fn.apply(this, deps);
-
-      return result.apply(this, args);
-      /* eslint-enable */
-    };
-    encased.encased = fn;
-
-    return encased;
+  encase<F extends AnyFunction, G extends AnyFunction<F>>(deps: any, fn?: any): any {
+    return encase(this, deps, fn);
   }
 
   clearCache(names?: any): any {
-    names = [].concat(names || []);
-    for (const key in this.$$factories) {
-      if (!names.length || names.indexOf(key) > -1) {
-        this.$$factories[key].resolved = false;
-      }
-    }
-    for (const key in this.$$resolved) {
-      if (!names.length || names.indexOf(key) > -1) {
-        delete this.$$resolved[key];
-      }
-    }
+    return clearCache(this, names);
   }
 
   infer() {

@@ -30,7 +30,7 @@ function factory(
   const f: Factory = {
     fn,
     dependencies,
-    lifecycle: jpex.$$defaultLifecycle,
+    lifecycle: jpex.$$config.lifecycle,
   };
   jpex.$$factories[name as string] = f;
 

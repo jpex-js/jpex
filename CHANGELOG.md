@@ -2,6 +2,8 @@ Change Log
 ==========
 ### 4.0.0
 - global dependencies such as `Window` and `Document` are now automatically resolved (unless you register your own dependency of the same name)
+- you can now control dependency resolution with config flags `nodeModules` and `globals`
+- you can also specify whether dependencies should be optional-by-default with an `optional` flag
 
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations

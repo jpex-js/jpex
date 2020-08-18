@@ -8,8 +8,11 @@ export interface AnyConstructor<T = any> {
 }
 
 export interface SetupConfig {
-  lifecycle?: Lifecycle,
   inherit?: boolean,
+  lifecycle?: Lifecycle,
+  optional?: boolean,
+  nodeModules?: boolean,
+  globals?: boolean,
 }
 
 export type Dependency = string | { [key: string]: any };
