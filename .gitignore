@@ -2,6 +2,7 @@
 dist/
 tmp/
 lcov.info
+/babel-plugin.js
 
 # Code Coverage
 coverage

@@ -1,27 +1,7 @@
-import babel from 'rollup-plugin-babel';
-import localResolve from 'rollup-plugin-node-resolve';
+import plugin from './rollup.config.plugin';
+import src from './rollup.config.src';
 
-export default {
-  input: 'src/index.ts',
-  output: [
-    {
-      file: 'dist/es/jpex.js',
-      format: 'es',
-      exports: 'named',
-    },
-    {
-      file: 'dist/cjs/jpex.js',
-      format: 'cjs',
-      exports: 'named',
-    },
-  ],
-  plugins: [
-    localResolve({
-      extensions: [ '.js', '.ts' ],
-    }),
-    babel({
-      exclude: 'node_modules/**',
-      extensions: [ '.js', '.ts' ],
-    }),
-  ],
-};
+export default [
+  plugin,
+  src,
+];

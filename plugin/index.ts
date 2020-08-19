@@ -1,16 +1,27 @@
-const { resolve } = require('path');
-const { declare } = require('@babel/helper-plugin-utils');
-const handleFactoryCalls = require('./factories');
-const handleResolveCall = require('./resolve');
-const handleResolveWithCall = require('./resolveWith');
-const handleAliasCall = require('./alias');
-const handleEncaseCall = require('./encase');
-const handleInferCall = require('./infer');
-const handleRawCall = require('./raw');
-const handleUseResolve = require('./useResolve');
-const handleClearCache = require('./clearCache');
+import { resolve } from 'path';
+import { declare } from '@babel/helper-plugin-utils';
+import handleFactoryCalls from './factories';
+import handleResolveCall from './resolve';
+import handleResolveWithCall from './resolveWith';
+import handleAliasCall from './alias';
+import handleEncaseCall from './encase';
+import handleInferCall from './infer';
+import handleRawCall from './raw';
+import handleUseResolve from './useResolve';
+import handleClearCache from './clearCache';
+import { Visitor, NodePath } from '@babel/core';
 
-const mainVisitor = {
+declare const require: any;
+declare const process: any;
+
+const mainVisitor: Visitor<{
+  programPath: NodePath<any>,
+  filename: string,
+  opts: {
+    identifier: string[],
+    publicPath: string | boolean,
+  },
+}> = {
   CallExpression(path, state) {
     const { programPath } = this;
     let {
@@ -32,7 +43,7 @@ const mainVisitor = {
     const opts = {
       identifier,
       filename,
-      publicPath,
+      publicPath: (publicPath as string),
     };
     handleFactoryCalls(programPath, path, opts);
     handleResolveCall(programPath, path, opts);
@@ -46,13 +57,13 @@ const mainVisitor = {
   },
 };
 
-module.exports = declare(
-  (api) => {
+export default declare(
+  (api: any) => {
     api.assertVersion(7);
 
     return {
       visitor: {
-        Program(programPath, state) {
+        Program(programPath: NodePath<any>, state: any) {
           programPath.traverse(mainVisitor, {
             programPath,
             opts: state.opts,
