@@ -1,6 +1,11 @@
-const { types: t } = require('@babel/core');
-const { getPath } = require('./utils');
-const { extractFunctionParameterTypes, getConcreteTypeName } = require('./common');
+import { types as t, NodePath } from '@babel/core';
+import {
+  extractFunctionParameterTypes,
+  getConcreteTypeName,
+  isJpexCall,
+  State,
+  getTypeParameter,
+} from './common';
 
 const FACTORY_METHODS = [
   'factory',
@@ -8,17 +13,19 @@ const FACTORY_METHODS = [
   'constant',
 ];
 
-const factories = (programPath, path, { identifier, filename, publicPath }) => {
+const factories = (
+  programPath: NodePath<t.Program>,
+  path: NodePath<any>,
+  {
+    identifier,
+    filename,
+    publicPath,
+  }: State,
+) => {
   const callee = path.node.callee;
   const args = path.node.arguments;
 
-  const isJpexCall = (
-    t.isMemberExpression(callee) &&
-    identifier.includes(callee.object.name) &&
-    FACTORY_METHODS.includes(callee.property.name)
-  );
-
-  if (!isJpexCall) {
+  if (!isJpexCall(path, identifier, FACTORY_METHODS)) {
     return;
   }
 
@@ -26,7 +33,7 @@ const factories = (programPath, path, { identifier, filename, publicPath }) => {
   // if there is only 1 arg then we can't possibly have been given the name
   // if the first arg isn't a string, then we also don't have a name
   if (args.length === 1 || !t.isStringLiteral(args[0])) {
-    const type = getPath([ 'node', 'typeParameters', 'params', '0' ], path);
+    const type = getTypeParameter(path);
 
     const name = getConcreteTypeName(type, filename, publicPath, programPath);
     if (name != null) {
@@ -38,7 +45,7 @@ const factories = (programPath, path, { identifier, filename, publicPath }) => {
   // ignore constants as there are no dependencies
   // if the second parameter isn't an array of dependencies, it means it's inferred
   if (callee.property.name !== 'constant' && !t.isArrayExpression(path.node.arguments[1])) {
-    const arg = path.get('arguments.1');
+    const arg = path.get('arguments.1') as NodePath<any>;
     const deps = extractFunctionParameterTypes(programPath, arg, filename, publicPath);
     if (deps.length) {
       path.node.arguments.splice(1, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
@@ -46,4 +53,4 @@ const factories = (programPath, path, { identifier, filename, publicPath }) => {
   }
 };
 
-module.exports = factories;
+export default factories;

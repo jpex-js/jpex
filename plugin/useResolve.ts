@@ -1,11 +1,17 @@
-const { types: t } = require('@babel/core');
-const { getPath } = require('./utils');
-const { getConcreteTypeName } = require('./common');
+import { types as t, Visitor, NodePath } from '@babel/core';
+import {
+  getConcreteTypeName,
+  State,
+  getTypeParameter,
+} from './common';
 
-const importVisitor = {
+const importVisitor: Visitor<{
+  found: boolean,
+}> = {
   ImportSpecifier(path, state) {
     if (path.node.imported.name === 'useResolve') {
       if (path.node.local.name === 'useResolve') {
+        // @ts-ignore
         if (path.parent.source.value === 'react-jpex') {
           state.found = true;
         }
@@ -14,11 +20,18 @@ const importVisitor = {
   },
 };
 
-const resolve = (programPath, path, { filename, publicPath }) => {
+const useResolve = (
+  programPath: NodePath<t.Program>,
+  path: NodePath<any>,
+  {
+    filename,
+    publicPath,
+  }: State,
+) => {
   const callee = path.node.callee;
   const args = path.node.arguments;
 
-  if (!callee || callee.name !== 'useResolve') {
+  if (callee?.name !== 'useResolve') {
     return;
   }
   const state = { found: false };
@@ -37,7 +50,7 @@ const resolve = (programPath, path, { filename, publicPath }) => {
     }
   }
 
-  const type = getPath([ 'node', 'typeParameters', 'params', '0' ], path);
+  const type = getTypeParameter(path);
   const name = getConcreteTypeName(type, filename, publicPath, programPath);
   if (name != null) {
     args.unshift(t.stringLiteral(name));
@@ -46,4 +59,4 @@ const resolve = (programPath, path, { filename, publicPath }) => {
   }
 };
 
-module.exports = resolve;
+export default useResolve;

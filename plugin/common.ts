@@ -1,17 +1,54 @@
-const { types: t } = require('@babel/core');
-const { join, dirname } = require('path');
-const { getPath } = require('./utils');
-const cache = require('./cache');
+import { types as t, Visitor, NodePath } from '@babel/core';
+import { join, dirname } from 'path';
+import cache from './cache';
 
-const typeSourceVisitor = {
+export interface State {
+  identifier: string[],
+  filename: string,
+  publicPath: string,
+}
+
+export const isJpexCall = (
+  path: NodePath<any>,
+  identifier: string[],
+  key: string | string[],
+) => {
+  const callee = path.node.callee;
+  if (!t.isMemberExpression(callee)) {
+    return false;
+  }
+  // @ts-ignore
+  if (!identifier.includes(callee.object.name)) {
+    return false;
+  }
+  if (Array.isArray(key)) {
+    // @ts-ignore
+    return key.includes(callee.property.name);
+  }
+  // @ts-ignore
+  return callee.property.name === key;
+};
+
+export const getTypeParameter = (path: NodePath<any>, i = 0): t.Node => {
+  return path.node?.typeParameters?.params?.[i];
+};
+
+const typeSourceVisitor: Visitor<{
+  typeName: string,
+  filename: string,
+  publicPath: string,
+  name: string,
+}> = {
   TSType(path, state) {
-    const parentName = getPath([ 'parent', 'id', 'name' ], path);
+    // FIXME: I can't work out what type of node `parent` should be
+    const parent = path.parent as any;
+    const parentName: string = parent?.id?.name;
     if (parentName !== state.typeName) {
       return;
     }
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const usePublicPath = state.publicPath && path.parent.source && path.parent.source.value[0] === '.';
+      const usePublicPath = state.publicPath && parent?.source?.value?.[0] === '.';
       const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }
@@ -22,9 +59,11 @@ const typeSourceVisitor = {
     if (path.node.id.name !== state.typeName) {
       return;
     }
+    // FIXME: not sure what type of node parent is
+    const parent = path.parent as any;
     const key = `${state.filename}/${state.typeName}`;
     if (!cache[key]) {
-      const usePublicPath = state.publicPath && path.parent.source && path.parent.source.value[0] === '.';
+      const usePublicPath = state.publicPath && parent?.source?.value?.[0] === '.';
       const value = `${usePublicPath ? state.publicPath : state.filename}/${state.typeName}`;
       cache[key] = value;
     }
@@ -35,13 +74,14 @@ const typeSourceVisitor = {
     if (path.node.local.name !== state.typeName) {
       return;
     }
-    let source = path.parent.source.value;
-    if (path.parent.source.value.charAt(0) === '.') {
+    const parent = path.parent as any;
+    let source: string = parent.source.value;
+    if (parent.source.value.charAt(0) === '.') {
       source = join(dirname(state.filename), source);
     }
     const key = `${source}/${path.node.imported.name}`;
     if (!cache[key]) {
-      const usePublicPath = state.publicPath && path.parent.source.value[0] === '.';
+      const usePublicPath = state.publicPath && parent?.source?.value?.[0] === '.';
       const value = usePublicPath ? `${state.publicPath}/${path.node.imported.name}` : key;
       cache[key] = value;
     }
@@ -50,9 +90,15 @@ const typeSourceVisitor = {
   },
 };
 
-const getConcreteTypeName = (typeNode, filename, publicPath, programPath) => {
+export const getConcreteTypeName = (
+  typeNode: t.Node,
+  filename: string,
+  publicPath: string,
+  programPath: NodePath<t.Program>,
+) => {
   if (t.isTSTypeReference(typeNode)) {
-    const name = getPath([ 'typeName', 'name' ], typeNode);
+    // @ts-ignore
+    const name: string = typeNode?.typeName?.name;
     if (name == null) {
       return null;
     }
@@ -61,7 +107,7 @@ const getConcreteTypeName = (typeNode, filename, publicPath, programPath) => {
       publicPath,
       programPath,
       typeName: name,
-      name: null,
+      name: null as string,
     };
     programPath.traverse(typeSourceVisitor, state);
     if (state.name) {
@@ -74,15 +120,32 @@ const getConcreteTypeName = (typeNode, filename, publicPath, programPath) => {
   }
 };
 
-const tsTypeAnnotationVisitor = {
+const tsTypeAnnotationVisitor: Visitor<{
+  key: string,
+  filename: string,
+  publicPath: string,
+  programPath: NodePath<t.Program>
+}> = {
   TSTypeAnnotation(path, state) {
-    const name = getConcreteTypeName(path.node.typeAnnotation, state.filename, state.publicPath, state.programPath);
+    const name = getConcreteTypeName(
+      path.node.typeAnnotation,
+      state.filename,
+      state.publicPath,
+      state.programPath,
+    );
     state.key = name == null ? 'unknown' : name;
   },
 };
 
-const getFunctionParams = (path, deps, filename, publicPath, programPath) => {
-  path.get('params').forEach((path) => {
+const getFunctionParams = (
+  // eslint-disable-next-line max-len
+  path: NodePath<t.ClassMethod> | NodePath<t.ArrowFunctionExpression> | NodePath<t.FunctionDeclaration> | NodePath<t.FunctionExpression>,
+  deps: string[],
+  filename: string,
+  publicPath: string,
+  programPath: NodePath<t.Program>,
+) => {
+  [].concat(path.get('params')).forEach((path) => {
     const ctx = {
       key: path.node.name,
       filename,
@@ -94,16 +157,28 @@ const getFunctionParams = (path, deps, filename, publicPath, programPath) => {
   });
 };
 
-const classConstructorVisitor = {
+const classConstructorVisitor: Visitor<{
+  deps: string[],
+  filename: string,
+  programPath: NodePath<t.Program>,
+  publicPath: string,
+}> = {
   ClassMethod(path, state) {
     const { deps, filename, programPath, publicPath } = state;
+    // @ts-ignore
     if (path.node.key.name === 'constructor') {
       getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
 };
 
-const linkedVariableVisitor = {
+const linkedVariableVisitor: Visitor<{
+  deps: string[],
+  name: string,
+  filename: string,
+  publicPath: string,
+  programPath: NodePath<t.Program>,
+}> = {
   Class(path, state) {
     const { deps, name } = state;
     if (path.node.id.name === name) {
@@ -113,7 +188,8 @@ const linkedVariableVisitor = {
   ArrowFunctionExpression(path, state) {
     const { deps, name, filename, programPath, publicPath } = state;
     const { parent } = path;
-    if (parent && parent.id && parent.id.name === name) {
+    // @ts-ignore
+    if (parent?.id?.name === name) {
       getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
@@ -127,14 +203,20 @@ const linkedVariableVisitor = {
   FunctionExpression(path, state) {
     const { deps, name, filename, programPath, publicPath } = state;
     const { parent } = path;
-    if (parent && parent.id && parent.id.name === name) {
+    // @ts-ignore
+    if (parent?.id?.name === name) {
       getFunctionParams(path, deps, filename, publicPath, programPath);
     }
   },
 };
 
-const extractFunctionParameterTypes = (programPath, arg, filename, publicPath) => {
-  const deps = [];
+export const extractFunctionParameterTypes = (
+  programPath: NodePath<t.Program>,
+  arg: NodePath<any>,
+  filename: string,
+  publicPath: string,
+) => {
+  const deps: string[] = [];
   const ctx = {
     deps,
     programPath,
@@ -151,9 +233,4 @@ const extractFunctionParameterTypes = (programPath, arg, filename, publicPath) =
     getFunctionParams(arg, deps, filename, publicPath, programPath);
   }
   return deps;
-};
-
-module.exports = {
-  getConcreteTypeName,
-  extractFunctionParameterTypes,
 };
