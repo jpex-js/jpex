@@ -1,27 +1,21 @@
-import { JpexInstance, Factory } from '../types';
-import wrapper, { Wrapper } from './wrapper';
+import { JpexInstance, Factory, Dependency, AnyFunction, FactoryOpts } from '../types';
 import { isString, isFunction } from '../utils';
 
-function factory(
+function factory <T>(
   jpex: JpexInstance,
-  name: any,
-  dependencies: any,
-  fn?: any,
-): Wrapper {
+  name: string,
+  dependencies: Dependency[],
+  fn: AnyFunction<T>,
+  opts?: FactoryOpts,
+) {
   if (!isString(name)) {
     throw new Error(`Factories must be given a name, but was called with [${typeof name}]`);
   }
-  if (isFunction(dependencies)) {
-    fn = dependencies;
-    dependencies = void 0;
+  if (!Array.isArray(dependencies)) {
+    throw new Error(`Expected an array of dependencies, but was called with [${typeof dependencies}]`);
   }
   if (!isFunction(fn)) {
     throw new Error(`Factory ${name} must be a [Function]`);
-  }
-  if (dependencies) {
-    dependencies = [].concat(dependencies);
-  } else {
-    dependencies = [];
   }
   if (!dependencies.length) {
     dependencies = null;
@@ -30,11 +24,9 @@ function factory(
   const f: Factory = {
     fn,
     dependencies,
-    lifecycle: jpex.$$config.lifecycle,
+    lifecycle: opts?.lifecycle ?? jpex.$$config.lifecycle,
   };
-  jpex.$$factories[name as string] = f;
-
-  return wrapper(f);
+  jpex.$$factories[name] = f;
 }
 
 export default factory;

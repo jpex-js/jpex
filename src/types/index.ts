@@ -1,6 +1,7 @@
-import { Lifecycle } from '../constants';
 export * from './JpexInstance';
 export * from './BuiltIns';
+
+export type Lifecycle = 'application' | 'class' | 'instance' | 'none';
 
 export type AnyFunction<R = any> = (...args: any[]) => R;
 export interface AnyConstructor<T = any> {
@@ -22,8 +23,8 @@ export interface Definition {
 }
 
 export interface Factory extends Definition {
-  fn: <T, R>(...args: T[]) => R,
+  fn: AnyFunction,
+  lifecycle: Lifecycle,
   resolved?: boolean,
   value?: any,
-  lifecycle?: Lifecycle,
 }

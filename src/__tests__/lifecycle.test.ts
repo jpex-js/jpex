@@ -30,7 +30,7 @@ test('application returns the same instance for all classes', (t) => {
     jpex3,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.application();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'application' });
 
   const a = jpex.resolve('factory');
   const b = jpex2.resolve('factory');
@@ -48,7 +48,7 @@ test('application uses the first resolution forever', (t) => {
     jpex3,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.application();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'application' });
 
   const c = jpex3.resolve('factory');
   const a = jpex.resolve('factory');
@@ -66,7 +66,7 @@ test('class returns different instances for each class', (t) => {
     jpex3,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.class();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'class' });
 
   const a = jpex.resolve('factory');
   const b = jpex2.resolve('factory');
@@ -84,7 +84,7 @@ test('class returns the same instance within a single class', (t) => {
     jpex,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.class();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'class' });
 
   const a = jpex.resolve('factory');
   const b = jpex.resolve('factory');
@@ -99,7 +99,7 @@ test('instance returns a new instance for each separate call', (t) => {
     jpex,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.instance();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'instance' });
 
   const a = jpex.resolve('factory');
   const b = jpex.resolve('factory');
@@ -114,7 +114,7 @@ test('instance returns a single instance within a single call', (t) => {
     jpex,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.instance();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'instance' });
   jpex.factory('test', [ 'factory', 'factory' ], (a, b) => {
     t.is(a, b);
   });
@@ -127,7 +127,7 @@ test('none should return a different instance within a single call', (t) => {
     jpex,
   } = t.context;
 
-  jpex.factory('factory', (foo) => ({ foo })).lifecycle.none();
+  jpex.factory('factory', [ 'foo' ], (foo) => ({ foo }), { lifecycle: 'none' });
   jpex.factory('test', [ 'factory', 'factory' ], (a, b) => {
     t.not(a, b);
     t.deepEqual(a, b);

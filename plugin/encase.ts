@@ -26,9 +26,7 @@ const encase = (
 
   const arg = path.get('arguments.0') as NodePath<any>;
   const deps = extractFunctionParameterTypes(programPath, arg, filename, publicPath);
-  if (deps.length) {
-    path.node.arguments.splice(0, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
-  }
+  path.node.arguments.splice(0, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
 };
 
 export default encase;

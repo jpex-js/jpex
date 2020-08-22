@@ -21,10 +21,6 @@ const resolve = (
     return;
   }
 
-  if (args.length) {
-    return;
-  }
-
   const type = getTypeParameter(path);
   const name = getConcreteTypeName(type, filename, publicPath, programPath);
   if (name != null) {

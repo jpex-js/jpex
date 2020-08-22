@@ -7,6 +7,7 @@
   "types": "dist/es/index.d.ts",
   "scripts": {
     "test": "ava",
+    "test:debug": "ava debug",
     "coverage": "nyc ava",
     "lint": "eslint './src/**/*.ts' && eslint './plugin/**/*.ts' && tsc --noEmit",
     "build:prepare": "rm -rf dist",

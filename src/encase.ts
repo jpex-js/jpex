@@ -1,17 +1,11 @@
 import { JpexInstance, Dependency, AnyFunction } from './types';
 import { allResolved, resolveDependencies } from './resolver';
 
-const encase = <F extends AnyFunction, G extends AnyFunction<F>>(
+const encase = <F extends AnyFunction<F>>(
   jpex: JpexInstance,
-  _deps: any,
-  _fn?: any,
+  dependencies: Dependency[],
+  fn: F,
 ): any => {
-  const [ dependencies, fn ] = ((): [ Dependency[], G ] => {
-    if (typeof _deps === 'function') {
-      return [ [], _deps ];
-    }
-    return [ _deps, _fn ];
-  })();
   let result: AnyFunction;
 
   const encased = function(...args: Parameters<F>) {

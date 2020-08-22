@@ -26,7 +26,7 @@ test('it returns the raw factory by name', (t) => {
       .join('');
   });
 
-  const factory = jpex.raw<Factory>('factory');
+  const factory = jpex.raw('factory');
   const result = factory('bah');
 
   t.is(result, 'hab');

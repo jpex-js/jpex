@@ -29,27 +29,27 @@ const factories = (
     return;
   }
 
+  if (args.length > 2) {
+    return;
+  }
+
   // do we have an interface to use as the registrant name?
   // if there is only 1 arg then we can't possibly have been given the name
   // if the first arg isn't a string, then we also don't have a name
-  if (args.length === 1 || !t.isStringLiteral(args[0])) {
-    const type = getTypeParameter(path);
+  const type = getTypeParameter(path);
 
-    const name = getConcreteTypeName(type, filename, publicPath, programPath);
-    if (name != null) {
-      args.unshift(t.stringLiteral(name));
-    }
+  const name = getConcreteTypeName(type, filename, publicPath, programPath);
+  if (name != null) {
+    args.unshift(t.stringLiteral(name));
   }
 
   // do we need to infer the dependencies?
   // ignore constants as there are no dependencies
   // if the second parameter isn't an array of dependencies, it means it's inferred
-  if (callee.property.name !== 'constant' && !t.isArrayExpression(path.node.arguments[1])) {
+  if (callee.property.name !== 'constant') {
     const arg = path.get('arguments.1') as NodePath<any>;
     const deps = extractFunctionParameterTypes(programPath, arg, filename, publicPath);
-    if (deps.length) {
-      path.node.arguments.splice(1, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
-    }
+    path.node.arguments.splice(1, 0, t.arrayExpression(deps.map((dep) => t.stringLiteral(dep))));
   }
 };
 

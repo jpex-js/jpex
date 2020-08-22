@@ -44,17 +44,7 @@ test('errors if dependency cannot be resolved', (t) => {
 
 test('accepts named parameters', (t) => {
   const { resolve } = t.context;
-  const test = resolve('foo', { foo: 'bah' });
+  const test = resolve('foo', { with: { foo: 'bah' } });
 
   t.is(test, 'bah');
-});
-
-test('resolves multiple dependencies', (t) => {
-  const { resolve } = t.context;
-  const test = resolve([ 'path', 'fs' ]);
-
-  t.true(Array.isArray(test));
-  t.is(test.length, 2);
-  t.truthy(test[0].dirname);
-  t.truthy(test[1].readFile);
 });

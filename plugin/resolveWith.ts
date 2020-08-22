@@ -20,9 +20,6 @@ const resolveWith = (
   if (!isJpexCall(path, identifier, 'resolveWith')) {
     return;
   }
-  if (args.length > 1) {
-    return;
-  }
 
   const type = getTypeParameter(path);
   const name = getConcreteTypeName(type, filename, publicPath, programPath);

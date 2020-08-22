@@ -64,15 +64,13 @@ test('resolves named dependencies', (t) => {
 test('resolves object dependencies', (t) => {
   const { jpex } = t.context;
 
-  type A = any;
-  type B = any;
-  jpex.factory<A>([ '$options' ], ($options) => {
+  jpex.factory('A', [ '$options' ], ($options) => {
     return $options;
   });
-  jpex.factory<B>([{ [jpex.infer<A>()]: 'abc' }], (a) => {
+  jpex.factory('B', [{ A: 'abc' }], (a) => {
     return a;
   });
-  const result = jpex.resolve<B>();
+  const result = jpex.resolve('B');
 
   t.is(result, 'abc');
 });
@@ -83,7 +81,8 @@ test('resolves object depndencies (inferred)', (t) => {
   type A = string;
   type B = string;
   jpex.factory<A>(($options: Options<string>) => $options);
-  jpex.factory<B>(
+  jpex.factory(
+    'B',
     [
       {
         [jpex.infer<A>()]: 'abc',
@@ -92,7 +91,7 @@ test('resolves object depndencies (inferred)', (t) => {
     (a: A) => a
   );
 
-  const result = jpex.resolve<B>();
+  const result = jpex.resolve('B');
 
   t.is(result, 'abc');
 });
@@ -106,49 +105,29 @@ test('throws if dependency does not exist', (t) => {
 test('does not throw if dependency is optional', (t) => {
   const { jpex } = t.context;
 
-  t.notThrows(() => jpex.resolve('_notexists_'));
+  t.notThrows(() => jpex.resolve('notexists', { optional: true }));
 });
 
 test('does not throw if optional dependency\'s dependencies fail', (t) => {
   const { jpex } = t.context;
   jpex.factory('exists', [ 'doesnotexist' ], (x) => x);
 
-  t.notThrows(() => jpex.resolve('_exists_'));
+  t.notThrows(() => jpex.resolve('exists', { optional: true }));
+});
+
+test('does not throw if the default optional is set', (t) => {
+  const { jpex: base } = t.context;
+  const jpex = base.extend({ optional: true });
+
+  t.notThrows(() => jpex.resolve('doesnotexist'));
 });
 
 test('resolves an optional dependency', (t) => {
   const { jpex } = t.context;
-  jpex.factory('exists', () => 'foo');
-  const result = jpex.resolve('_exists_');
+  jpex.factory('exists', [], () => 'foo');
+  const result = jpex.resolve('exists', { optional: true });
 
   t.is(result, 'foo');
-});
-
-test('infers dependencies from the function', (t) => {
-  const { jpex } = t.context;
-  jpex.constant('a', 1);
-  jpex.factory('b', function(a) {
-    return a + 1;
-  });
-  jpex.factory('c', function(
-    b
-  ) {
-    return b + 1;
-  });
-  const result = jpex.resolve('c');
-
-  t.is(result, 3);
-});
-
-test('works with arrow functions', (t) => {
-  const { jpex } = t.context;
-  jpex.constant('a', 1);
-  jpex.factory('b', (a) => a + 1);
-  // eslint-disable-next-line arrow-parens
-  jpex.factory('c', b => b + 1);
-  const result = jpex.resolve('c');
-
-  t.is(result, 3);
 });
 
 test('throws if dependency is recurring', (t) => {
@@ -182,7 +161,7 @@ test('resolves a node module', (t) => {
 test('prefers a registered dependency over a node module', (t) => {
   const { jpex } = t.context;
   const fakeFs = {};
-  jpex.factory('fs', () => fakeFs as any);
+  jpex.factory('fs', [], () => fakeFs as any);
 
   const value = jpex.resolve('fs');
 
