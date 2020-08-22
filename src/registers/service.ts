@@ -1,30 +1,21 @@
-import { JpexInstance } from '../types';
+import { JpexInstance, Dependency, ServiceOpts } from '../types';
 import { instantiate, isFunction } from '../utils';
 
 function service(
   jpex: JpexInstance,
-  name: any,
-  dependencies: any,
-  fn?: any,
+  name: string,
+  dependencies: Dependency[],
+  fn: any,
+  opts?: ServiceOpts,
 ) {
-  if (isFunction(dependencies)) {
-    fn = dependencies;
-    dependencies = void 0;
-  }
   if (!isFunction(fn)) {
     throw new Error(`Service ${name} must be a [Function]`);
-  }
-
-  if (dependencies) {
-    dependencies = [].concat(dependencies);
-  } else {
-    dependencies = [];
   }
 
   function factory(...args: any[]) {
     const context = {} as any;
 
-    if (factory.bindToInstance) {
+    if (opts?.bindToInstance) {
       (dependencies as string[]).forEach((key, i) => {
         context[key] = args[i];
       });
@@ -33,9 +24,8 @@ function service(
     args.unshift(context);
     return instantiate(fn, args);
   }
-  factory.bindToInstance = false;
 
-  return jpex.factory(name, dependencies, factory);
+  return jpex.factory(name, dependencies, factory, opts);
 }
 
 export default service;

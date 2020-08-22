@@ -1,5 +1,6 @@
 // Types for build in dependencies
 import { Dependency } from './';
+import { ResolveOpts } from './JpexInstance';
 
 export interface NamedParameters {
   [key: string]: any,
@@ -7,7 +8,7 @@ export interface NamedParameters {
 
 export type Resolve = <T = any>(
   name: Dependency | Dependency[],
-  namedParametres?: NamedParameters,
+  opts?: ResolveOpts,
 ) => T;
 
 export type Options<T = any> = T;

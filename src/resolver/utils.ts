@@ -2,13 +2,12 @@ import JpexError from '../Error';
 import {
   Factory,
   JpexInstance,
+  ResolveOpts,
+  NamedParameters,
 } from '../types';
-import { Lifecycle } from '../constants';
 import {
   isNode,
   unsafeRequire,
-  isString,
-  getLast,
 } from '../utils';
 
 export const isValidFactory = (factory: Factory) => {
@@ -90,7 +89,7 @@ const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
   }
 };
 
-export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) => {
+export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) => {
   if (typeof name !== 'string') {
     throw new JpexError(`Name must be a string, but recevied ${typeof name}`);
   }
@@ -114,9 +113,11 @@ export const getFactory = (jpex: JpexInstance, name: string, optional: boolean) 
     return factory;
   }
 
-  if (!optional) {
-    throw new JpexError(`Unable to find required dependency [${name}]`);
+  if (opts?.optional ?? jpex.$$config.optional) {
+    return;
   }
+
+  throw new JpexError(`Unable to find required dependency [${name}]`);
 };
 
 export const cacheResult = (
@@ -124,38 +125,24 @@ export const cacheResult = (
   name: string,
   factory: Factory,
   value: any,
-  namedParameters: { [key: string]: any },
+  namedParameters: NamedParameters,
 ) => {
   switch (factory.lifecycle) {
-  case Lifecycle.APPLICATION:
+  case 'application':
     factory.resolved = true;
     factory.value = value;
     break;
-  case Lifecycle.CLASS:
+  case 'class':
     jpex.$$resolved[name] = {
       resolved: true,
       value,
     };
     break;
-  case Lifecycle.NONE:
+  case 'none':
     break;
-  case Lifecycle.INSTANCE:
+  case 'instance':
   default:
     namedParameters[name] = value;
     break;
   }
-};
-
-export const checkOptional = (name: string) => {
-  if (!isString(name)) {
-    return false;
-  }
-  const first = name[0];
-  const last = getLast(name);
-
-  if (first === '_' && last === '_') {
-    return name.substring(1, name.length - 1);
-  }
-
-  return false;
 };

@@ -2,6 +2,7 @@ import {
   JpexInstance,
   Definition,
   Dependency,
+  ResolveOpts,
 } from '../types';
 import {
   resolveMany,
@@ -16,25 +17,27 @@ export { getFactory } from './utils';
 export const resolve = (
   jpex: JpexInstance,
   name: Dependency,
-  namedParameters?: { [key: string]: any },
+  opts?: ResolveOpts,
 ) => resolveOne(
   jpex,
   name,
-  null,
-  namedParameters,
+  void 0,
+  void 0,
+  opts,
   [],
 );
 
 export const resolveDependencies = (
   jpex: JpexInstance,
   definition: Definition,
-  namedParameters?: { [key: string]: any },
+  opts?: ResolveOpts,
 ) => {
   return resolveMany(
     jpex,
     definition,
-    namedParameters,
     void 0,
+    void 0,
+    opts,
     [],
   );
 };

@@ -41,9 +41,6 @@ const useResolve = (
     return;
   }
 
-  if (args.length > 1) {
-    return;
-  }
   if (args.length === 1) {
     if (!t.isArrayExpression(args[0])) {
       return;

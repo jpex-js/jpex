@@ -6,10 +6,8 @@ import type {
   Options,
   NamedParameters,
   Resolve,
-} from './types';
-import {
   Lifecycle,
-} from './constants';
+} from './types';
 
 const jpex = new Jpex() as JpexInstance;
 
@@ -17,10 +15,10 @@ registerResolveFactory(jpex);
 
 export {
   jpex,
-  Lifecycle,
 };
 
 export type {
+  Lifecycle,
   JpexInstance,
   SetupConfig,
   Options,

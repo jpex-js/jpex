@@ -4,10 +4,10 @@ import {
   Definition,
   Options,
   NamedParameters,
+  ResolveOpts,
 } from '../types';
 import JpexError from '../Error';
 import {
-  checkOptional,
   getFactory,
   cacheResult,
 } from './utils';
@@ -21,25 +21,17 @@ export const resolveOne = <R extends any>(
   jpex: JpexInstance,
   name: Dependency,
   localOptions: any,
-  namedParameters: { [key: string]: any },
+  namedParameters: NamedParameters,
+  opts: ResolveOpts,
   stack: string[],
 ): R => {
   if (isObject(name)) {
     console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
     const key = Object.keys(name)[0];
-    return resolveOne(jpex, key, name[key], namedParameters, stack);
+    return resolveOne(jpex, key, name[key], namedParameters, opts, stack);
   }
   if (!namedParameters) {
-    namedParameters = {};
-  }
-
-  // Optional dependencies
-  let optional = jpex.$$config.optional;
-  const optionalCheck = checkOptional(name);
-  if (optionalCheck) {
-    console.warn('jpex: __ optional syntax has been deprecated and will be removed in v4.0.0');
-    name = optionalCheck;
-    optional = true;
+    namedParameters = opts?.with ?? {};
   }
 
   // Check named parameters
@@ -67,7 +59,7 @@ export const resolveOne = <R extends any>(
   if (stack.indexOf(name) > -1) {
     if (getLast(stack) === name) {
       if (jpex.$$parent?.$$factories[name]) {
-        return resolveOne(jpex.$$parent, name, localOptions, namedParameters, []);
+        return resolveOne(jpex.$$parent, name, localOptions, namedParameters, opts, []);
       }
     }
     throw new JpexError(`Recursive loop for dependency ${name} encountered`);
@@ -77,7 +69,7 @@ export const resolveOne = <R extends any>(
   // This will either return the factory,
   // return null (meaning it's an optional dependency)
   // or throw an error
-  const factory = getFactory(jpex, name, optional);
+  const factory = getFactory(jpex, name, opts);
   if (!factory) {
     return;
   }
@@ -90,16 +82,9 @@ export const resolveOne = <R extends any>(
   // Work out dependencies
   let args: any[] = [];
 
-  if (factory?.dependencies?.length) {
-    try {
-      // eslint-disable-next-line no-use-before-define
-      args = resolveMany(jpex, factory, namedParameters, localOptions, stack.concat(name));
-    } catch (e) {
-      if (!optional) {
-        throw e;
-      }
-      return;
-    }
+  if (factory.dependencies?.length) {
+    // eslint-disable-next-line no-use-before-define
+    args = resolveMany(jpex, factory, namedParameters, localOptions, opts, stack.concat(name));
   }
 
   // Invoke the factory
@@ -115,16 +100,17 @@ export const resolveMany = <R extends any[]>(
   definition: Definition,
   namedParameters: { [key: string]: any },
   globalOptions: any,
+  opts: ResolveOpts,
   stack: string[],
 ): R => {
-  if (!definition?.dependencies) {
+  if (!definition?.dependencies?.length) {
     return [] as R;
   }
   if (!stack) {
     stack = [];
   }
   if (!namedParameters) {
-    namedParameters = {};
+    namedParameters = opts?.with ?? {};
   }
   const dependencies: Dependency[] = [].concat(definition.dependencies);
 
@@ -134,12 +120,12 @@ export const resolveMany = <R extends any[]>(
       const keys = Object.keys(dependency);
       const x = keys.reduce((value, key) => {
         const options = dependency[key];
-        const y = resolveOne(jpex, key, options, namedParameters, stack);
+        const y = resolveOne(jpex, key, options, namedParameters, opts, stack);
         return value.concat(y);
       }, []);
       return value.concat(x);
     }
-    const x = resolveOne(jpex, dependency, globalOptions, namedParameters, stack);
+    const x = resolveOne(jpex, dependency, globalOptions, namedParameters, opts, stack);
     return value.concat([ x ]);
   }, [] as Dependency[]);
 

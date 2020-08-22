@@ -16,7 +16,7 @@ test.beforeEach((t) => {
 test('sets a factory to resolved once resolved', (t) => {
   const { jpex } = t.context;
 
-  jpex.factory('instance', () => ({})).lifecycle.application();
+  jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
   t.is(jpex.$$factories.instance.resolved, void 0);
 
   jpex.resolve('instance');
@@ -26,7 +26,7 @@ test('sets a factory to resolved once resolved', (t) => {
 test('clears the cache', (t) => {
   const { jpex } = t.context;
 
-  jpex.factory('instance', () => ({})).lifecycle.application();
+  jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
 
   t.is(jpex.$$factories.instance.resolved, void 0);
   jpex.resolve('instance');
@@ -38,7 +38,7 @@ test('clears the cache', (t) => {
 });
 
 test('returns a new instance once the cache is cleared', (t) => {
-  jpex.factory('instance', () => ({})).lifecycle.application();
+  jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
 
   const a = jpex.resolve('instance');
   const b = jpex.resolve('instance');
@@ -50,9 +50,9 @@ test('returns a new instance once the cache is cleared', (t) => {
 });
 
 test('clears specific factories', (t) => {
-  jpex.factory('a', () => ({})).lifecycle.application();
-  jpex.factory('b', () => ({})).lifecycle.application();
-  jpex.factory('c', () => ({})).lifecycle.application();
+  jpex.factory('a', [], () => ({}), { lifecycle: 'application' });
+  jpex.factory('b', [], () => ({}), { lifecycle: 'application' });
+  jpex.factory('c', [], () => ({}), { lifecycle: 'application' });
   jpex.resolve('a');
   jpex.resolve('b');
   jpex.resolve('c');
@@ -61,7 +61,7 @@ test('clears specific factories', (t) => {
   t.true(jpex.$$factories.b.resolved);
   t.true(jpex.$$factories.c.resolved);
 
-  jpex.clearCache([ 'a', 'b' ]);
+  jpex.clearCache('a', 'b');
 
   t.false(jpex.$$factories.a.resolved);
   t.false(jpex.$$factories.b.resolved);
@@ -71,8 +71,8 @@ test('clears specific factories', (t) => {
 test('clears a cache using type inference', (t) => {
   type A = string;
   type B = string;
-  jpex.factory<A>(() => 'a').lifecycle.application();
-  jpex.factory<B>(() => 'b').lifecycle.application();
+  jpex.factory<A>(() => 'a', { lifecycle: 'application' });
+  jpex.factory<B>(() => 'b', { lifecycle: 'application' });
   jpex.resolve<A>();
   jpex.resolve<B>();
 
@@ -86,7 +86,7 @@ test('clears a cache using type inference', (t) => {
 });
 
 test('should clear Class-based caches', (t) => {
-  jpex.factory('a', () => ({})).lifecycle.class();
+  jpex.factory('a', [], () => ({}), { lifecycle: 'class' });
   jpex.resolve('a');
 
   t.is(typeof jpex.$$resolved.a, 'object');

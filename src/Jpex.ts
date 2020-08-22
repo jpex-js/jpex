@@ -5,9 +5,6 @@ import {
   SetupConfig,
 } from './types';
 import {
-  Lifecycle,
-} from './constants';
-import {
   constant,
   factory,
   service,
@@ -39,7 +36,7 @@ class Jpex implements IJpex {
 
     this.$$parent = parent;
     this.$$config = {
-      lifecycle: inherit ? parent?.$$config.lifecycle : void 0 ?? Lifecycle.CLASS,
+      lifecycle: (inherit ? parent?.$$config.lifecycle : void 0) ?? 'class',
       globals: true,
       nodeModules: true,
       optional: false,
@@ -55,34 +52,37 @@ class Jpex implements IJpex {
     return new Jpex(config, this);
   }
 
-  constant(name: any, obj?: any): any {
+  constant(name: string, obj?: any) {
     return constant(this, name, obj);
   }
-  factory(name: any, deps?: any, fn?: any): any {
-    return factory(this, name, deps, fn);
+  factory(name: any, deps?: any, fn?: any, opts?: any): any {
+    return factory(this, name, deps, fn, opts);
   }
-  service(name: any, deps?: any, fn?: any): any {
-    return service(this, name, deps, fn);
+  service(name: any, deps?: any, fn?: any, opts?: any): any {
+    return service(this, name, deps, fn, opts);
   }
   alias(alias?: any, name?: any): any {
     return createAlias(this, alias, name);
   }
-  resolve(name?: any): any {
-    return resolve(this, name);
+  resolve(name?: any, opts?: any): any {
+    return resolve(this, name, opts);
   }
-  resolveWith(name: any, namedParameters?: any): any {
-    return resolve(this, name, namedParameters);
+  resolveWith(name: any, namedParameters?: any, opts?: any): any {
+    return resolve(this, name, {
+      with: namedParameters,
+      ...opts,
+    });
   }
 
   raw(name?: any): any {
-    return getFactory(this, name, false).fn;
+    return getFactory(this, name, {}).fn;
   }
 
   encase<F extends AnyFunction, G extends AnyFunction<F>>(deps: any, fn?: any): any {
     return encase(this, deps, fn);
   }
 
-  clearCache(names?: any): any {
+  clearCache(...names: any[]): any {
     return clearCache(this, names);
   }
 

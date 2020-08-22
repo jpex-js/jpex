@@ -1,63 +1,59 @@
-import { Lifecycle } from '../constants';
-import { Wrapper } from '../registers/wrapper';
 import {
+  Lifecycle,
   AnyFunction,
   Dependency,
   AnyConstructor,
   SetupConfig,
   Factory,
 } from './';
+import { NamedParameters } from './BuiltIns';
+
+export interface FactoryOpts {
+  lifecycle?: Lifecycle,
+}
+export interface ServiceOpts extends FactoryOpts {
+  bindToInstance?: boolean,
+}
+export interface ResolveOpts {
+  optional?: boolean,
+  with?: NamedParameters,
+}
 
 export interface JpexInstance {
-  constant<T = any>(name: string, obj: T): Wrapper
-  constant<T>(obj: T): Wrapper
+  constant(name: string, obj: any): void
+  constant<T>(obj: T): void
 
-  factory<T = any>(name: string, fn: AnyFunction<T>): Wrapper
-  factory<T = any>(name: string, deps: Dependency[], fn: AnyFunction<T>): Wrapper
+  factory(name: string, deps: Dependency[], fn: AnyFunction, opts?: FactoryOpts): void
+  factory<T>(fn: AnyFunction<T>, opts?: FactoryOpts): void
 
-  factory<T>(fn: AnyFunction<T>): Wrapper
-  factory<T>(deps: Dependency[], fn: AnyFunction<T>): Wrapper
+  // eslint-disable-next-line max-len
+  service(name: string, deps: Dependency[], fn: AnyConstructor | AnyFunction, opts?: ServiceOpts): void
+  service<T>(fn: AnyConstructor<T> | AnyFunction, opts?: ServiceOpts): void
 
-  service<T = any>(name: string, fn: AnyConstructor<T> | AnyFunction): Wrapper
-  service<T = any>(name: string, deps: Dependency[], fn: AnyConstructor | AnyFunction): Wrapper
-
-  service<T>(fn: AnyConstructor<T> | AnyFunction): Wrapper
-
-  alias<T = any>(alias: string, name: string): void,
+  alias(alias: string, name: string): void,
   alias<T>(alias: string): void,
 
-  resolve<T = any>(name: Dependency): T,
-  resolve<T>(): T,
+  resolve(name: Dependency, opts?: ResolveOpts): any,
+  resolve<T>(opts?: ResolveOpts): T,
 
-  resolveWith<T = any>(
-    name: Dependency,
-    namedParameters: {
-      [key: string]: any,
-    },
-  ): T
-  resolveWith<T>(
-    namedParameters: {
-      [key: string]: any,
-    },
-  ): T,
+  resolveWith(name: Dependency, namedParameters: NamedParameters): any
+  resolveWith<T>(namedParameters: NamedParameters): T,
 
-  encase<F extends AnyFunction<AnyFunction>>(
-    fn: F,
-  ): ReturnType<F> & { encased : F },
   encase<F extends AnyFunction<AnyFunction>>(
     dependencies: Dependency[],
     fn: F,
   ): ReturnType<F> & { encased: F },
+  encase<F extends AnyFunction<AnyFunction>>(
+    fn: F,
+  ): ReturnType<F> & { encased : F },
 
-  raw<T = any>(name: Dependency): AnyFunction<T>,
+  raw(name: Dependency): AnyFunction,
   raw<T>(): AnyFunction<T>,
 
   clearCache<T = any>(): void,
-  clearCache(name: string): void,
-  clearCache(names: string[]): void,
+  clearCache(...names: string[]): void,
 
-  extend(): JpexInstance,
-  extend(config: SetupConfig): JpexInstance,
+  extend(config?: SetupConfig): JpexInstance,
 
   infer<T>(): string,
 

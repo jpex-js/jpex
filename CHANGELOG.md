@@ -5,10 +5,18 @@ Change Log
 - you can now control dependency resolution with config flags `nodeModules` and `globals`
 - you can also specify whether dependencies should be optional-by-default with an `optional` flag
 - dependencies are no longer determined by reading the factory function. Either use `TS` inference, or explicitly pass an array of deps
+- changed format of `.factory` `.service` and `.resolve`
+- you can now pass an `opts` parameter when registering a factory i.e. `.factory<A>(fn, { lifecycle: 'none' })`
+- you can now pass an `opts` parameter when resolving i.e. `.resolve<A>({ optional: true })`
 
 #### Breaking Changes
 - if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable
-- You can no longer do `jpex.factory('foo', (depA, depB) => { ... })` as we no longer parse the function and extract the dependencies
+- You can no longer do `jpex.factory('foo', (depA, depB) => { ... })` as we no longer parse the function and extract the dependencies.
+- rather than calling `.factory<A>(fn).lifecycle.application()` you must now do `.factory<A>(fn, { lifecycle: 'application' })`
+- clearCache now takes an arity of names, i.e. `clearCache('a', 'b', 'c')` whereas previous it took an array
+- you can no longer mix ts and js modes i.e. you cannot do `.factory<A>([ 'b' ], fn)`
+- `Lifecycle` is now a type rather than an enum
+- wrapping a name in `__` will no longer make it optional, you must explicitly pass the optional flag
 
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations
