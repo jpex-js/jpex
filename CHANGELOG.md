@@ -8,6 +8,7 @@ Change Log
 - changed format of `.factory` `.service` and `.resolve`
 - you can now pass an `opts` parameter when registering a factory i.e. `.factory<A>(fn, { lifecycle: 'none' })`
 - you can now pass an `opts` parameter when resolving i.e. `.resolve<A>({ optional: true })`
+- `resolveWith` now has a nicer syntax for ts inference: `.resolveWith<Foo, Dep1, Dep2>([ 'val1', 'val2' ])`. The original syntax i.e. `.resolveWith({ dep1: 'val1' })` is still valid.
 
 #### Breaking Changes
 - if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable

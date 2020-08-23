@@ -6,9 +6,9 @@
   "module": "dist/es/jpex.js",
   "types": "dist/es/index.d.ts",
   "scripts": {
-    "test": "ava",
-    "test:debug": "ava debug",
-    "coverage": "nyc ava",
+    "test": "BABEL_DISABLE_CACHE=1 ava",
+    "test:debug": "BABEL_DISABLE_CACHE=1 ava debug",
+    "coverage": "BABEL_DISABLE_CACHE=1 nyc ava",
     "lint": "eslint './src/**/*.ts' && eslint './plugin/**/*.ts' && tsc --noEmit",
     "build:prepare": "rm -rf dist",
     "build:js": "rollup --config ./rollup.config.js",
