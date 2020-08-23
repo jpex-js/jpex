@@ -10,5 +10,3 @@ export type Resolve = <T = any>(
   name: Dependency | Dependency[],
   opts?: ResolveOpts,
 ) => T;
-
-export type Options<T = any> = T;

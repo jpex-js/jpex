@@ -1,7 +1,7 @@
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
-import base, { JpexInstance, Options } from '..';
+import base, { JpexInstance } from '..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -61,41 +61,6 @@ test('resolves named dependencies', (t) => {
   });
 
   t.is(result, 'pop');
-});
-
-test('resolves object dependencies', (t) => {
-  const { jpex } = t.context;
-
-  jpex.factory('A', [ '$options' ], ($options) => {
-    return $options;
-  });
-  jpex.factory('B', [{ A: 'abc' }], (a) => {
-    return a;
-  });
-  const result = jpex.resolve('B');
-
-  t.is(result, 'abc');
-});
-
-test('resolves object depndencies (inferred)', (t) => {
-  const { jpex } = t.context;
-
-  type A = string;
-  type B = string;
-  jpex.factory<A>(($options: Options<string>) => $options);
-  jpex.factory(
-    'B',
-    [
-      {
-        [jpex.infer<A>()]: 'abc',
-      },
-    ],
-    (a: A) => a
-  );
-
-  const result = jpex.resolve('B');
-
-  t.is(result, 'abc');
 });
 
 test('throws if dependency does not exist', (t) => {

@@ -10,7 +10,7 @@ export default (jpex: JpexInstance) => {
     this: JpexInstance,
     $namedParameters: NamedParameters,
   ) {
-    return (name: Dependency | Dependency[], opts?: ResolveOpts) => {
+    return (name: Dependency, opts?: ResolveOpts) => {
       return resolve(
         this, // eslint-disable-line no-invalid-this
         name,

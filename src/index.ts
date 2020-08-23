@@ -3,7 +3,6 @@ import { resolve as registerResolveFactory } from './built-ins';
 import type {
   JpexInstance,
   SetupConfig,
-  Options,
   NamedParameters,
   Resolve,
   Lifecycle,
@@ -21,7 +20,6 @@ export type {
   Lifecycle,
   JpexInstance,
   SetupConfig,
-  Options,
   NamedParameters,
   Resolve,
 };

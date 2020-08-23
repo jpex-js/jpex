@@ -9,6 +9,7 @@ Change Log
 - you can now pass an `opts` parameter when registering a factory i.e. `.factory<A>(fn, { lifecycle: 'none' })`
 - you can now pass an `opts` parameter when resolving i.e. `.resolve<A>({ optional: true })`
 - `resolveWith` now has a nicer syntax for ts inference: `.resolveWith<Foo, Dep1, Dep2>([ 'val1', 'val2' ])`. The original syntax i.e. `.resolveWith({ dep1: 'val1' })` is still valid.
+- removed the built-in dependency `$options`. You can no longer do `.resolve({ foo: 'someValue' })`
 
 #### Breaking Changes
 - if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable
@@ -18,6 +19,7 @@ Change Log
 - you can no longer mix ts and js modes i.e. you cannot do `.factory<A>([ 'b' ], fn)`
 - `Lifecycle` is now a type rather than an enum
 - wrapping a name in `__` will no longer make it optional, you must explicitly pass the optional flag
+- `$options` functionality has been removed
 
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations

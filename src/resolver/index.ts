@@ -22,7 +22,6 @@ export const resolve = (
   jpex,
   name,
   void 0,
-  void 0,
   opts,
   [],
 );
@@ -35,7 +34,6 @@ export const resolveDependencies = (
   return resolveMany(
     jpex,
     definition,
-    void 0,
     void 0,
     opts,
     [],
