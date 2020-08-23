@@ -16,7 +16,7 @@ export interface SetupConfig {
   globals?: boolean,
 }
 
-export type Dependency = string | { [key: string]: any };
+export type Dependency = string;
 
 export interface Definition {
   dependencies?: Dependency[],

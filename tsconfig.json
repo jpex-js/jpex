@@ -13,6 +13,7 @@
     "emitDecoratorMetadata": true
   },
   "include": [
+    "src",
     "@types"
   ]
 }

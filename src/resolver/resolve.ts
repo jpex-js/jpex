@@ -2,7 +2,6 @@ import {
   JpexInstance,
   Dependency,
   Definition,
-  Options,
   NamedParameters,
   ResolveOpts,
 } from '../types';
@@ -12,23 +11,16 @@ import {
 } from './utils';
 import {
   hasOwn,
-  isObject,
   getLast,
 } from '../utils';
 
 export const resolveOne = <R extends any>(
   jpex: JpexInstance,
   name: Dependency,
-  localOptions: any,
   namedParameters: NamedParameters,
   opts: ResolveOpts,
   stack: string[],
 ): R => {
-  if (isObject(name)) {
-    console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
-    const key = Object.keys(name)[0];
-    return resolveOne(jpex, key, name[key], namedParameters, opts, stack);
-  }
   if (!namedParameters) {
     namedParameters = opts?.with ?? {};
   }
@@ -42,10 +34,6 @@ export const resolveOne = <R extends any>(
 
   // Special keys
   switch (name) {
-  case '$options':
-  case jpex.infer<Options>():
-    console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
-    return localOptions;
   case '$namedParameters':
   case jpex.infer<NamedParameters>():
     // @ts-ignore
@@ -58,7 +46,7 @@ export const resolveOne = <R extends any>(
   if (stack.indexOf(name) > -1) {
     if (getLast(stack) === name) {
       if (jpex.$$parent?.$$factories[name]) {
-        return resolveOne(jpex.$$parent, name, localOptions, namedParameters, opts, []);
+        return resolveOne(jpex.$$parent, name, namedParameters, opts, []);
       }
     }
     throw new Error(`Recursive loop for dependency ${name} encountered`);
@@ -83,7 +71,7 @@ export const resolveOne = <R extends any>(
 
   if (factory.dependencies?.length) {
     // eslint-disable-next-line no-use-before-define
-    args = resolveMany(jpex, factory, namedParameters, localOptions, opts, stack.concat(name));
+    args = resolveMany(jpex, factory, namedParameters, opts, stack.concat(name));
   }
 
   // Invoke the factory
@@ -98,7 +86,6 @@ export const resolveMany = <R extends any[]>(
   jpex: JpexInstance,
   definition: Definition,
   namedParameters: { [key: string]: any },
-  globalOptions: any,
   opts: ResolveOpts,
   stack: string[],
 ): R => {
@@ -114,17 +101,7 @@ export const resolveMany = <R extends any[]>(
   const dependencies: Dependency[] = [].concat(definition.dependencies);
 
   const values = dependencies.reduce((value: Dependency[], dependency): Dependency[] => {
-    if (isObject(dependency)) {
-      console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
-      const keys = Object.keys(dependency);
-      const x = keys.reduce((value, key) => {
-        const options = dependency[key];
-        const y = resolveOne(jpex, key, options, namedParameters, opts, stack);
-        return value.concat(y);
-      }, []);
-      return value.concat(x);
-    }
-    const x = resolveOne(jpex, dependency, globalOptions, namedParameters, opts, stack);
+    const x = resolveOne<any>(jpex, dependency, namedParameters, opts, stack);
     return value.concat([ x ]);
   }, [] as Dependency[]);
 
