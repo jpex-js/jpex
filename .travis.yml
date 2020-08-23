@@ -9,10 +9,10 @@ install :
 
   - npm install codeclimate-test-reporter -g
 script :
+  - yarn build
   - yarn lint
   - yarn test
   - yarn coverage
-  - yarn build
 
 after_script :
   - codeclimate-test-reporter < coverage/lcov.info
