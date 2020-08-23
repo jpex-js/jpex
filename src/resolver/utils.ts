@@ -1,4 +1,3 @@
-import JpexError from '../Error';
 import {
   Factory,
   JpexInstance,
@@ -91,7 +90,7 @@ const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
 
 export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) => {
   if (typeof name !== 'string') {
-    throw new JpexError(`Name must be a string, but recevied ${typeof name}`);
+    throw new Error(`Name must be a string, but recevied ${typeof name}`);
   }
   let factory: Factory = jpex.$$resolved[name];
   if (isValidFactory(factory)) {
@@ -117,7 +116,7 @@ export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) 
     return;
   }
 
-  throw new JpexError(`Unable to find required dependency [${name}]`);
+  throw new Error(`Unable to find required dependency [${name}]`);
 };
 
 export const cacheResult = (

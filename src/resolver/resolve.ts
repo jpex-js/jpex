@@ -6,7 +6,6 @@ import {
   NamedParameters,
   ResolveOpts,
 } from '../types';
-import JpexError from '../Error';
 import {
   getFactory,
   cacheResult,
@@ -62,7 +61,7 @@ export const resolveOne = <R extends any>(
         return resolveOne(jpex.$$parent, name, localOptions, namedParameters, opts, []);
       }
     }
-    throw new JpexError(`Recursive loop for dependency ${name} encountered`);
+    throw new Error(`Recursive loop for dependency ${name} encountered`);
   }
 
   // Get the factory
