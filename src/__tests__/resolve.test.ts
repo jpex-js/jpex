@@ -54,8 +54,10 @@ test('resolves named dependencies', (t) => {
   type Named = string;
 
   jpex.factory<Foo>((named: Named) => named);
-  const result = jpex.resolveWith<Foo>({
-    [jpex.infer<Named>()]: 'pop',
+  const result = jpex.resolve<Foo>({
+    with: {
+      [jpex.infer<Named>()]: 'pop',
+    },
   });
 
   t.is(result, 'pop');

@@ -36,8 +36,14 @@ export interface JpexInstance {
   resolve(name: Dependency, opts?: ResolveOpts): any,
   resolve<T>(opts?: ResolveOpts): T,
 
-  resolveWith(name: Dependency, namedParameters: NamedParameters): any
-  resolveWith<T>(namedParameters: NamedParameters): T,
+  resolveWith(name: Dependency, namedParameters: NamedParameters, opts?: ResolveOpts): any
+  resolveWith<T>(namedParameters: NamedParameters, opts?: ResolveOpts): T,
+  resolveWith<T, A>(args: [ A ], opts?: ResolveOpts): T,
+  resolveWith<T, A, B>(args: [ A, B ], opts?: ResolveOpts): T,
+  resolveWith<T, A, B, C>(args: [ A, B, C ], opts?: ResolveOpts): T,
+  resolveWith<T, A, B, C, D>(args: [ A, B, C, D ], opts?: ResolveOpts): T,
+  resolveWith<T, A, B, C, D, E>(args: [ A, B, C, D, E ], opts?: ResolveOpts): T,
+  resolveWith<T, A, B, C, D, E, F>(args: [ A, B, C, D, E, F ], opts?: ResolveOpts): T,
 
   encase<F extends AnyFunction<AnyFunction>>(
     dependencies: Dependency[],
