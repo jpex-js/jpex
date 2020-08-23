@@ -3,17 +3,11 @@ export * from './BuiltIns';
 
 export type Lifecycle = 'application' | 'class' | 'instance' | 'none';
 
+export type Precedence = 'active' | 'passive';
+
 export type AnyFunction<R = any> = (...args: any[]) => R;
 export interface AnyConstructor<T = any> {
   new (...args: any[]): T
-}
-
-export interface SetupConfig {
-  inherit?: boolean,
-  lifecycle?: Lifecycle,
-  optional?: boolean,
-  nodeModules?: boolean,
-  globals?: boolean,
 }
 
 export type Dependency = string;
