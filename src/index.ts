@@ -6,6 +6,7 @@ import type {
   NamedParameters,
   Resolve,
   Lifecycle,
+  Precedence,
 } from './types';
 
 const jpex = new Jpex() as JpexInstance;
@@ -22,6 +23,7 @@ export type {
   SetupConfig,
   NamedParameters,
   Resolve,
+  Precedence,
 };
 
 export default jpex;

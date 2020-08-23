@@ -37,6 +37,7 @@ class Jpex implements IJpex {
     this.$$parent = parent;
     this.$$config = {
       lifecycle: (inherit ? parent?.$$config.lifecycle : void 0) ?? 'class',
+      precedence: 'active',
       globals: true,
       nodeModules: true,
       optional: false,

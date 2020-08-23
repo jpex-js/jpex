@@ -21,6 +21,12 @@ function factory <T>(
     dependencies = null;
   }
 
+  const precedence = opts?.precedence ?? jpex.$$config.precedence;
+
+  if (precedence === 'passive' && jpex.$$factories[name]) {
+    return;
+  }
+
   const f: Factory = {
     fn,
     dependencies,

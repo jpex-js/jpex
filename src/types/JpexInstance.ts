@@ -3,13 +3,23 @@ import {
   AnyFunction,
   Dependency,
   AnyConstructor,
-  SetupConfig,
   Factory,
+  Precedence,
 } from './';
 import { NamedParameters } from './BuiltIns';
 
+export interface SetupConfig {
+  inherit?: boolean,
+  lifecycle?: Lifecycle,
+  precedence?: Precedence,
+  optional?: boolean,
+  nodeModules?: boolean,
+  globals?: boolean,
+}
+
 export interface FactoryOpts {
   lifecycle?: Lifecycle,
+  precedence?: Precedence,
 }
 export interface ServiceOpts extends FactoryOpts {
   bindToInstance?: boolean,
@@ -72,6 +82,7 @@ export interface JpexInstance {
   },
   $$config: {
     lifecycle: Lifecycle,
+    precedence: Precedence,
     optional: boolean,
     nodeModules: boolean,
     globals: boolean,
