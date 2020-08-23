@@ -25,6 +25,7 @@ export const resolveOne = <R extends any>(
   stack: string[],
 ): R => {
   if (isObject(name)) {
+    console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
     const key = Object.keys(name)[0];
     return resolveOne(jpex, key, name[key], namedParameters, stack);
   }
@@ -36,6 +37,7 @@ export const resolveOne = <R extends any>(
   let optional = false;
   const optionalCheck = checkOptional(name);
   if (optionalCheck) {
+    console.warn('jpex: __ optional syntax has been deprecated and will be removed in v4.0.0');
     name = optionalCheck;
     optional = true;
   }
@@ -51,6 +53,7 @@ export const resolveOne = <R extends any>(
   switch (name) {
   case '$options':
   case jpex.infer<Options>():
+    console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
     return localOptions;
   case '$namedParameters':
   case jpex.infer<NamedParameters>():
@@ -127,6 +130,7 @@ export const resolveMany = <R extends any[]>(
 
   const values = dependencies.reduce((value: Dependency[], dependency): Dependency[] => {
     if (isObject(dependency)) {
+      console.warn('jpex: $options style has been deprecated and will be removed in v4.0.0');
       const keys = Object.keys(dependency);
       const x = keys.reduce((value, key) => {
         const options = dependency[key];

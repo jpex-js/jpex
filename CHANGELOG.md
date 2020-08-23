@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.5.0
+- add some deprecation warnings for pre-4.0.0 changes
+
 ### 3.4.0
 - clearCache now supports type inference
 - you can now pass `publicPath: true` and it will use the `name` property of your app's `package.json` as the public path
