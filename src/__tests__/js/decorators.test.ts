@@ -1,11 +1,7 @@
 /* eslint-disable newline-per-chained-call */
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '..';
-
-interface Voice {
-  shout(str: string): string
-}
+import { jpex as base, JpexInstance } from '../..';
 
 const test: TestInterface<{
   base: JpexInstance,
@@ -15,7 +11,7 @@ const test: TestInterface<{
 
 test.beforeEach((t) => {
   const base2 = base.extend();
-  base2.service<Voice>(function() {
+  base2.service('voice', [], function() {
     this.shout = (str: string) => {
       return `${str}!`;
     };
@@ -31,12 +27,12 @@ test.beforeEach((t) => {
 
 test('decorates a factory', (t) => {
   const { jpex } = t.context;
-  jpex.factory<Voice>((voice: Voice) => {
+  jpex.factory('voice', [ 'voice' ], (voice) => {
     const original = voice.shout;
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;
   });
-  const voice = jpex.resolve<Voice>();
+  const voice = jpex.resolve('voice');
   const result = voice.shout('hello');
 
   t.is(result, 'HELLO!');
@@ -44,12 +40,12 @@ test('decorates a factory', (t) => {
 
 test('decorators do not propogate up', (t) => {
   const { jpex, base2 } = t.context;
-  jpex.factory<Voice>((voice: Voice) => {
+  jpex.factory('voice', [ 'voice' ], (voice) => {
     const original = voice.shout;
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;
   });
-  const voice = base2.resolve<Voice>();
+  const voice = base2.resolve('voice');
   const result = voice.shout('hello');
 
   t.is(result, 'hello!');

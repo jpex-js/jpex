@@ -1,6 +1,6 @@
 import anyTest, { TestInterface } from 'ava';
 import { stub } from 'sinon';
-import jpex, { JpexInstance } from '..';
+import jpex, { JpexInstance } from '../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -13,18 +13,6 @@ test.beforeEach((t) => {
 });
 
 test('wraps a method with specified dependencies', (t) => {
-  const { jpex } = t.context;
-
-  const fn = jpex.encase([ 'foo' ], (foo: string) => (bah: string) => (foo + bah));
-
-  jpex.constant('foo', 'injected');
-
-  const result = fn('provided');
-
-  t.is(result, 'injectedprovided');
-});
-
-test('infers dependencies from function arguments', (t) => {
   const { jpex } = t.context;
 
   type Foo = string;
@@ -67,21 +55,22 @@ test('caches the inner function', (t) => {
 
   jpex.constant<Foo>('injected');
 
-  const inner = stub().callsFake((foo) => {
+  const spy = stub().callsFake((foo) => {
     return (bah: string) => {
       return foo + bah;
     };
   });
-  const fn = jpex.encase([ jpex.infer<Foo>() ], inner);
+  const inner = (foo: Foo) => spy(foo);
+  const fn = jpex.encase(inner);
 
   fn('provided');
-  t.is(inner.callCount, 1);
+  t.is(spy.callCount, 1);
 
   fn('xxx');
-  t.is(inner.callCount, 1);
+  t.is(spy.callCount, 1);
 
   jpex.clearCache();
 
   fn('yyy');
-  t.is(inner.callCount, 2);
+  t.is(spy.callCount, 2);
 });
