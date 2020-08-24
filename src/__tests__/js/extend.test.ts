@@ -1,5 +1,5 @@
 import anyTest, { TestInterface } from 'ava';
-import { jpex, JpexInstance } from '..';
+import { jpex, JpexInstance } from '../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -15,7 +15,7 @@ test.beforeEach((t) => {
 
 test('returns a new jpex instance', (t) => {
   const { jpex } = t.context;
-  const jpex2 = jpex.extend({});
+  const jpex2 = jpex.extend();
 
   t.is(typeof jpex2, 'object');
   t.is(typeof jpex.resolve, 'function');

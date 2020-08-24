@@ -1,5 +1,5 @@
 import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '..';
+import base, { JpexInstance } from '../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -13,23 +13,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('it resolves with given values (js)', (t) => {
-  const { jpex } = t.context;
-
-  jpex.factory('A', [ 'B', 'C', 'D' ], (b, c, d) => {
-    return b + c + d;
-  });
-
-  const result = jpex.resolveWith('A', {
-    B: 'b',
-    C: 'c',
-    D: 'd',
-  });
-
-  t.is(result, 'bcd');
-});
-
-test('it resolves with given values (ts)', (t) => {
+test('it resolves with given values', (t) => {
   const { jpex } = t.context;
 
   type A = string;
