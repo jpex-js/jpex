@@ -12,6 +12,7 @@ Change Log
 - removed the built-in dependency `$options`. You can no longer do `.resolve({ foo: 'someValue' })`
 - removed the built-in dependency `$resolve`
 - `precedence` option lets you determine if a factory should overwrite an existing factory or not
+- Support for IE11 has been dropped by default. If you want a fully ES5-compatible version, you can import `jpex/dist/es5.js`
 
 #### Breaking Changes
 - if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable
@@ -22,6 +23,7 @@ Change Log
 - `Lifecycle` is now a type rather than an enum
 - wrapping a name in `__` will no longer make it optional, you must explicitly pass the optional flag
 - `$options` and `$resolve` functionality have been removed
+- If you want to support IE11 you will need to import `jpex/dist/es5.js` or create an alias for it
 
 ### 3.5.1
 - building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations
