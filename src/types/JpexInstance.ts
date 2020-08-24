@@ -5,8 +5,8 @@ import {
   AnyConstructor,
   Factory,
   Precedence,
+  NamedParameters,
 } from './';
-import { NamedParameters } from './BuiltIns';
 
 export interface SetupConfig {
   inherit?: boolean,
