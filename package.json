@@ -33,14 +33,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jackmellis/jpex.git"
+    "url": "git+https://github.com/jpex-js/jpex.git"
   },
   "author": "Jack Ellis",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jackmellis/jpex/issues"
+    "url": "https://github.com/jpex-js/jpex/issues"
   },
-  "homepage": "https://jpex-js.github.io",
+  "homepage": "https://github.com/jpex-js/jpex",
   "devDependencies": {
     "@ava/babel": "^1.0.1",
     "@babel/cli": "^7.8.4",

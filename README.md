@@ -9,13 +9,33 @@ Easy Dependency Injection
 [![Code Climate](https://codeclimate.com/github/jackmellis/jpex/badges/gpa.svg)](https://codeclimate.com/github/jackmellis/jpex)
 [![Test Coverage](https://codeclimate.com/github/jackmellis/jpex/badges/coverage.svg)](https://codeclimate.com/github/jackmellis/jpex/coverage)
 
-Jpex is an Inversion of Control framework.
+Jpex is an Inversion of Control framework. Register dependencies on a container, then resolve them anywhere in your application. The real magic of jpex is its ability to infer dependencies using the magic of babel and typescript...
+
+## Contents
+- [Getting Started](#getting-started)
+- [Registering Dependencies](#registering-dependencies)
+- [Consuming Dependencies](#consuming-dependencies)
+- [API](#api)
+  - [jpex](#jpex)
+  - [babel](#babel)
+- [caveats](#caveats)
+- [react](#react)
+- [Vanilla JS mode](#vanilla-js-mode)
 
 ## Getting Started
 
 ### Install
 ```
 npm install jpex
+```
+
+### Babel Plugin
+Jpex uses a babel plugin to infer type interfaces. Your babel config should look something like this:
+```js
+{
+  presets: [ '@babel/preset-typescript' ],
+  plugins: [ 'jpex/babel-plugin' ]
+}
 ```
 
 ### Usage
@@ -30,211 +50,177 @@ const foo = jpex.resolve<IFoo>();
 
 ------
 
-### Registering Dependencies
-Services and factories are small modules or functions that provide a reusable or common piece of functionality. In Jpex, you can register **factories**:
+## Registering Dependencies
+Services and factories are small modules or functions that provide a reusable or common piece of functionality.
+
+### factories
 ```ts
-jpex.factory('myFactory', () => {
+type MyFactory = {};
+
+jpex.factory<MyFactory>(() => {
   return {};
 });
 ```
-**services**:
+
+### services
 ```ts
-jpex.service('myService', function(){
+type MyService = { method: () => any };
+
+jpex.service<MyService>(function(){
   this.method = function(){
     ...
   };
 });
 ```
-and **constants**:
-```ts
-jpex.constant('myConstant', 'foo');
-```
 
-If you're using typescript you can use type inference to automatically register factories:
-```ts
-jpex.factory<MyFactory>(() => {
-  return {};
-});
-```
-```ts
-jpex.service<IMyService>(class MyService implements IMyService {
-  method() {}
-});
-```
+### constants
 ```ts
 type MyConstant = string;
-
 jpex.constant<MyConstant>('foo');
 ```
 
 ------
 
-### Consuming Dependencies
+## Consuming Dependencies
+### resolve
+You can then resolve a dependency anywhere in your app:
 ```ts
-const myFactory = jpex.resolve('myFactory');
+const value = jpex.resolve<MyFactory>();
 ```
 
+### dependent factories
 You can also request a dependency from within another factory:
 ```ts
-jpex.constant('myConstant', 'foo');
+jpex.constant<MyConstant>('foo');
 
-jpex.factory('myFactory', (myConstant) => {
-  return {
-    injectedValue : myConstant
-  };
+jpex.factory<MyFactory>((myConstant: MyConstant) => {
+  return `my constant is ${myConstant}`;
 });
-
-jpex.service('myService', function(myFactory){
-  this.method = function(){
-    return myFactory.injectedValue;
-  };
-});
-
-jpex.resolve('myService').method(); // returns 'foo'!
 ```
 
-Again, with typescript you can use types to automatically pull in your dependencies:
+### encase
+Or you can *encase* a function so that dependencies are injected into it on-the-fly:
 ```ts
-jpex.factory<MyFactory>((myConstant: MyConstant) => {
-  return {
-    injectedValue: myConstant,
-  };
+const myFn = jpex.encase((value: MyFactory) => (arg1, arg2) => {
+  return value + arg1 + arg2;
 });
-
-jpex.service<MyService>(function(myFactory: MyFactory) {
-  this.method = function(){
-    return myFactory.injectedValue;
-  };
-});
-
-jpex.resolve<MyService>().method();
 ```
 
 -------
-
-## Babel
-In order to use the inferred typescript functionality, you need to run your code through babel using the plugin in this package. You can import it from `jpex/babel-plugin`
-
-```js
-plugins: [ 'jpex/babel-plugin' ]
-```
-By default it only checks for an object named `jpex`. If you decide to rename it to anything else, or have multiple containers, you can pass an identifier option in.
-
-By default the types are converted to strings based on the path where they originate from i.e. `type:/src/types/index/MyType`. You can optionally pass in a `publicPath` which will override this behaviour, instead returning `type:myPublicPath/MyType`. This is useful if you want to expose factories via an npm package, for example.
-
-```js
-plugins: [
-  [
-    'jpex/babel-plugin',
-    {
-      identifier: [ 'jpex', 'ioc' ],
-      publicPath: 'my-library'
-    }
-  ]
-]
-```
-
-You can also set this to `true` which will automatically use your library's `name` property from its `package.json` as the public path.
-
-There are a number of caveats to this method, however:
-- The plugin only supports named types so you can't do `jpex.factory<{}>()`
-- There is not yet a concept of extending types, so if you do `interface Bah extends Foo {}` you can't then try to resolve `Foo` and expect to be given `Bah`, they are treated as 2 separate things
-- Registering a dependency inside a node_module or in an aliased import will likely not work
-
-This is still a work in progress so hopefully more in depth type inferrence will be added in the future.
-
-For more information, see the full documentation at [https://jpex-js.github.io](https://jpex-js.github.io)
 
 ## API
 ### jpex
 #### jpex.constant
 ```ts
-jpex.constant(name: string, obj: any)
-jpex.constant<T>(obj: T)
+<T>(obj: T): void
 ```
-Registers a constant value
+Registers a constant value.
 
 #### jpex.factory
 ```ts
-jpex.factory(name: string, deps?: string[], fn: (...deps: any[]) => any)
-jpex.factory<T>(fn(...deps: any[]) => T)
+<T>(fn: (...deps: any[] => T), opts?: object): void
 ```
-Registers a factory function.
+Registers a factory function against the given type. Jpex works out the types of `deps` and injects them at resolution time, then returns the resulting value `T`.
+
+```ts
+type GetStuff = () => Promise<string>;
+
+jpex.factory<GetStuff>((window: Window) => () => window.fetch('/stuff));
+```
+
+The following options can be provided for both factories and services:
+
+##### lifecycle
+```ts
+'application' | 'class' | 'instance' | 'none'
+```
+Determines how long the factory is cached for once resolved.
+
+- `application` is resolved forever across all containers
+- `class` is resolved for the current jpex container, if you `.extend()` the new container will resolve it again
+- `instance` if you request the same dependency multiple times in the same `resolve` call, this will use the same value, but the next time you call `resolve` it will start again
+- `none` never caches anything
+
+The default lifecycle is `class`
+
+##### precedence
+```ts
+'active' | 'passive'
+```
+Determines the behavior when the same factory is registered multiple times.
+
+- `active` overwrites the existing factory
+- `passive` prefers the existing factory
+
+Defaults to `active`
+
+##### bindToInstance
+```ts
+boolean
+```
+Specifically for services, automatically binds all of the dependencies to the service instance.
 
 #### jpex.service
 ```ts
-jpex.service(name: string, deps?: string[], c: ClassType)
-jpex.service<T>(c: ClassType<T>)
+<T>(class: ClassWithConstructor, opts?: object): void
 ```
-Registers a service, the dependencies will be passed in to the constructor function. It is possible to pass in a regular function instead of an ES6 class.
+Registers a service. A service is like a factory but instantiates a class instead.
 
-##### .lifecycle
 ```ts
-jpex.factory(...args).lifecycle.application();
-jpex.factory(...args).lifecycle.class();
-jpex.factory(...args).lifecycle.instance();
-jpex.factory(...args).lifecycle.none();
-```
-sets the lifecycle of the factory. This determines how long a resolved factory is cached for.
+class Foo {
+  constructor(window: Window) {
+    // ...
+  }
+}
 
-- Application is forever
-- Class is for the entire container (creating a new container via `jpex.extend` will require the factory to be resolved again)
-- Instance will cache the dependency through a single "call" (i.e. if multiple nested dependencies rely on the same factory). But each separate call will re-resolve
-- None never caches
-
-##### .bindToInstance
-```ts
-jpex.service(...args).bindToInstance();
+jpex.service<Foo>(Foo);
 ```
-Automatically binds dependencies to a service's instance.
-
-##### .dependencies
-```ts
-jpex.factory(...args).dependencies('foo', 'bah');
-```
-Allows you to set a factory's dependencies after-the-fact.
 
 #### jpex.alias
 ```ts
-jpex.alias(alias: string, factory: string): void
-jpex.alias<T>(alias: string): void
+<T>(alias: string): void
 ```
+Creates an alias to another factory
+
 #### jpex.resolve
 ```ts
-jpex.resolve<T>(name: string): T
-jpex.resolve<T>(): T
+<T>(opts?: object): T
 ```
-Resolves a specified dependency. You can omit the `name` parameter if using the babel plugin
+Locates and resolves the desired factory.
+
+```ts
+const foo = jpex.resolve<Foo>();
+```
+
+The following options can be provided for both `resolve` and `resolveWith`:
+
+##### optional
+```ts
+boolean
+```
+When `true` if the dependency cannot be found or resolved, it will just return `undefined` rather than throwing an error.
+
+##### with
+```ts
+object
+```
+Lets you pass in static values to use when resolving dependencies. This should be used as an escape hatch, as `resolveWith` was created specifically for this purpose.
 
 #### jpex.resolveWith
 ```ts
-jpex.resolveWith<T>(name: string, namedParameters: object): T
-jpex.resolveWith<T>(namedParameters: object): T
+<T, ...Rest[]>(values: Rest, opts?: object): T
 ```
-allows you to pass in values for specific dependencies. Rather than attempting to resolve those dependencies, it will use the given value instead.
+Resolves a factory while substituting dependencies for the given values
 
 ```ts
-jpex.constant('myConstant', 'foo');
-jpex.factory('myFactory', [ 'myConstant' ], (c) => c);
-
-const x = jpex.resolveWith('myFactory', { myConstant: 'bah' });
-
-// x -> bah
+const foo = jpex.resolveWith<Foo, Bah, Baz>([ 'bah', 'baz' ]);
 ```
 
 #### jpex.encase
 ```ts
-jpex.encase(
-  dependencies: string[],
-  fn: (...deps: any[]) => Function
-): Function
-jpex.encase(
-  fn: (...deps: any[]) => Function
-) => Function
+(...deps: any[]): (...args: any[]) => any
 ```
-Wraps a function and injects values into it, it then returns the inner function for use. It supports type inference.
-
-The easiest way to explain this method is with an example:
+Wraps a function and injects values into it, it then returns the inner function for use.
 
 ```ts
 const getStuff = jpex.encase((http: Http) => (thing: string) => {
@@ -244,49 +230,168 @@ const getStuff = jpex.encase((http: Http) => (thing: string) => {
 await getStuff('my-thing');
 ```
 
-##### .encased
-For testing purposes, you can access the wrapper function of your encased method using this property.
+To help with testing, the returned function also has an `encased` property containng the outer function
+
 ```ts
 getStuff.encased(fakeHttp)('my-thing');
 ```
 
-#### jpex.clearCache
-```ts
-(): void
-<T>(): void
-(name: string): void
-(name: string[]): void
-```
-Clears the cache. If you provide a name or a type, it will only clear that dependency's cache. If you omit name altogether, it will clear the entire cache.
-
 #### jpex.extend
 ```ts
-jpex.extend(config?: {
-  lifecycle?: Lifecycle,
-  inherit?: boolean,
-}): Jpex
+(config?: object): Jpex
 ```
-Creates a new container. You will still have access to all factories registered on the parent container.
+creates a new container, using the current one as a base.
 
-If you pass `inherit: false` you will not get any of the parent's factories, you will just get a clearn instance.
+This is useful for creating isolated contexts or not poluting the global container.
 
-#### jpex.infer
-```ts
-jpex.infer<T>(): string
-```
-If you're working with typescript inference, you can use this function to get the inferred name of a type.
+The default behavior is to pass down all config options and factories to the new container.
 
-```ts
-const dependencyName = jpex.infer<IFactory>(); // something like src/types/IFactory
-```
+##### inherit
+`boolean`
+
+Whether or not to inherit config and factories from its parent
+
+##### lifecycle
+`'application' | 'class' | 'instance' | 'none'`
+
+The default lifecycle for factories. `class` by default
+
+##### precedence
+`'active' | 'passive'`
+
+The default precedence for factories. `active` by default
+
+##### optional
+`boolean`
+
+Whether factories should be optional by default
+
+##### nodeModules
+`boolean`
+
+When trying to resolve a tdependency, should it attempt to import the dependency from node modules?
+
+##### globals
+`boolean`
+
+When trying to resolve a dependency, should it check for it on the global object?
 
 #### jpex.raw
 ```ts
-jpex.raw<T>(): (...args: any[]) => T
+<T>() => (...deps: any[]) => T
 ```
-returns the raw factory function
-```ts
-const factory = jpex.raw<IFactory>;
 
-const result = factory(dep1, dep2)('my-thing');
+Returns the raw factory function, useful for testing.
+
+#### jpex.clearCache
+```ts
+() => void
+<T>() => void
+```
+
+Clears the cache of resolved factories. If you provide a type, that specific factory will be cleared, otherwise it will clear all factories.
+
+#### jpex.infer
+```ts
+<T>() => string
+```
+
+Under the hood jpex converts types into strings for runtime resolution. If you want to get that calculated string for whatever reason, you can use `jpex.infer`
+
+### babel
+#### identifier
+```ts
+string | string[]
+```
+The variable name of your `jpex` instance that the babel plugin should look for. By default it is just `jpex`.
+
+For example in your app you may have something like:
+
+```ts
+const ioc = jpex.extend();
+
+ioc.factory<Foo>(fooFn);
+```
+
+Then you should set the identifier property to `'ioc'` or `[ 'ioc', 'jpex' ]`
+
+#### publicPath
+```ts
+string | boolean
+```
+The default behavior when creating string literals for types is to use the file path + the type name.
+
+For example, if you import `MyDep` from `'src/types/common'`, jpex will name it `type:/src/types/common/MyDep`.
+
+However, sometimes this is not ideal, such as when creating a node module package. (When you import a type from a node module, jpex will just use the package name as the file path)
+
+`publicPath` allows you to set the path prefix. For example, setting it to `myPackageName` would result in a naming scheme of `type:/myPackageName/MyDep`.
+
+If you set `publicPath` to `true`, it will attempt to load your `package.json` and read the `name` property.
+
+## caveats
+There are a few caveats to be aware of:
+- Only named types/interfaces are supported so you can't do `jpex.factory<{}>()`
+- There is not yet a concept of extending types, so if you do `interface Bah extends Foo {}` you can't then try to resolve `Foo` and expect to be given `Bah`, they are treated as 2 separate things
+- The check for a jpex instance is based on the variable name, so you can't do `const jpex2 = jpex; jpex2.constant<Foo>(foo);` without explicitly adding `jpex2` to the plugin config
+- Similiarly you can't do `const { factory } = jpex`
+
+## react
+Jpex is a really good fit with React as it offers a good way to inject impure effects into pure components. There is a `react-jpex` library that exposes a few hooks.
+
+```tsx
+import React from 'react';
+import { useResolve } from 'react-jpex';
+import { SaveData } from '../types';
+
+const MyComponent = (props) => {
+  const saveData = useResolve<SaveData>();
+
+  const onSubmit = () => saveData(props.values);
+
+  return (
+    <div>
+      <MyForm/>
+      <button onClick={onSubmit}>Submit</button>
+    </div>
+  );
+};
+```
+
+And this pattern also makes it really easy to isolate a component from its side effects when writing tests:
+
+```tsx
+import { Provider, useJpex } from 'jpex';
+// create a stub for the SaveData dependency
+const saveData = stub();
+
+render(
+  // the Provider component will create a new jpex instance
+  <Provider>
+    {() => {
+      // grab jpex - it will be isolated to this context only
+      const jpex = useJpex();
+      // register our stub dependency
+      jpex.constant<SaveData>(saveData);
+
+      // when we render MyComponent, it will be given our stubbed dependency
+      return (<MyComponent/>);
+    }}
+  </Provider>
+);
+
+// trigger the compnent's onClick
+doOnClick();
+
+expect(saveData.called).to.be.true;
+```
+
+## Vanilla JS mode
+Perhaps you hate typescript, or babel, or both. Or perhaps you don't have the luxury of a build pipeline in your application. That's fine because jpex supports vanilla js as well, you just have to explicitly state your dependencies up front:
+
+```ts
+jpex.constant('foo', 'foo');
+jpex.factory('bah', [ 'foo' ], (foo) => foo + 'bah');
+
+const value = jpex.resolve('bah');
 ```
