@@ -1,7 +1,11 @@
+/* global global */
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
 import base, { JpexInstance } from '../..';
+
+type NodeModuleType<S extends string, T = any> = T;
+type GlobalType<S extends string, T = any> = T;
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -22,6 +26,12 @@ test('resolves factories and services', (t) => {
   type Dependent = { val: string };
   type Master = { val: string, sub: string };
   type Constant = string;
+  class ComplexConcrete {
+    val: string;
+    constructor(dep: Dependent) {
+      this.val = dep.val;
+    }
+  }
 
   jpex.factory<Factory>(() => 'FACTORY');
   jpex.service<Service>(class {
@@ -34,17 +44,20 @@ test('resolves factories and services', (t) => {
     this.val = 'MASTER';
     this.sub = d.val;
   });
+  jpex.service<ComplexConcrete>(ComplexConcrete);
   jpex.constant<Constant>('CONSTANT');
 
   const f = jpex.resolve<Factory>();
   const s = jpex.resolve<Service>();
   const m = jpex.resolve<Master>();
+  const cc = jpex.resolve<ComplexConcrete>();
   const c = jpex.resolve(jpex.infer<Constant>());
 
   t.is(f, 'FACTORY');
   t.is(s.val, 'SERVICE');
   t.is(m.val, 'MASTER');
   t.is(m.sub, 'DEPENDENT');
+  t.is(cc.val, 'DEPENDENT');
   t.is(c, 'CONSTANT');
 });
 
@@ -124,20 +137,21 @@ test('resolves array-like dependencies', (t) => {
   t.is(value, 'hello');
 });
 
-test.skip('resolves a node module', (t) => {
+test.failing('resolves a node module', (t) => {
   const { jpex } = t.context;
-
-  const value = jpex.resolve('fs');
+  type Fs = NodeModuleType<'fs', typeof fs>;
+  const value = jpex.resolve<Fs>();
 
   t.is(value, fs);
 });
 
-test.skip('prefers a registered dependency over a node module', (t) => {
+test('prefers a registered dependency over a node module', (t) => {
   const { jpex } = t.context;
+  type Fs = NodeModuleType<'fs', typeof fs>;
   const fakeFs = {};
-  jpex.factory('fs', [], () => fakeFs as any);
+  jpex.factory<Fs>(() => fakeFs as any);
 
-  const value = jpex.resolve('fs');
+  const value = jpex.resolve<Fs>();
 
   t.not(value, fs);
   t.is(value, fakeFs);
@@ -160,4 +174,15 @@ test('prefers a registered dependency over a global', (t) => {
 
   t.not(value, window);
   t.is(value, fakeWindow);
+});
+
+test.failing('allows a custom global variable', (t) => {
+  const { jpex } = t.context;
+  // @ts-ignore
+  global.foo = 'hello';
+  type Foo = GlobalType<'foo', any>;
+
+  const value = jpex.resolve<Foo>();
+
+  t.is(value, 'hello');
 });

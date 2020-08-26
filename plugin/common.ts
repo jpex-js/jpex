@@ -180,9 +180,20 @@ const linkedVariableVisitor: Visitor<{
   programPath: NodePath<t.Program>,
 }> = {
   Class(path, state) {
-    const { deps, name } = state;
-    if (path.node.id.name === name) {
-      path.traverse(classConstructorVisitor, { deps });
+    const {
+      deps,
+      name,
+      filename,
+      programPath,
+      publicPath,
+    } = state;
+    if (path.node.id?.name === name) {
+      path.traverse(classConstructorVisitor, {
+        deps,
+        filename,
+        programPath,
+        publicPath,
+      });
     }
   },
   ArrowFunctionExpression(path, state) {
