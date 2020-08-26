@@ -11,6 +11,17 @@ Easy Dependency Injection
 
 Jpex is an Inversion of Control framework. Register dependencies on a container, then resolve them anywhere in your application. The real magic of jpex is its ability to infer dependencies using the magic of babel and typescript...
 
+## Contents
+- [Getting Started](#getting-started)
+- [Registering Dependencies](#registering-dependencies)
+- [Consuming Dependencies](#consuming-dependencies)
+- [API](#api)
+  - [jpex](#jpex)
+  - [babel](#babel-plugin-1)
+- [caveats](#caveats)
+- [react](#react)
+- [Vanilla JS mode](#vanilla-js-mode)
+
 ## Getting Started
 
 ### Install
@@ -287,7 +298,7 @@ Clears the cache of resolved factories. If you provide a type, that specific fac
 
 Under the hood jpex converts types into strings for runtime resolution. If you want to get that calculated string for whatever reason, you can use `jpex.infer`
 
-### babel plugin
+### babel
 #### identifier
 ```ts
 string | string[]
@@ -325,7 +336,7 @@ There are a few caveats to be aware of:
 - The check for a jpex instance is based on the variable name, so you can't do `const jpex2 = jpex; jpex2.constant<Foo>(foo);` without explicitly adding `jpex2` to the plugin config
 - Similiarly you can't do `const { factory } = jpex`
 
-## with react
+## react
 Jpex is a really good fit with React as it offers a good way to inject impure effects into pure components. There is a `react-jpex` library that exposes a few hooks.
 
 ```tsx
@@ -375,7 +386,7 @@ doOnClick();
 expect(saveData.called).to.be.true;
 ```
 
-## Without typescript
+## Vanilla JS mode
 Perhaps you hate typescript, or babel, or both. Or perhaps you don't have the luxury of a build pipeline in your application. That's fine because jpex supports vanilla js as well, you just have to explicitly state your dependencies up front:
 
 ```ts
