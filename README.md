@@ -17,7 +17,7 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 - [Consuming Dependencies](#consuming-dependencies)
 - [API](#api)
   - [jpex](#jpex)
-  - [babel](#babel-plugin-1)
+  - [babel](#babel)
 - [caveats](#caveats)
 - [react](#react)
 - [Vanilla JS mode](#vanilla-js-mode)
