@@ -6,6 +6,7 @@
   "module": "dist/es/jpex.js",
   "types": "dist/es/index.d.ts",
   "scripts": {
+    "clear-cache": "rm -rf node_modules/.cache",
     "test": "ava",
     "test:debug": "ava debug",
     "coverage": "nyc ava",
