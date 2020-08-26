@@ -17,6 +17,14 @@ import {
 import encase from './encase';
 import clearCache from './clearCache';
 
+const defaultConfig = {
+  lifecycle: 'class' as const,
+  precedence: 'active' as const,
+  globals: true,
+  nodeModules: true,
+  optional: false,
+};
+
 class Jpex implements IJpex {
   decorate: any;
   $$config: IJpex['$$config'];
@@ -36,11 +44,8 @@ class Jpex implements IJpex {
 
     this.$$parent = parent;
     this.$$config = {
-      lifecycle: (inherit ? parent?.$$config.lifecycle : void 0) ?? 'class',
-      precedence: 'active',
-      globals: true,
-      nodeModules: true,
-      optional: false,
+      ...defaultConfig,
+      ...(inherit ? parent?.$$config : {}),
       ...config,
     };
 
