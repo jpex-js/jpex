@@ -13,6 +13,7 @@ Change Log
 - removed the built-in dependency `$resolve`
 - `precedence` option lets you determine if a factory should overwrite an existing factory or not
 - Support for IE11 has been dropped by default. If you want a fully ES5-compatible version, you can import `jpex/dist/es5.js`
+- You can now alias 2 types i.e. `jpex.alias<From, To>()`
 
 #### Breaking Changes
 - if you attempt to resolve a global like `Window` without registering it first, rather than throw an error, you will now get the global variable
