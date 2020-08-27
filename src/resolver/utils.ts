@@ -9,19 +9,6 @@ import {
   unsafeRequire,
 } from '../utils';
 
-export const isValidFactory = (factory: Factory) => {
-  if (!factory) {
-    return false;
-  }
-  if (factory.resolved) {
-    return true;
-  }
-  if (factory.fn && typeof factory.fn === 'function') {
-    return true;
-  }
-  return false;
-};
-
 const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   // in order to stop webpack environments from including every possible
   // import source in the bundle, we have to stick all node require stuff
@@ -93,22 +80,22 @@ export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) 
     throw new Error(`Name must be a string, but recevied ${typeof name}`);
   }
   let factory: Factory = jpex.$$resolved[name];
-  if (isValidFactory(factory)) {
+  if (factory != null) {
     return factory;
   }
 
   factory = jpex.$$factories[name];
-  if (isValidFactory(factory)) {
+  if (factory != null) {
     return factory;
   }
 
   factory = getFromGlobal(jpex, name);
-  if (isValidFactory(factory)) {
+  if (factory != null) {
     return factory;
   }
 
   factory = getFromNodeModules(jpex, name);
-  if (isValidFactory(factory)) {
+  if (factory != null) {
     return factory;
   }
 
