@@ -22,7 +22,9 @@ export const resolveOne = <R extends any>(
   stack: string[],
 ): R => {
   if (!namedParameters) {
-    namedParameters = opts?.with ?? {};
+    namedParameters = {
+      ...opts?.with,
+    };
   }
 
   // Check named parameters
@@ -33,17 +35,12 @@ export const resolveOne = <R extends any>(
   }
 
   // Special keys
-  switch (name) {
-  case '$namedParameters':
-  case jpex.infer<NamedParameters>():
-    // @ts-ignore
-    return namedParameters;
-  default:
-    break;
+  if (name === '$namedParameters' || name === jpex.infer<NamedParameters>()) {
+    return namedParameters as R;
   }
 
   // Ensure we're not stuck in a recursive loop
-  if (stack.indexOf(name) > -1) {
+  if (stack.length > 0 && stack.indexOf(name) > -1) {
     if (getLast(stack) === name) {
       if (jpex.$$parent?.$$factories[name]) {
         return resolveOne(jpex.$$parent, name, namedParameters, opts, []);
