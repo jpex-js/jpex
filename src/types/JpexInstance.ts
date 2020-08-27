@@ -42,6 +42,7 @@ export interface JpexInstance {
 
   alias(alias: string, name: string): void,
   alias<T>(alias: string): void,
+  alias<T, U>(): void,
 
   resolve(name: Dependency, opts?: ResolveOpts): any,
   resolve<T>(opts?: ResolveOpts): T,
