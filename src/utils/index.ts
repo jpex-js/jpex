@@ -30,10 +30,11 @@ export const isNode = (() => {
   return typeof _process === 'object' && _process.toString && _process.toString() === '[object process]';
 })();
 
-declare const require: any;
+// eslint-disable-next-line no-new-func
+const doUnsafeRequire = new Function('require', 'target', 'return require.main.require(target)');
 export const unsafeRequire = (target: string) => {
-  // eslint-disable-next-line no-new-func
-  return new Function('require', 'target', 'return require.main.require(target)')(require, target);
+  // eslint-disable-next-line no-eval
+  return doUnsafeRequire(eval('require'), target);
 };
 
 const REG_COMMENTS = /\/\/(.*?)\n|\/\*([\S\s]*?)\*\//g;

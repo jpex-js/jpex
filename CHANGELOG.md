@@ -1,5 +1,8 @@
 Change Log
 ==========
+### 3.5.1
+- building with webpack was giving warnings about `require` being used which meant it couldn't make optimizations
+
 ### 3.5.0
 - add some deprecation warnings for pre-4.0.0 changes
 
