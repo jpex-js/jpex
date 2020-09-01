@@ -8,11 +8,12 @@ import {
 import {
   getFactory,
   cacheResult,
+  checkStack,
 } from './utils';
 import {
   hasOwn,
-  getLast,
 } from '../utils';
+import { NAMED_PARAMS } from '../constants';
 
 export const resolveOne = <R extends any>(
   jpex: JpexInstance,
@@ -35,18 +36,14 @@ export const resolveOne = <R extends any>(
   }
 
   // Special keys
-  if (name === '$namedParameters' || name === jpex.infer<NamedParameters>()) {
+  if (name === NAMED_PARAMS || name === jpex.infer<NamedParameters>()) {
     return namedParameters as R;
   }
 
-  // Ensure we're not stuck in a recursive loop
-  if (stack.length > 0 && stack.indexOf(name) > -1) {
-    if (getLast(stack) === name) {
-      if (jpex.$$parent?.$$factories[name]) {
-        return resolveOne(jpex.$$parent, name, namedParameters, opts, []);
-      }
-    }
-    throw new Error(`Recursive loop for dependency ${name} encountered`);
+  if (checkStack(jpex, name, stack)) {
+    // Yes we have tried to resolve this one before, but we could
+    // actually just be resolving an inherited factory
+    return resolveOne(jpex.$$parent, name, namedParameters, opts, []);
   }
 
   // Get the factory
@@ -54,7 +51,7 @@ export const resolveOne = <R extends any>(
   // return null (meaning it's an optional dependency)
   // or throw an error
   const factory = getFactory(jpex, name, opts);
-  if (!factory) {
+  if (factory == null) {
     return;
   }
 
@@ -82,7 +79,7 @@ export const resolveOne = <R extends any>(
 export const resolveMany = <R extends any[]>(
   jpex: JpexInstance,
   definition: Definition,
-  namedParameters: { [key: string]: any },
+  namedParameters: NamedParameters,
   opts: ResolveOpts,
   stack: string[],
 ): R => {
@@ -91,9 +88,6 @@ export const resolveMany = <R extends any[]>(
   }
   if (!stack) {
     stack = [];
-  }
-  if (!namedParameters) {
-    namedParameters = opts?.with ?? {};
   }
   const dependencies: Dependency[] = [].concat(definition.dependencies);
 

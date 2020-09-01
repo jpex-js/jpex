@@ -23,7 +23,7 @@ function factory <T>(
 
   const precedence = opts?.precedence ?? jpex.$$config.precedence;
 
-  if (precedence === 'passive' && jpex.$$factories[name]) {
+  if (precedence === 'passive' && jpex.$$factories[name] != null) {
     return;
   }
 

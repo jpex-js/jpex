@@ -13,7 +13,7 @@ test.beforeEach((t) => {
 
 test('it aliases a factory to a type', (t) => {
   const { jpex } = t.context;
-  type Bah = any;
+  type Bah = string;
 
   jpex.factory('foo', [], () => 'foo');
   jpex.alias<Bah>('foo');

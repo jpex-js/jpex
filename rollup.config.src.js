@@ -23,12 +23,6 @@ export default {
     babel({
       exclude: 'node_modules/**',
       extensions: [ '.js', '.ts' ],
-      plugins: [
-        [
-          path.resolve('./babel-plugin.js'),
-          { publicPath: true },
-        ],
-      ],
     }),
   ],
 };

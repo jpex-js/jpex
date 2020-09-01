@@ -18,33 +18,21 @@ export const resolve = (
   jpex: JpexInstance,
   name: Dependency,
   opts?: ResolveOpts,
-) => resolveOne(
-  jpex,
-  name,
-  void 0,
-  opts,
-  [],
-);
+) => resolveOne(jpex, name, void 0, opts, []);
 
 export const resolveDependencies = (
   jpex: JpexInstance,
   definition: Definition,
   opts?: ResolveOpts,
 ) => {
-  return resolveMany(
-    jpex,
-    definition,
-    void 0,
-    opts,
-    [],
-  );
+  return resolveMany(jpex, definition, void 0, opts, []);
 };
 
 export const isResolved = (jpex: JpexInstance, dependency: Dependency) => {
   if (!isString(dependency)) {
     return false;
   }
-  if (jpex.$$resolved[dependency]) {
+  if (jpex.$$resolved[dependency] != null) {
     return true;
   }
   if (jpex.$$factories[dependency]?.resolved) {

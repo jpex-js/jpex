@@ -17,7 +17,6 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 - [Consuming Dependencies](#consuming-dependencies)
 - [API](#api)
   - [jpex](#jpex)
-  - [babel](#babel)
 - [caveats](#caveats)
 - [react](#react)
 - [Vanilla JS mode](#vanilla-js-mode)
@@ -29,14 +28,19 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 npm install jpex
 ```
 
-### Babel Plugin
-Jpex uses a babel plugin to infer type interfaces. Your babel config should look something like this:
+### Transpiling
+In order to infer type interfaces, jpex requires a transpiler. There are several available, but the preferred method is to use the included babel plugin:
 ```js
+// .bablerc
 {
   presets: [ '@babel/preset-typescript' ],
   plugins: [ 'jpex/babel-plugin' ]
 }
 ```
+There are several methods available:
+[@jpex-js/babel-plugin](https://github.com/jpex-js/babel-plugin)
+[@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)
+[@jpex-js/webpack-plugin](https://github.com/jpex-js/webpack-loader)
 
 ### Usage
 ```ts
@@ -297,37 +301,6 @@ Clears the cache of resolved factories. If you provide a type, that specific fac
 ```
 
 Under the hood jpex converts types into strings for runtime resolution. If you want to get that calculated string for whatever reason, you can use `jpex.infer`
-
-### babel
-#### identifier
-```ts
-string | string[]
-```
-The variable name of your `jpex` instance that the babel plugin should look for. By default it is just `jpex`.
-
-For example in your app you may have something like:
-
-```ts
-const ioc = jpex.extend();
-
-ioc.factory<Foo>(fooFn);
-```
-
-Then you should set the identifier property to `'ioc'` or `[ 'ioc', 'jpex' ]`
-
-#### publicPath
-```ts
-string | boolean
-```
-The default behavior when creating string literals for types is to use the file path + the type name.
-
-For example, if you import `MyDep` from `'src/types/common'`, jpex will name it `type:/src/types/common/MyDep`.
-
-However, sometimes this is not ideal, such as when creating a node module package. (When you import a type from a node module, jpex will just use the package name as the file path)
-
-`publicPath` allows you to set the path prefix. For example, setting it to `myPackageName` would result in a naming scheme of `type:/myPackageName/MyDep`.
-
-If you set `publicPath` to `true`, it will attempt to load your `package.json` and read the `name` property.
 
 ## caveats
 There are a few caveats to be aware of:

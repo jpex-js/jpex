@@ -34,12 +34,6 @@ export default {
           },
         ],
       ],
-      plugins: [
-        [
-          path.resolve('./babel-plugin.js'),
-          { publicPath: true },
-        ],
-      ],
     }),
   ],
 };
