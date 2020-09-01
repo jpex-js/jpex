@@ -16,7 +16,6 @@ test.beforeEach((t) => {
 test('it returns the raw factory by name', (t) => {
   const { jpex } = t.context;
   type Constant = string;
-  type Factory = string;
 
   jpex.constant('constant', 'foo');
   jpex.factory('factory', [ 'constant' ], (v: Constant) => {
