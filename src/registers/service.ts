@@ -16,7 +16,7 @@ function service(
     const context = {} as any;
 
     if (opts?.bindToInstance) {
-      (dependencies as string[]).forEach((key, i) => {
+      (dependencies).forEach((key, i) => {
         context[key] = args[i];
       });
     }

@@ -4,8 +4,10 @@ import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
 import base, { JpexInstance } from '../..';
 
+/* eslint-disable @typescript-eslint/no-unused-vars*/
 type NodeModuleType<S extends string, T = any> = T;
 type GlobalType<S extends string, T = any> = T;
+/* eslint-enable @typescript-eslint/no-unused-vars*/
 
 const test: TestInterface<{
   jpex: JpexInstance,

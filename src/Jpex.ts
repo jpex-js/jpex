@@ -84,6 +84,7 @@ class Jpex implements IJpex {
     return getFactory(this, name, {}).fn;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   encase<F extends AnyFunction, G extends AnyFunction<F>>(deps: any, fn?: any): any {
     return encase(this, deps, fn);
   }
