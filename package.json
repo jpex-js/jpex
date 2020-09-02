@@ -1,6 +1,6 @@
 {
   "name": "jpex",
-  "version": "3.5.1",
+  "version": "0.0.0",
   "description": "Javascript Prototype Extension",
   "main": "dist/cjs/jpex.js",
   "module": "dist/es/jpex.js",
@@ -16,7 +16,8 @@
     "build:ts": "tsc -d --outDir dist/es --emitDeclarationOnly ./src/index.ts",
     "build:post": "node ./postbuild-checks.js",
     "build": "yarn build:prepare && yarn build:js && yarn build:ts && yarn build:post",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "semantic-release": "semantic-release"
   },
   "husky": {
     "hooks": {
@@ -34,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jpex-js/jpex.git"
+    "url": "https://github.com/jpex-js/jpex.git"
   },
   "author": "Jack Ellis",
   "license": "ISC",
@@ -73,6 +74,7 @@
     "rollup": "^2.23.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "semantic-release": "^17.1.1",
     "sinon": "^9.0.2",
     "typescript": "^3.8.2"
   }
