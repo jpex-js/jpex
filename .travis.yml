@@ -1,19 +1,18 @@
-branches :
-  only :
-    - master
-language : node_js
-node_js :
+language: node_js
+node_js:
   - 10
-install :
+install:
   - yarn install
 
   - npm install codeclimate-test-reporter -g
-script :
+script:
   - yarn build
   - yarn lint
   - yarn test
   - yarn coverage
 
-after_script :
+after_script:
   - codeclimate-test-reporter < coverage/lcov.info
-  - npm publish
+deploy:
+  - yarn install
+  - yarn semantic-release
