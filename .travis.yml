@@ -13,6 +13,9 @@ script:
 
 after_script:
   - codeclimate-test-reporter < coverage/lcov.info
+
 deploy:
-  - yarn install
-  - yarn semantic-release
+  provider: script
+  skip_cleanup: true
+  script:
+    - yarn semantic-release
