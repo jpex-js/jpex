@@ -28,8 +28,13 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 npm install jpex
 ```
 
-### Transpiling
-In order to infer type interfaces, jpex requires a transpiler. There are several available, but the preferred method is to use the included babel plugin:
+### Plugin
+Jpex uses babel to infer type interfaces at build time. You can do this with one of several methods:
+[@jpex-js/babel-plugin](https://github.com/jpex-js/babel-plugin)
+[@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)
+[@jpex-js/webpack-plugin](https://github.com/jpex-js/webpack-loader)
+
+Jpex comes bundled with the `@jpex/babel-plugin` so you can easily get started with a `.babelrc` like this:
 ```js
 // .bablerc
 {
@@ -37,10 +42,6 @@ In order to infer type interfaces, jpex requires a transpiler. There are several
   plugins: [ 'jpex/babel-plugin' ]
 }
 ```
-There are several methods available:
-[@jpex-js/babel-plugin](https://github.com/jpex-js/babel-plugin)
-[@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)
-[@jpex-js/webpack-plugin](https://github.com/jpex-js/webpack-loader)
 
 ### Usage
 ```ts
