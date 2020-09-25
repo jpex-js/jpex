@@ -34,7 +34,7 @@ Jpex uses babel to infer type interfaces at build time. You can do this with one
 [@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)
 [@jpex-js/webpack-plugin](https://github.com/jpex-js/webpack-loader)
 
-Jpex comes bundled with the `@jpex/babel-plugin` so you can easily get started with a `.babelrc` like this:
+Jpex comes bundled with the `@jpex-js/babel-plugin` so you can easily get started with a `.babelrc` like this:
 ```js
 // .bablerc
 {

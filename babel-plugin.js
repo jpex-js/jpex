@@ -1,1 +1,1 @@
-module.exports = require('@jpex/babel-plugin');
+module.exports = require('@jpex-js/babel-plugin');

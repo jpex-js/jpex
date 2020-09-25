@@ -41,7 +41,6 @@ test('active overwrites an inherited factory', (t) => {
 test('defaults to active', (t) => {
   const { jpex } = t.context;
 
-  type A = string;
   jpex.factory('a', [], () => 'a');
   jpex.factory('a', [], () => 'A');
 

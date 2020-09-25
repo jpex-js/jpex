@@ -18,7 +18,7 @@ module.exports = {
   plugins: [
     '@babel/plugin-proposal-class-properties',
     [
-      '@jpex/babel-plugin',
+      '@jpex-js/babel-plugin',
       { publicPath: true },
     ],
   ],
