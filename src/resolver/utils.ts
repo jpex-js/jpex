@@ -8,18 +8,19 @@ import {
 import {
   isNode,
   unsafeRequire,
-  getLast,
+  isString,
+  hasLength,
 } from '../utils';
-import { GLOBAL_TYPE_PREFIX } from '../constants';
+import { GLOBAL_TYPE_PREFIX, VOID } from '../constants';
 
 const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   // in order to stop webpack environments from including every possible
   // import source in the bundle, we have to stick all node require stuff
   // inside an eval setup
-  if (!isNode) {
+  if (!jpex.$$config.nodeModules) {
     return;
   }
-  if (!jpex.$$config.nodeModules) {
+  if (!isNode()) {
     return;
   }
 
@@ -28,7 +29,7 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
     jpex.constant(target, value);
     return jpex.$$factories[target];
   } catch (e) {
-    if (e && e.message && e.message.includes(`Cannot find module '${target}'`)) {
+    if (e?.message?.includes?.(`Cannot find module '${target}'`)) {
       // not found in node modules, just continue
       return;
     }
@@ -38,15 +39,15 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
 };
 
 const getGlobalObject = (): any => {
-  if (typeof global !== 'undefined') {
+  if (typeof global !== VOID) {
     // eslint-disable-next-line no-undef
     return global;
   }
-  if (typeof globalThis !== 'undefined') {
+  if (typeof globalThis !== VOID) {
     // eslint-disable-next-line no-undef
     return globalThis;
   }
-  if (typeof window !== 'undefined') {
+  if (typeof window !== VOID) {
     return window;
   }
   return {};
@@ -79,25 +80,35 @@ const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
   }
 };
 
-export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) => {
-  if (typeof name !== 'string') {
+const validateArgs = (name: string) => {
+  if (!isString(name)) {
     throw new Error(`Name must be a string, but recevied ${typeof name}`);
   }
-  let factory: Factory = jpex.$$resolved[name];
+};
+
+const getFromResolved = (jpex: JpexInstance, name: string) => {
+  return jpex.$$resolved[name];
+};
+
+const getFromRegistry = (jpex: JpexInstance, name: string) => {
+  return jpex.$$factories[name];
+};
+
+export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) => {
+  validateArgs(name);
+
+  let factory: Factory = getFromResolved(jpex, name);
   if (factory != null) {
     return factory;
   }
-
-  factory = jpex.$$factories[name];
+  factory = getFromRegistry(jpex, name);
   if (factory != null) {
     return factory;
   }
-
   factory = getFromGlobal(jpex, name);
   if (factory != null) {
     return factory;
   }
-
   factory = getFromNodeModules(jpex, name);
   if (factory != null) {
     return factory;
@@ -139,7 +150,7 @@ export const cacheResult = (
 
 // Ensure we're not stuck in a recursive loop
 export const checkStack = (jpex: JpexInstance, name: Dependency, stack: string[]) => {
-  if (!stack.length) {
+  if (!hasLength(stack)) {
     // This is the first loop
     return false;
   }
@@ -147,7 +158,7 @@ export const checkStack = (jpex: JpexInstance, name: Dependency, stack: string[]
     // We've definitely not tried to resolve this one before
     return false;
   }
-  if (getLast(stack) === name) {
+  if (stack[stack.length - 1] === name) {
     // We've tried to resolve this one before, but...
     // if this factory has overridden a parent factory
     // we should assume it actually wants to resolve the parent

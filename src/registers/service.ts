@@ -1,6 +1,12 @@
 import { JpexInstance, Dependency, ServiceOpts } from '../types';
 import { instantiate, isFunction } from '../utils';
 
+const validateArgs = (name: string, fn: any) => {
+  if (!isFunction(fn)) {
+    throw new Error(`Factory ${name} must be a [Function]`);
+  }
+};
+
 function service(
   jpex: JpexInstance,
   name: string,
@@ -8,15 +14,13 @@ function service(
   fn: any,
   opts?: ServiceOpts,
 ) {
-  if (!isFunction(fn)) {
-    throw new Error(`Service ${name} must be a [Function]`);
-  }
+  validateArgs(name, fn);
 
   function factory(...args: any[]) {
     const context = {} as any;
 
     if (opts?.bindToInstance) {
-      (dependencies).forEach((key, i) => {
+      dependencies.forEach((key, i) => {
         context[key] = args[i];
       });
     }
