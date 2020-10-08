@@ -1,13 +1,7 @@
 import { JpexInstance, Factory, Dependency, AnyFunction, FactoryOpts } from '../types';
-import { isString, isFunction } from '../utils';
+import { isString, isFunction, hasLength } from '../utils';
 
-function factory <T>(
-  jpex: JpexInstance,
-  name: string,
-  dependencies: Dependency[],
-  fn: AnyFunction<T>,
-  opts?: FactoryOpts,
-) {
+const validateArgs = (name: string, dependencies: Dependency[], fn: AnyFunction) => {
   if (!isString(name)) {
     throw new Error(`Factories must be given a name, but was called with [${typeof name}]`);
   }
@@ -17,11 +11,23 @@ function factory <T>(
   if (!isFunction(fn)) {
     throw new Error(`Factory ${name} must be a [Function]`);
   }
-  if (!dependencies.length) {
+};
+
+function factory <T>(
+  jpex: JpexInstance,
+  name: string,
+  dependencies: Dependency[],
+  fn: AnyFunction<T>,
+  opts?: FactoryOpts,
+) {
+  validateArgs(name, dependencies, fn);
+
+  if (!hasLength(dependencies)) {
     dependencies = null;
   }
 
   const precedence = opts?.precedence ?? jpex.$$config.precedence;
+  const lifecycle = opts?.lifecycle ?? jpex.$$config.lifecycle;
 
   if (precedence === 'passive' && jpex.$$factories[name] != null) {
     return;
@@ -30,7 +36,7 @@ function factory <T>(
   const f: Factory = {
     fn,
     dependencies,
-    lifecycle: opts?.lifecycle ?? jpex.$$config.lifecycle,
+    lifecycle,
   };
   jpex.$$factories[name] = f;
 }

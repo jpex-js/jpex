@@ -27,6 +27,7 @@ ratings:
   - "plugin/**/*.ts"
 exclude_paths:
   - "**/*.test.ts"
+  - "**/*.js"
 ecmaFeatures:
   modules: true
   jsx: true
@@ -73,7 +74,7 @@ rules:
   # Best Practices
   accessor-pairs: 2
   block-scoped-var: 0
-  complexity: [2, 6]
+  complexity: [2, 8]
   consistent-return: 0
   curly: 0
   default-case: 0

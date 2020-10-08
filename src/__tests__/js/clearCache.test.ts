@@ -76,3 +76,7 @@ test('should clear Class-based caches', (t) => {
 
   t.is(jpex.$$resolved.a, void 0);
 });
+
+test('skips unregistered dependencies', (t) => {
+  t.notThrows(() => jpex.clearCache('a'));
+});

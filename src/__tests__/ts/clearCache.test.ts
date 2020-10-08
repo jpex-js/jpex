@@ -78,3 +78,9 @@ test('should clear Class-based caches', (t) => {
 
   t.is(jpex.$$resolved[jpex.infer<A>()], void 0);
 });
+
+test('skips unregistered dependencies', (t) => {
+  type A = any;
+
+  t.notThrows(() => jpex.clearCache<A>());
+});
