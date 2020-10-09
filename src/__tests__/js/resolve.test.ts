@@ -127,6 +127,19 @@ test('prefers a registered dependency over a node module', (t) => {
   t.is(value, fakeFs);
 });
 
+test('does not resolve a node module when disabled', (t) => {
+  const { jpex: base } = t.context;
+  const jpex = base.extend({
+    nodeModules: false,
+    optional: true,
+  });
+
+  const value = jpex.resolve('fs');
+
+  t.not(value, fs);
+  t.is(value, void 0);
+});
+
 test('resolves a global property', (t) => {
   const { jpex } = t.context;
 

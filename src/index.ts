@@ -8,6 +8,8 @@ import type {
   FactoryOpts,
   ResolveOpts,
   ServiceOpts,
+  NodeModule,
+  Global,
 } from './types';
 
 const jpex = new Jpex() as JpexInstance;
@@ -19,12 +21,15 @@ export {
 export type {
   Lifecycle,
   JpexInstance,
+  JpexInstance as Jpex,
   SetupConfig,
   NamedParameters,
   Precedence,
   FactoryOpts,
   ServiceOpts,
   ResolveOpts,
+  NodeModule,
+  Global,
 };
 
 export default jpex;

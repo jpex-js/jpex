@@ -1,5 +1,6 @@
 export * from './JpexInstance';
 export * from './BuiltIns';
+export * from './custom';
 
 export type Lifecycle = 'application' | 'class' | 'instance' | 'none';
 
