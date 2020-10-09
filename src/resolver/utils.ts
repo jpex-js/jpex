@@ -11,7 +11,10 @@ import {
   isString,
   hasLength,
 } from '../utils';
-import { GLOBAL_TYPE_PREFIX, VOID } from '../constants';
+import {
+  GLOBAL_TYPE_PREFIX,
+  VOID,
+} from '../constants';
 
 const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   // in order to stop webpack environments from including every possible
@@ -63,7 +66,8 @@ const getGlobalProperty = (name: string) => {
   if (name.startsWith(GLOBAL_TYPE_PREFIX)) {
     // most global types will just be the name of the property in pascal case
     // i.e. window = Window / document = Document
-    const inferredName = name.charAt(12).toLowerCase() + name.substr(13);
+    const len = GLOBAL_TYPE_PREFIX.length;
+    const inferredName = name.charAt(len).toLowerCase() + name.substr(len + 1);
     return global[inferredName];
   }
 };

@@ -17,6 +17,7 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 - [Consuming Dependencies](#consuming-dependencies)
 - [API](#api)
   - [jpex](#jpex)
+  - [types](#types)
 - [caveats](#caveats)
 - [react](#react)
 - [Vanilla JS mode](#vanilla-js-mode)
@@ -303,6 +304,46 @@ Clears the cache of resolved factories. If you provide a type, that specific fac
 
 Under the hood jpex converts types into strings for runtime resolution. If you want to get that calculated string for whatever reason, you can use `jpex.infer`
 
+### Types
+#### Jpex
+This is the type definition for the jpex container
+
+#### NodeModule
+This is a special type that lets you automatically inject a node module with type inference.
+
+For example:
+```ts
+import jpex, { NodeModule } from 'jpex';
+
+// this will resolve to the fs module without you having to explicitly register it as a dependency
+const fs = jpex.resolve<NodeModule<'fs'>>();
+```
+
+The default return type will be `any` but you can specify one explicitly with the second type parameter:
+```ts
+import type fstype from 'fs';
+import jpex, { NodeModule } from 'jpex';
+
+const fs = jpex.resolve<NodeModule<'fs', typeof fstype>>();
+```
+
+#### Global
+This is another special type that lets you automatically inject a global property with type inference.
+
+For built-in types you can do this without any helpers:
+```ts
+import jpex from 'jpex';
+
+const navigator = jpex.resolve<Navigator>();
+```
+
+But for custom globals, or properties that don't have built-in types, you can use the `Global` type:
+```ts
+import jpex, { Global } from 'jpex';
+
+const analytics = jpex.resolve<Global<'ga', Function>>();
+```
+
 ## caveats
 There are a few caveats to be aware of:
 - Only named types/interfaces are supported so you can't do `jpex.factory<{}>()`
@@ -335,22 +376,18 @@ const MyComponent = (props) => {
 And this pattern also makes it really easy to isolate a component from its side effects when writing tests:
 
 ```tsx
-import { Provider, useJpex } from 'jpex';
+import base, { Provider, useJpex } from 'jpex';
 // create a stub for the SaveData dependency
 const saveData = stub();
+// create a new container
+const jpex = base.extend();
+// register our stub dependency
+jpex.constant<SaveData>(saveData);
 
 render(
-  // the Provider component will create a new jpex instance
-  <Provider>
-    {() => {
-      // grab jpex - it will be isolated to this context only
-      const jpex = useJpex();
-      // register our stub dependency
-      jpex.constant<SaveData>(saveData);
-
-      // when we render MyComponent, it will be given our stubbed dependency
-      return (<MyComponent/>);
-    }}
+  <Provider value={jpex}>
+      {/* when we render MyComponent, it will be given our stubbed dependency */}
+    <MyComponent/>
   </Provider>
 );
 
@@ -364,6 +401,8 @@ expect(saveData.called).to.be.true;
 Perhaps you hate typescript, or babel, or both. Or perhaps you don't have the luxury of a build pipeline in your application. That's fine because jpex supports vanilla js as well, you just have to explicitly state your dependencies up front:
 
 ```ts
+const { jpex } = require('jpex');
+
 jpex.constant('foo', 'foo');
 jpex.factory('bah', [ 'foo' ], (foo) => foo + 'bah');
 

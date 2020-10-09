@@ -2,12 +2,7 @@
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
-import base, { JpexInstance } from '../..';
-
-/* eslint-disable @typescript-eslint/no-unused-vars*/
-type NodeModuleType<S extends string, T = any> = T;
-type GlobalType<S extends string, T = any> = T;
-/* eslint-enable @typescript-eslint/no-unused-vars*/
+import base, { JpexInstance, NodeModule, Global } from '../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
@@ -139,24 +134,36 @@ test('resolves array-like dependencies', (t) => {
   t.is(value, 'hello');
 });
 
-test.failing('resolves a node module', (t) => {
+test('resolves a node module', (t) => {
   const { jpex } = t.context;
-  type Fs = NodeModuleType<'fs', typeof fs>;
-  const value = jpex.resolve<Fs>();
+
+  const value = jpex.resolve<NodeModule<'fs'>>();
 
   t.is(value, fs);
 });
 
 test('prefers a registered dependency over a node module', (t) => {
   const { jpex } = t.context;
-  type Fs = NodeModuleType<'fs', typeof fs>;
   const fakeFs = {};
-  jpex.factory<Fs>(() => fakeFs as any);
+  jpex.factory<NodeModule<'fs'>>(() => fakeFs);
 
-  const value = jpex.resolve<Fs>();
+  const value = jpex.resolve<NodeModule<'fs'>>();
 
   t.not(value, fs);
   t.is(value, fakeFs);
+});
+
+test('does not resolve a node module when disabled', (t) => {
+  const { jpex: base } = t.context;
+  const jpex = base.extend({
+    nodeModules: false,
+    optional: true,
+  });
+
+  const value = jpex.resolve<NodeModule<'fs'>>();
+
+  t.not(value, fs);
+  t.is(value, void 0);
 });
 
 test('resolves a global property', (t) => {
@@ -178,13 +185,12 @@ test('prefers a registered dependency over a global', (t) => {
   t.is(value, fakeWindow);
 });
 
-test.failing('allows a custom global variable', (t) => {
+test('allows a custom global variable', (t) => {
   const { jpex } = t.context;
   // @ts-ignore
   global.foo = 'hello';
-  type Foo = GlobalType<'foo', any>;
 
-  const value = jpex.resolve<Foo>();
+  const value = jpex.resolve<Global<'foo'>>();
 
   t.is(value, 'hello');
 });
