@@ -1,5 +1,7 @@
 Change Log
 ==========
+Further change logs can be found on the [releases](https://github.com/jpex-js/jpex/releases) page
+
 ### 4.0.0
 - global dependencies such as `Window` and `Document` are now automatically resolved (unless you register your own dependency of the same name)
 - you can now control dependency resolution with config flags `nodeModules` and `globals`
