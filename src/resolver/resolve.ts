@@ -17,11 +17,11 @@ import {
 } from '../utils';
 import { NAMED_PARAMS } from '../constants';
 
-const getNamedParameters = (namedParameters: NamedParameters, opts: ResolveOpts) => {
+const getNamedParameters = (namedParameters: NamedParameters, opts: ResolveOpts = {}) => {
   if (namedParameters) {
     return namedParameters;
   }
-  if (opts?.with) {
+  if (opts.with) {
     return { ...opts.with };
   }
   return {};
@@ -77,12 +77,8 @@ export const resolveOne = <R extends any>(
   }
 
   // Special keys
-  switch (name) {
-  case NAMED_PARAMS:
-  case jpex.infer<NamedParameters>():
+  if (name === NAMED_PARAMS || name === jpex.infer<NamedParameters>()) {
     return namedParameters as R;
-  default:
-    break;
   }
 
   if (checkStack(jpex, name, stack)) {
@@ -107,7 +103,7 @@ export const resolveMany = <R extends any[]>(
   opts: ResolveOpts,
   stack: string[],
 ): R => {
-  if (!hasLength(definition?.dependencies)) {
+  if (!hasLength(definition.dependencies)) {
     return [] as R;
   }
   if (!stack) {

@@ -1,35 +1,29 @@
 import { JpexInstance, Dependency, ServiceOpts } from '../types';
-import { instantiate, isFunction } from '../utils';
-
-const validateArgs = (name: string, fn: any) => {
-  if (!isFunction(fn)) {
-    throw new Error(`Factory ${name} must be a [Function]`);
-  }
-};
+import { instantiate } from '../utils';
+import { validateArgs } from './factory';
 
 function service(
-  jpex: JpexInstance,
+  this: JpexInstance,
   name: string,
   dependencies: Dependency[],
   fn: any,
-  opts?: ServiceOpts,
+  opts: ServiceOpts = {},
 ) {
-  validateArgs(name, fn);
+  validateArgs(name, dependencies, fn);
 
   function factory(...args: any[]) {
     const context = {} as any;
 
-    if (opts?.bindToInstance) {
+    if (opts.bindToInstance) {
       dependencies.forEach((key, i) => {
         context[key] = args[i];
       });
     }
 
-    args.unshift(context);
-    return instantiate(fn, args);
+    return instantiate(fn, [ context, ...args ]);
   }
 
-  return jpex.factory(name, dependencies, factory, opts);
+  return this.factory(name, dependencies, factory, opts);
 }
 
 export default service;

@@ -14,33 +14,35 @@ import {
 
 export { getFactory } from './utils';
 
-export const resolve = (
-  jpex: JpexInstance,
+export function resolve(
+  this: JpexInstance,
   name: Dependency,
   opts?: ResolveOpts,
-) => resolveOne(jpex, name, void 0, opts, []);
+) {
+  return resolveOne(this, name, void 0, opts, []);
+}
 
-export const resolveDependencies = (
-  jpex: JpexInstance,
+export function resolveDependencies(
+  this: JpexInstance,
   definition: Definition,
   opts?: ResolveOpts,
-) => {
-  return resolveMany(jpex, definition, void 0, opts, []);
-};
+) {
+  return resolveMany(this, definition, void 0, opts, []);
+}
 
-export const isResolved = (jpex: JpexInstance, dependency: Dependency) => {
+export function isResolved(this: JpexInstance, dependency: Dependency) {
   if (!isString(dependency)) {
     return false;
   }
-  if (jpex.$$resolved[dependency] != null) {
+  if (this.$$resolved[dependency] != null) {
     return true;
   }
-  if (jpex.$$factories[dependency]?.resolved) {
+  if (this.$$factories[dependency]?.resolved) {
     return true;
   }
   return false;
-};
+}
 
-export const allResolved = (jpex: JpexInstance, dependencies: Dependency[]) => {
-  return dependencies.every(isResolved.bind(null, jpex));
-};
+export function allResolved(this: JpexInstance, dependencies: Dependency[]) {
+  return dependencies.every(isResolved.bind(this));
+}

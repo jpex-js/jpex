@@ -20,10 +20,7 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   // in order to stop webpack environments from including every possible
   // import source in the bundle, we have to stick all node require stuff
   // inside an eval setup
-  if (!jpex.$$config.nodeModules) {
-    return;
-  }
-  if (!isNode()) {
+  if (!jpex.$$config.nodeModules || !isNode()) {
     return;
   }
 
@@ -32,7 +29,7 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
     jpex.constant(target, value);
     return jpex.$$factories[target];
   } catch (e) {
-    if (e?.message?.includes?.(`Cannot find module '${target}'`)) {
+    if (e.message?.includes?.(`Cannot find module '${target}'`)) {
       // not found in node modules, just continue
       return;
     }
@@ -98,27 +95,17 @@ const getFromRegistry = (jpex: JpexInstance, name: string) => {
   return jpex.$$factories[name];
 };
 
-export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts) => {
+export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts = {}) => {
   validateArgs(name);
-
-  let factory: Factory = getFromResolved(jpex, name);
-  if (factory != null) {
-    return factory;
-  }
-  factory = getFromRegistry(jpex, name);
-  if (factory != null) {
-    return factory;
-  }
-  factory = getFromGlobal(jpex, name);
-  if (factory != null) {
-    return factory;
-  }
-  factory = getFromNodeModules(jpex, name);
-  if (factory != null) {
-    return factory;
+  const fns = [ getFromResolved, getFromRegistry, getFromGlobal, getFromNodeModules ];
+  while (fns.length) {
+    const factory = fns.shift()(jpex, name);
+    if (factory != null) {
+      return factory;
+    }
   }
 
-  if (opts?.optional ?? jpex.$$config.optional) {
+  if (opts.optional ?? jpex.$$config.optional) {
     return;
   }
 
@@ -146,7 +133,7 @@ export const cacheResult = (
   case 'none':
     break;
   case 'instance':
-  default:
+  default: // instance
     namedParameters[name] = value;
     break;
   }

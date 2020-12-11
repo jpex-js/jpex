@@ -1,7 +1,5 @@
 import { JpexInstance } from '../types';
 
-function constant(jpex: JpexInstance, name: string, obj: any) {
-  return jpex.factory(name, [], () => obj, { lifecycle: 'application' });
+export default function constant(this: JpexInstance, name: string, obj: any) {
+  return this.factory(name, [], () => obj, { lifecycle: 'application' });
 }
-
-export default constant;
