@@ -4,8 +4,8 @@ const jpex = require('./dist/cjs/jpex');
 const expectedFiles = [
   'dist/cjs/jpex.js',
   'dist/es/jpex.js',
-  'dist/es/index.d.ts',
-  'dist/es/types/index.d.ts',
+  'dist/ts/index.d.ts',
+  'dist/ts/types/index.d.ts',
 ];
 const expectedExports = [
   [ 'default', '[object Object]' ],

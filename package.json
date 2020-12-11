@@ -4,7 +4,7 @@
   "description": "Javascript Prototype Extension",
   "main": "dist/cjs/jpex.js",
   "module": "dist/es/jpex.js",
-  "types": "dist/es/index.d.ts",
+  "types": "dist/ts/index.d.ts",
   "scripts": {
     "clear-cache": "rm -rf node_modules/.cache",
     "test": "ava",
@@ -13,7 +13,7 @@
     "lint": "eslint './src/**/*.ts' && tsc --noEmit",
     "build:prepare": "rm -rf dist",
     "build:js": "rollup --config ./rollup.config.js",
-    "build:ts": "tsc -d --outDir dist/es --emitDeclarationOnly ./src/index.ts",
+    "build:ts": "tsc -d --outDir dist/ts --emitDeclarationOnly ./src/index.ts",
     "build:post": "node ./postbuild-checks.js",
     "build": "yarn build:prepare && yarn build:js && yarn build:ts && yarn build:post",
     "prepublishOnly": "yarn build",
@@ -80,6 +80,6 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "@jpex-js/babel-plugin": "^1.0.0"
+    "@jpex-js/babel-plugin": "^1.2.0"
   }
 }
