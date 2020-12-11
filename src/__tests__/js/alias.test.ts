@@ -27,3 +27,13 @@ test('it throws when alias does not exist', t => {
 
   t.throws(() => jpex.alias('foo', 'bah'));
 });
+
+test('aliases a factory at registration', t => {
+  const { jpex } = t.context;
+
+  jpex.factory('foo', [], () => 'foo', { alias: 'bah' });
+
+  const result = jpex.resolve('bah');
+
+  t.is(result, 'foo');
+});

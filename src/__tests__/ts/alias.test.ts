@@ -50,7 +50,19 @@ test('it aliases two types', t => {
 
 test('it throws when alias does not exist', t => {
   const { jpex } = t.context;
-  type Foo = 'string';
+  type Foo = string;
 
   t.throws(() => jpex.alias<Foo>('bah'));
+});
+
+test('aliases a factory at registration', t => {
+  const { jpex } = t.context;
+  type Foo = any;
+  type Bah = any;
+
+  jpex.factory<Foo>(() => 'foo', { alias: [ jpex.infer<Bah>() ] });
+
+  const result = jpex.resolve<Bah>();
+
+  t.is(result, 'foo');
 });

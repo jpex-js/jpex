@@ -21,6 +21,7 @@ export interface SetupConfig {
 export interface FactoryOpts {
   lifecycle?: Lifecycle,
   precedence?: Precedence,
+  alias?: string | string[],
 }
 export interface ServiceOpts extends FactoryOpts {
   bindToInstance?: boolean,

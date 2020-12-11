@@ -1,5 +1,5 @@
 import { JpexInstance, Factory, Dependency, AnyFunction, FactoryOpts } from '../types';
-import { isString, isFunction, hasLength } from '../utils';
+import { isString, isFunction, hasLength, ensureArray } from '../utils';
 
 export const validateArgs = (name: string, dependencies: Dependency[], fn: AnyFunction) => {
   if (!isString(name)) {
@@ -37,4 +37,8 @@ export default function factory <T>(
     lifecycle: opts.lifecycle || this.$$config.lifecycle,
   };
   this.$$factories[name] = f;
+
+  if (opts.alias) {
+    ensureArray(opts.alias).forEach(alias => this.alias(alias, name));
+  }
 }
