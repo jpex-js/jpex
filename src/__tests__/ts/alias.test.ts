@@ -5,13 +5,13 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   t.context = {
     jpex: jpex.extend(),
   };
 });
 
-test('it aliases a factory to a type', (t) => {
+test('it aliases a factory to a type', t => {
   const { jpex } = t.context;
   type Bah = string;
 
@@ -23,7 +23,7 @@ test('it aliases a factory to a type', (t) => {
   t.is(result, 'foo');
 });
 
-test('it aliases a factory to a string', (t) => {
+test('it aliases a factory to a string', t => {
   const { jpex } = t.context;
   type Foo = any;
 
@@ -35,7 +35,7 @@ test('it aliases a factory to a string', (t) => {
   t.is(result, 'foo');
 });
 
-test('it aliases two types', (t) => {
+test('it aliases two types', t => {
   const { jpex } = t.context;
   type Foo = any;
   type Bah = any;
@@ -48,7 +48,7 @@ test('it aliases two types', (t) => {
   t.is(result, 'foo');
 });
 
-test('it throws when alias does not exist', (t) => {
+test('it throws when alias does not exist', t => {
   const { jpex } = t.context;
   type Foo = 'string';
 

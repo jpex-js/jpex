@@ -6,13 +6,13 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   t.context = {
     jpex: jpex.extend(),
   };
 });
 
-test('wraps a method with specified dependencies', (t) => {
+test('wraps a method with specified dependencies', t => {
   const { jpex } = t.context;
 
   const fn = jpex.encase([ 'foo' ], (foo: string) => (bah: string) => (foo + bah));
@@ -24,10 +24,10 @@ test('wraps a method with specified dependencies', (t) => {
   t.is(result, 'injectedprovided');
 });
 
-test('exposes the inner function', (t) => {
+test('exposes the inner function', t => {
   const { jpex } = t.context;
 
-  const fn = jpex.encase([ 'foo' ], (foo) => (bah: string) => (foo + bah));
+  const fn = jpex.encase([ 'foo' ], foo => (bah: string) => (foo + bah));
   const fn2 = fn.encased;
 
   const result = fn2('injected')('provided');
@@ -35,12 +35,12 @@ test('exposes the inner function', (t) => {
   t.is(result, 'injectedprovided');
 });
 
-test('caches the inner function', (t) => {
+test('caches the inner function', t => {
   const { jpex } = t.context;
 
   jpex.constant('foo', 'injected');
 
-  const inner = stub().callsFake((foo) => {
+  const inner = stub().callsFake(foo => {
     return (bah: string) => {
       return foo + bah;
     };

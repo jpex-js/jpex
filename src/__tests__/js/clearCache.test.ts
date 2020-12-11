@@ -5,13 +5,13 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   t.context = {
     jpex: jpex.extend(),
   };
 });
 
-test('sets a factory to resolved once resolved', (t) => {
+test('sets a factory to resolved once resolved', t => {
   const { jpex } = t.context;
 
   jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
@@ -21,7 +21,7 @@ test('sets a factory to resolved once resolved', (t) => {
   t.is(jpex.$$factories.instance.resolved, true);
 });
 
-test('clears the cache', (t) => {
+test('clears the cache', t => {
   const { jpex } = t.context;
 
   jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
@@ -35,7 +35,7 @@ test('clears the cache', (t) => {
   t.is(jpex.$$factories.instance.resolved, false);
 });
 
-test('returns a new instance once the cache is cleared', (t) => {
+test('returns a new instance once the cache is cleared', t => {
   jpex.factory('instance', [], () => ({}), { lifecycle: 'application' });
 
   const a = jpex.resolve('instance');
@@ -47,7 +47,7 @@ test('returns a new instance once the cache is cleared', (t) => {
   t.not(a, c);
 });
 
-test('clears specific factories', (t) => {
+test('clears specific factories', t => {
   jpex.factory('a', [], () => ({}), { lifecycle: 'application' });
   jpex.factory('b', [], () => ({}), { lifecycle: 'application' });
   jpex.factory('c', [], () => ({}), { lifecycle: 'application' });
@@ -66,7 +66,7 @@ test('clears specific factories', (t) => {
   t.true(jpex.$$factories.c.resolved);
 });
 
-test('should clear Class-based caches', (t) => {
+test('should clear Class-based caches', t => {
   jpex.factory('a', [], () => ({}), { lifecycle: 'class' });
   jpex.resolve('a');
 
@@ -77,6 +77,6 @@ test('should clear Class-based caches', (t) => {
   t.is(jpex.$$resolved.a, void 0);
 });
 
-test('skips unregistered dependencies', (t) => {
+test('skips unregistered dependencies', t => {
   t.notThrows(() => jpex.clearCache('a'));
 });

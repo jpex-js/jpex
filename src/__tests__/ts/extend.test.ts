@@ -7,7 +7,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
   t.context = {
     jpex,
@@ -16,7 +16,7 @@ test.beforeEach((t) => {
   jpex.constant<Foo>('foo');
 });
 
-test('returns a new jpex instance', (t) => {
+test('returns a new jpex instance', t => {
   const { jpex } = t.context;
   const jpex2 = jpex.extend();
 
@@ -24,7 +24,7 @@ test('returns a new jpex instance', (t) => {
   t.is(typeof jpex.resolve, 'function');
 });
 
-test('inherits dependencies', (t) => {
+test('inherits dependencies', t => {
   const { jpex } = t.context;
   const jpex2 = jpex.extend();
   const value = jpex2.resolve<Foo>();
@@ -32,7 +32,7 @@ test('inherits dependencies', (t) => {
   t.is(value, 'foo');
 });
 
-test('overrides inherited dependencies', (t) => {
+test('overrides inherited dependencies', t => {
   const { jpex } = t.context;
   const jpex2 = jpex.extend();
   jpex2.constant<Foo>('bah');

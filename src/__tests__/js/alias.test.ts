@@ -5,13 +5,13 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   t.context = {
     jpex: jpex.extend(),
   };
 });
 
-test('it aliases a factory', (t) => {
+test('it aliases a factory', t => {
   const { jpex } = t.context;
 
   jpex.factory('foo', [], () => 'foo');
@@ -22,7 +22,7 @@ test('it aliases a factory', (t) => {
   t.is(result, 'foo');
 });
 
-test('it throws when alias does not exist', (t) => {
+test('it throws when alias does not exist', t => {
   const { jpex } = t.context;
 
   t.throws(() => jpex.alias('foo', 'bah'));

@@ -111,7 +111,7 @@ export const resolveMany = <R extends any[]>(
   }
   const dependencies: Dependency[] = ensureArray(definition.dependencies);
 
-  const values = dependencies.map((dependency) => {
+  const values = dependencies.map(dependency => {
     return resolveOne<any>(jpex, dependency, namedParameters, opts, stack);
   });
 

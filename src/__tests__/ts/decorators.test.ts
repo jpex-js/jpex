@@ -13,7 +13,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const base2 = base.extend();
   base2.service<Voice>(function() {
     this.shout = (str: string) => {
@@ -29,7 +29,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('decorates a factory', (t) => {
+test('decorates a factory', t => {
   const { jpex } = t.context;
   jpex.factory<Voice>((voice: Voice) => {
     const original = voice.shout;
@@ -42,7 +42,7 @@ test('decorates a factory', (t) => {
   t.is(result, 'HELLO!');
 });
 
-test('decorators do not propogate up', (t) => {
+test('decorators do not propogate up', t => {
   const { jpex, base2 } = t.context;
   jpex.factory<Voice>((voice: Voice) => {
     const original = voice.shout;

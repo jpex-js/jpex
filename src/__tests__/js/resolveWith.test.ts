@@ -5,7 +5,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
 
   t.context = {
@@ -13,7 +13,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('it resolves with given values', (t) => {
+test('it resolves with given values', t => {
   const { jpex } = t.context;
 
   jpex.factory('A', [ 'B', 'C', 'D' ], (b, c, d) => {
