@@ -16,8 +16,34 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
 - [Registering Dependencies](#registering-dependencies)
 - [Consuming Dependencies](#consuming-dependencies)
 - [API](#api)
-  - [jpex](#jpex)
-  - [types](#types)
+  + [jpex](#jpex)
+    - [constant](#jpexconstant)
+    - [factory](#jpexfactory)
+      * [lifecycle](#lifecycle)
+      * [precedence](#precedence)
+      * [bindToInstance](#bindtoinstance)
+      * [alias](#alias)
+    - [service](#jpexservice)
+    - [alias](#jpexalias)
+    - [resolve](#jpexresolve)
+      * [optional](#optional)
+      * [with](#with)
+    - [resolveWith](#jpexresolvewith)
+    - [encase](#jpexencase)
+    - [extend](#jpexextend)
+      * [inherit](#inherit)
+      * [lifecycle](#lifecycle-1)
+      * [precedence](#precedence-1)
+      * [optional](#optional-1)
+      * [nodeModules](#nodemodules)
+      * [globals](#globals)
+    - [raw](#jpexraw)
+    - [clearCache](#jpexclearcache)
+    - [infer](#jpexinfer)
+  + [Types](#types)
+    - [Jpex](#jpex)
+    - [NodeModule](#nodemodule)
+    - [Global](#global)
 - [caveats](#caveats)
 - [react](#react)
 - [Vanilla JS mode](#vanilla-js-mode)
@@ -30,9 +56,9 @@ npm install jpex
 ```
 
 ### Plugin
-Jpex uses babel to infer type interfaces at build time. You can do this with one of several methods:
-[@jpex-js/babel-plugin](https://github.com/jpex-js/babel-plugin)
-[@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)
+Jpex uses babel to infer type interfaces at build time. You can do this with one of several methods:  
+[@jpex-js/babel-plugin](https://github.com/jpex-js/babel-plugin)  
+[@jpex-js/rollup-plugin](https://github.com/jpex-js/rollup-plugin)  
 [@jpex-js/webpack-plugin](https://github.com/jpex-js/webpack-loader)
 
 Jpex comes bundled with the `@jpex-js/babel-plugin` so you can easily get started with a `.babelrc` like this:
@@ -47,17 +73,17 @@ Jpex comes bundled with the `@jpex-js/babel-plugin` so you can easily get starte
 ### Usage
 ```ts
 import jpex from 'jpex';
-import { IFoo, IBah } from './types';
+import { Foo, Bah } from './types';
 
-jpex.factory<IFoo>((bah: IBah) => bah.baz);
+jpex.factory<Foo>((bah: Bah) => bah.baz);
 
-const foo = jpex.resolve<IFoo>();
+const foo = jpex.resolve<Foo>();
 ```
 
 ------
 
 ## Registering Dependencies
-Services and factories are small modules or functions that provide a reusable or common piece of functionality.
+Services and factories are small modules or functions that provide a common piece of functionality.
 
 ### factories
 ```ts
@@ -70,13 +96,13 @@ jpex.factory<MyFactory>(() => {
 
 ### services
 ```ts
-type MyService = { method: () => any };
+class MyService = {
+  method: (): any {
+    // ...
+  }
+};
 
-jpex.service<MyService>(function(){
-  this.method = function(){
-    ...
-  };
-});
+jpex.service(MyService);
 ```
 
 ### constants
@@ -95,21 +121,25 @@ const value = jpex.resolve<MyFactory>();
 ```
 
 ### dependent factories
-You can also request a dependency from within another factory:
+A factory can request another dependency and jpex will resolve it on the fly:
 ```ts
 jpex.constant<MyConstant>('foo');
 
 jpex.factory<MyFactory>((myConstant: MyConstant) => {
   return `my constant is ${myConstant}`;
 });
+
+jpex.resolve<MyFactory>(); // "my constant is foo"
 ```
 
 ### encase
-Or you can *encase* a function so that dependencies are injected into it on-the-fly:
+Or you can *encase* a regular function so that dependencies are injected into it when called:
 ```ts
-const myFn = jpex.encase((value: MyFactory) => (arg1, arg2) => {
+const fn = jpex.encase((value: MyFactory) => (arg1, arg2) => {
   return value + arg1 + arg2;
 });
+
+fn(1, 2);
 ```
 
 -------
@@ -133,6 +163,8 @@ type GetStuff = () => Promise<string>;
 
 jpex.factory<GetStuff>((window: Window) => () => window.fetch('/stuff));
 ```
+
+> By default jpex will automatically resolve global types like Window or Document. In a node environment it will also be able to resolve node_modules.
 
 The following options can be provided for both factories and services:
 
@@ -166,6 +198,12 @@ boolean
 ```
 Specifically for services, automatically binds all of the dependencies to the service instance.
 
+##### alias
+```ts
+string | string[]
+```
+Creates aliases for the factory. This is essentially just shorthand for writing `jpex.factory(...); jpex.alias(...);`
+
 #### jpex.service
 ```ts
 <T>(class: ClassWithConstructor, opts?: object): void
@@ -179,7 +217,7 @@ class Foo {
   }
 }
 
-jpex.service<Foo>(Foo);
+jpex.service(Foo);
 ```
 
 #### jpex.alias
@@ -205,12 +243,6 @@ The following options can be provided for both `resolve` and `resolveWith`:
 boolean
 ```
 When `true` if the dependency cannot be found or resolved, it will just return `undefined` rather than throwing an error.
-
-##### with
-```ts
-object
-```
-Lets you pass in static values to use when resolving dependencies. This should be used as an escape hatch, as `resolveWith` was created specifically for this purpose.
 
 #### jpex.resolveWith
 ```ts
@@ -275,7 +307,7 @@ Whether factories should be optional by default
 ##### nodeModules
 `boolean`
 
-When trying to resolve a tdependency, should it attempt to import the dependency from node modules?
+When trying to resolve a dependency, should it attempt to import the it from node modules?
 
 ##### globals
 `boolean`
@@ -376,16 +408,16 @@ const MyComponent = (props) => {
 And this pattern also makes it really easy to isolate a component from its side effects when writing tests:
 
 ```tsx
-import base, { Provider, useJpex } from 'jpex';
+import { Provider } from 'react-jpex';
 // create a stub for the SaveData dependency
 const saveData = stub();
-// create a new container
-const jpex = base.extend();
-// register our stub dependency
-jpex.constant<SaveData>(saveData);
 
 render(
-  <Provider value={jpex}>
+  <Provider
+    inherit={false}
+    // register our stub dependency on an isolated container
+    onMount={jpex => jpex.constant<SaveData>(saveData)}
+  >
       {/* when we render MyComponent, it will be given our stubbed dependency */}
     <MyComponent/>
   </Provider>
