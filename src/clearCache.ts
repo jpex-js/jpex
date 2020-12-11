@@ -1,19 +1,17 @@
 import { JpexInstance } from './types';
 import { ensureArray, hasLength } from './utils';
 
-const clearCache = (jpex: JpexInstance, names?: any): any => {
+export default function clearCache(this: JpexInstance, ...names: any[]): any {
   names = ensureArray(names);
 
-  for (const key in jpex.$$factories) {
+  for (const key in this.$$factories) {
     if (!hasLength(names) || names.includes(key)) {
-      jpex.$$factories[key].resolved = false;
+      this.$$factories[key].resolved = false;
     }
   }
-  for (const key in jpex.$$resolved) {
+  for (const key in this.$$resolved) {
     if (!hasLength(names) || names.includes(key)) {
-      delete jpex.$$resolved[key];
+      delete this.$$resolved[key];
     }
   }
-};
-
-export default clearCache;
+}

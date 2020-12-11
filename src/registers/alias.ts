@@ -2,20 +2,18 @@ import {
   JpexInstance,
 } from '../types';
 
-function alias(
-  jpex: JpexInstance,
+export default function alias(
+  this: JpexInstance,
   alias: any,
   name: any,
 ) {
-  if (jpex.$$factories[name] != null) {
-    jpex.$$factories[alias] = jpex.$$factories[name];
+  if (this.$$factories[name] != null) {
+    this.$$factories[alias] = this.$$factories[name];
     return;
   }
-  if (jpex.$$factories[alias] != null) {
-    jpex.$$factories[name] = jpex.$$factories[alias];
+  if (this.$$factories[alias] != null) {
+    this.$$factories[name] = this.$$factories[alias];
     return;
   }
   throw new Error(`Cannot create an alias for [${name}|${alias}] as it does not exist`);
 }
-
-export default alias;

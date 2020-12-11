@@ -1,4 +1,5 @@
-import Jpex from './Jpex';
+// import Jpex from './Jpex';
+import makeJpex from './makeJpex';
 import type {
   JpexInstance,
   SetupConfig,
@@ -12,7 +13,8 @@ import type {
   Global,
 } from './types';
 
-const jpex = new Jpex() as JpexInstance;
+// const jpex = new Jpex() as JpexInstance;
+const jpex = makeJpex();
 
 export {
   jpex,
