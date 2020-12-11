@@ -6,13 +6,13 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   t.context = {
     jpex: jpex.extend(),
   };
 });
 
-test('wraps a method with specified dependencies', (t) => {
+test('wraps a method with specified dependencies', t => {
   const { jpex } = t.context;
 
   type Foo = string;
@@ -25,7 +25,7 @@ test('wraps a method with specified dependencies', (t) => {
   t.is(result, 'injectedprovided');
 });
 
-test('works with global interfaces', (t) => {
+test('works with global interfaces', t => {
   const { jpex } = t.context;
 
   jpex.constant<Window>(window);
@@ -37,7 +37,7 @@ test('works with global interfaces', (t) => {
   t.is(result, window);
 });
 
-test('exposes the inner function', (t) => {
+test('exposes the inner function', t => {
   const { jpex } = t.context;
   type Foo = string;
 
@@ -49,13 +49,13 @@ test('exposes the inner function', (t) => {
   t.is(result, 'injectedprovided');
 });
 
-test('caches the inner function', (t) => {
+test('caches the inner function', t => {
   const { jpex } = t.context;
   type Foo = string;
 
   jpex.constant<Foo>('injected');
 
-  const spy = stub().callsFake((foo) => {
+  const spy = stub().callsFake(foo => {
     return (bah: string) => {
       return foo + bah;
     };

@@ -5,7 +5,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
 
   t.context = {
@@ -13,7 +13,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('it resolves with given values', (t) => {
+test('it resolves with given values', t => {
   const { jpex } = t.context;
 
   type A = string;
@@ -32,7 +32,7 @@ test('it resolves with given values', (t) => {
   t.is(result, 'bcd');
 });
 
-test('it resolves using type inference (1)', (t) => {
+test('it resolves using type inference (1)', t => {
   const { jpex } = t.context;
   type A = string;
   type B = string;
@@ -44,7 +44,7 @@ test('it resolves using type inference (1)', (t) => {
   t.is(result, 'ab');
 });
 
-test('it resolves with type inference (6)', (t) => {
+test('it resolves with type inference (6)', t => {
   const { jpex } = t.context;
   type A = string;
   type B = string;

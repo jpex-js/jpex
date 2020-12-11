@@ -10,7 +10,7 @@
     "test": "ava",
     "test:debug": "ava debug",
     "coverage": "nyc ava",
-    "lint": "eslint './src/**/*.ts' && tsc --noEmit",
+    "lint": "eslint './src/**/*.ts' --fix && tsc --noEmit",
     "build:prepare": "rm -rf dist",
     "build:js": "rollup --config ./rollup.config.js",
     "build:ts": "tsc -d --outDir dist/ts --emitDeclarationOnly ./src/index.ts",
@@ -29,7 +29,7 @@
   "lint-staged": {
     "linters": {
       "src/**/*.{js,ts}": [
-        "eslint -c ./.eslintrc.js",
+        "eslint",
         "git add"
       ]
     }
@@ -59,7 +59,6 @@
     "@babel/register": "^7.7.7",
     "@commitlint/cli": "^8.3.4",
     "@commitlint/config-conventional": "^8.3.4",
-    "@team-griffin/eslint-config": "^3.2.0",
     "@types/babel__core": "^7.1.9",
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.26",
@@ -69,6 +68,7 @@
     "ava": "^3.0.0",
     "browser-env": "^3.3.0",
     "eslint": "^7.5.0",
+    "eslint-plugin-import": "^2.22.1",
     "husky": "^4.0.3",
     "lint-staged": "^8.1.5",
     "nyc": "^15.1.0",

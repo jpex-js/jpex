@@ -2,13 +2,13 @@
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
-import base, { JpexInstance, NodeModule, Global } from '../..';
+import base, { JpexInstance, NodeModule, Global, jpex } from '../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
 
   t.context = {
@@ -16,7 +16,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('resolves factories and services', (t) => {
+test('resolves factories and services', t => {
   const { jpex } = t.context;
   type Factory = string;
   type Service = { val: string };
@@ -58,7 +58,26 @@ test('resolves factories and services', (t) => {
   t.is(c, 'CONSTANT');
 });
 
-test('resolves named dependencies', (t) => {
+test('infers services from class names', t => {
+  class Service1 {
+    val = 'SERVICE1';
+  }
+  jpex.service(Service1);
+  jpex.service(class Service2 {
+    val = 'SERVICE2';
+  });
+  class Service3 {
+    val = 'SERVICE3';
+  }
+  jpex.service(Service3, { precedence: 'passive' });
+
+  jpex.resolve<Service1>();
+  jpex.resolve<Service3>();
+
+  t.pass();
+});
+
+test('resolves named dependencies', t => {
   const { jpex } = t.context;
   type Foo = string;
   type Named = string;
@@ -73,21 +92,21 @@ test('resolves named dependencies', (t) => {
   t.is(result, 'pop');
 });
 
-test('throws if dependency does not exist', (t) => {
+test('throws if dependency does not exist', t => {
   const { jpex } = t.context;
   type Doesnotexist = any;
 
   t.throws(() => jpex.resolve<Doesnotexist>());
 });
 
-test('does not throw if dependency is optional', (t) => {
+test('does not throw if dependency is optional', t => {
   const { jpex } = t.context;
   type Doesnotexist = any;
 
   t.notThrows(() => jpex.resolve<Doesnotexist>({ optional: true }));
 });
 
-test('does not throw if optional dependency\'s dependencies fail', (t) => {
+test('does not throw if optional dependency\'s dependencies fail', t => {
   const { jpex } = t.context;
   type Doesnotexist = any;
   type Exists = any;
@@ -96,7 +115,7 @@ test('does not throw if optional dependency\'s dependencies fail', (t) => {
   t.notThrows(() => jpex.resolve<Exists>({ optional: true }));
 });
 
-test('does not throw if the default optional is set', (t) => {
+test('does not throw if the default optional is set', t => {
   const { jpex: base } = t.context;
   type Doesnotexist = any;
   const jpex = base.extend({ optional: true });
@@ -104,7 +123,7 @@ test('does not throw if the default optional is set', (t) => {
   t.notThrows(() => jpex.resolve<Doesnotexist>());
 });
 
-test('resolves an optional dependency', (t) => {
+test('resolves an optional dependency', t => {
   const { jpex } = t.context;
   type Exists = any;
   jpex.factory<Exists>(() => 'foo');
@@ -113,7 +132,7 @@ test('resolves an optional dependency', (t) => {
   t.is(result, 'foo');
 });
 
-test('throws if dependency is recurring', (t) => {
+test('throws if dependency is recurring', t => {
   const { jpex } = t.context;
   type A = any; type B = any;
   jpex.factory<A>((b: B) => b);
@@ -122,7 +141,7 @@ test('throws if dependency is recurring', (t) => {
   t.throws(() => jpex.resolve('a'));
 });
 
-test('resolves array-like dependencies', (t) => {
+test('resolves array-like dependencies', t => {
   const { jpex } = t.context;
   type Keys = string[];
   type Value = string;
@@ -134,7 +153,7 @@ test('resolves array-like dependencies', (t) => {
   t.is(value, 'hello');
 });
 
-test('resolves a node module', (t) => {
+test('resolves a node module', t => {
   const { jpex } = t.context;
 
   const value = jpex.resolve<NodeModule<'fs'>>();
@@ -142,7 +161,7 @@ test('resolves a node module', (t) => {
   t.is(value, fs);
 });
 
-test('prefers a registered dependency over a node module', (t) => {
+test('prefers a registered dependency over a node module', t => {
   const { jpex } = t.context;
   const fakeFs = {};
   jpex.factory<NodeModule<'fs'>>(() => fakeFs);
@@ -153,7 +172,7 @@ test('prefers a registered dependency over a node module', (t) => {
   t.is(value, fakeFs);
 });
 
-test('does not resolve a node module when disabled', (t) => {
+test('does not resolve a node module when disabled', t => {
   const { jpex: base } = t.context;
   const jpex = base.extend({
     nodeModules: false,
@@ -166,7 +185,7 @@ test('does not resolve a node module when disabled', (t) => {
   t.is(value, void 0);
 });
 
-test('resolves a global property', (t) => {
+test('resolves a global property', t => {
   const { jpex } = t.context;
 
   const value = jpex.resolve<Window>();
@@ -174,7 +193,7 @@ test('resolves a global property', (t) => {
   t.is(value, window);
 });
 
-test('prefers a registered dependency over a global', (t) => {
+test('prefers a registered dependency over a global', t => {
   const { jpex } = t.context;
   const fakeWindow = {};
   jpex.factory<Window>(() => fakeWindow as any);
@@ -185,7 +204,7 @@ test('prefers a registered dependency over a global', (t) => {
   t.is(value, fakeWindow);
 });
 
-test('allows a custom global variable', (t) => {
+test('allows a custom global variable', t => {
   const { jpex } = t.context;
   // @ts-ignore
   global.foo = 'hello';

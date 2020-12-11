@@ -7,7 +7,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
 
   t.context = {
@@ -15,7 +15,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('resolves factories and services', (t) => {
+test('resolves factories and services', t => {
   const { jpex } = t.context;
 
   jpex.factory('factory', [], () => 'FACTORY');
@@ -43,10 +43,10 @@ test('resolves factories and services', (t) => {
   t.is(c, 'CONSTANT');
 });
 
-test('resolves named dependencies', (t) => {
+test('resolves named dependencies', t => {
   const { jpex } = t.context;
 
-  jpex.factory('foo', [ 'named' ], (named) => named);
+  jpex.factory('foo', [ 'named' ], named => named);
   const result = jpex.resolve('foo', {
     with: {
       named: 'pop',
@@ -56,33 +56,33 @@ test('resolves named dependencies', (t) => {
   t.is(result, 'pop');
 });
 
-test('throws if dependency does not exist', (t) => {
+test('throws if dependency does not exist', t => {
   const { jpex } = t.context;
 
   t.throws(() => jpex.resolve('doesnotexist'));
 });
 
-test('does not throw if dependency is optional', (t) => {
+test('does not throw if dependency is optional', t => {
   const { jpex } = t.context;
 
   t.notThrows(() => jpex.resolve('notexists', { optional: true }));
 });
 
-test('does not throw if optional dependency\'s dependencies fail', (t) => {
+test('does not throw if optional dependency\'s dependencies fail', t => {
   const { jpex } = t.context;
-  jpex.factory('exists', [ 'doesnotexist' ], (x) => x);
+  jpex.factory('exists', [ 'doesnotexist' ], x => x);
 
   t.notThrows(() => jpex.resolve('exists', { optional: true }));
 });
 
-test('does not throw if the default optional is set', (t) => {
+test('does not throw if the default optional is set', t => {
   const { jpex: base } = t.context;
   const jpex = base.extend({ optional: true });
 
   t.notThrows(() => jpex.resolve('doesnotexist'));
 });
 
-test('resolves an optional dependency', (t) => {
+test('resolves an optional dependency', t => {
   const { jpex } = t.context;
   jpex.factory('exists', [], () => 'foo');
   const result = jpex.resolve('exists', { optional: true });
@@ -90,25 +90,25 @@ test('resolves an optional dependency', (t) => {
   t.is(result, 'foo');
 });
 
-test('throws if dependency is recurring', (t) => {
+test('throws if dependency is recurring', t => {
   const { jpex } = t.context;
-  jpex.factory('a', [ 'b' ], (b) => b);
-  jpex.factory('b', [ 'a' ], (a) => a);
+  jpex.factory('a', [ 'b' ], b => b);
+  jpex.factory('b', [ 'a' ], a => a);
 
   t.throws(() => jpex.resolve('a'));
 });
 
-test('resolves array-like dependencies', (t) => {
+test('resolves array-like dependencies', t => {
   const { jpex } = t.context;
   jpex.constant('keys', [ 'hello', 'world' ]);
-  jpex.factory('value', [ 'keys' ], (keys) => keys[0]);
+  jpex.factory('value', [ 'keys' ], keys => keys[0]);
 
   const value = jpex.resolve('value');
 
   t.is(value, 'hello');
 });
 
-test('resolves a node module', (t) => {
+test('resolves a node module', t => {
   const { jpex } = t.context;
 
   const value = jpex.resolve('fs');
@@ -116,7 +116,7 @@ test('resolves a node module', (t) => {
   t.is(value, fs);
 });
 
-test('prefers a registered dependency over a node module', (t) => {
+test('prefers a registered dependency over a node module', t => {
   const { jpex } = t.context;
   const fakeFs = {};
   jpex.factory('fs', [], () => fakeFs as any);
@@ -127,7 +127,7 @@ test('prefers a registered dependency over a node module', (t) => {
   t.is(value, fakeFs);
 });
 
-test('does not resolve a node module when disabled', (t) => {
+test('does not resolve a node module when disabled', t => {
   const { jpex: base } = t.context;
   const jpex = base.extend({
     nodeModules: false,
@@ -140,7 +140,7 @@ test('does not resolve a node module when disabled', (t) => {
   t.is(value, void 0);
 });
 
-test('resolves a global property', (t) => {
+test('resolves a global property', t => {
   const { jpex } = t.context;
 
   const value = jpex.resolve('window');
@@ -148,7 +148,7 @@ test('resolves a global property', (t) => {
   t.is(value, window);
 });
 
-test('prefers a registered dependency over a global', (t) => {
+test('prefers a registered dependency over a global', t => {
   const { jpex } = t.context;
   const fakeWindow = {};
   jpex.factory('window', [], () => fakeWindow as any);

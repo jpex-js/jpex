@@ -9,7 +9,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const base2 = base.extend();
   base2.service('voice', [], function() {
     this.shout = (str: string) => {
@@ -25,9 +25,9 @@ test.beforeEach((t) => {
   };
 });
 
-test('decorates a factory', (t) => {
+test('decorates a factory', t => {
   const { jpex } = t.context;
-  jpex.factory('voice', [ 'voice' ], (voice) => {
+  jpex.factory('voice', [ 'voice' ], voice => {
     const original = voice.shout;
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;
@@ -38,9 +38,9 @@ test('decorates a factory', (t) => {
   t.is(result, 'HELLO!');
 });
 
-test('decorators do not propogate up', (t) => {
+test('decorators do not propogate up', t => {
   const { jpex, base2 } = t.context;
-  jpex.factory('voice', [ 'voice' ], (voice) => {
+  jpex.factory('voice', [ 'voice' ], voice => {
     const original = voice.shout;
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;

@@ -5,7 +5,7 @@ const test: TestInterface<{
   jpex: JpexInstance,
 }> = anyTest;
 
-test.beforeEach((t) => {
+test.beforeEach(t => {
   const jpex = base.extend();
 
   t.context = {
@@ -13,7 +13,7 @@ test.beforeEach((t) => {
   };
 });
 
-test('it returns the raw factory by name', (t) => {
+test('it returns the raw factory by name', t => {
   const { jpex } = t.context;
   type Constant = string;
   type Factory = string;
@@ -32,7 +32,7 @@ test('it returns the raw factory by name', (t) => {
   t.is(result, 'hab');
 });
 
-test('it throws when not found', (t) => {
+test('it throws when not found', t => {
   const { jpex } = t.context;
   type NotFound = any;
 
