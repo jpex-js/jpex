@@ -99,6 +99,9 @@ export interface JpexInstance {
   $$resolved: {
     [key: string]: Factory,
   },
+  $$alias: {
+    [key: string]: string,
+  },
   $$config: {
     lifecycle: Lifecycle,
     precedence: Precedence,

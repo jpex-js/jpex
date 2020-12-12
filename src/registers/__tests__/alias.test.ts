@@ -48,13 +48,6 @@ test('it aliases two types', t => {
   t.is(result, 'foo');
 });
 
-test('it throws when alias does not exist', t => {
-  const { jpex } = t.context;
-  type Foo = string;
-
-  t.throws(() => jpex.alias<Foo>('bah'));
-});
-
 test('aliases a factory at registration', t => {
   const { jpex } = t.context;
   type Foo = any;

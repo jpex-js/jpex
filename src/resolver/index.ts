@@ -37,10 +37,7 @@ export function isResolved(this: JpexInstance, dependency: Dependency) {
   if (this.$$resolved[dependency] != null) {
     return true;
   }
-  if (this.$$factories[dependency]?.resolved) {
-    return true;
-  }
-  return false;
+  return this.$$factories[dependency]?.resolved === true;
 }
 
 export function allResolved(this: JpexInstance, dependencies: Dependency[]) {

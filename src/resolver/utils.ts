@@ -87,6 +87,13 @@ const validateArgs = (name: string) => {
   }
 };
 
+const getFromAlias = (jpex: JpexInstance, alias: string) => {
+  const name = jpex.$$alias[alias];
+  if (name != null) {
+    return jpex.$$factories[name];
+  }
+};
+
 const getFromResolved = (jpex: JpexInstance, name: string) => {
   return jpex.$$resolved[name];
 };
@@ -97,7 +104,7 @@ const getFromRegistry = (jpex: JpexInstance, name: string) => {
 
 export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts = {}) => {
   validateArgs(name);
-  const fns = [ getFromResolved, getFromRegistry, getFromGlobal, getFromNodeModules ];
+  const fns = [ getFromResolved, getFromRegistry, getFromAlias, getFromGlobal, getFromNodeModules ];
   while (fns.length) {
     const factory = fns.shift()(jpex, name);
     if (factory != null) {

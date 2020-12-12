@@ -39,6 +39,7 @@ export default function makeJpex(
     },
     $$factories: parent && inherit ? Object.create(parent.$$factories) : {},
     $$resolved: {},
+    $$alias: parent && inherit ? Object.create(parent.$$alias) : {},
     constant,
     factory,
     service,

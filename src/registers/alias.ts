@@ -7,13 +7,10 @@ export default function alias(
   alias: any,
   name: any,
 ) {
-  if (this.$$factories[name] != null) {
-    this.$$factories[alias] = this.$$factories[name];
-    return;
+  if (this.$$alias[alias] == null || this.$$config.precedence === 'active') {
+    this.$$alias[alias] = name;
   }
-  if (this.$$factories[alias] != null) {
-    this.$$factories[name] = this.$$factories[alias];
-    return;
+  if (this.$$alias[name] == null || this.$$config.precedence === 'active') {
+    this.$$alias[name] = alias;
   }
-  throw new Error(`Cannot create an alias for [${name}|${alias}] as it does not exist`);
 }
