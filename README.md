@@ -220,6 +220,17 @@ class Foo {
 jpex.service(Foo);
 ```
 
+If a class `implements` an interface, you can actually use it to resolve the class:
+```ts
+interface IFoo {}
+
+class Foo implements IFoo {}
+
+jpex.service(Foo);
+
+const foo = jpex.resolve<IFoo>();
+```
+
 #### jpex.alias
 ```ts
 <T>(alias: string): void
