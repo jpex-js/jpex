@@ -1,7 +1,7 @@
 /* eslint-disable newline-per-chained-call */
 /* eslint-disable no-invalid-this */
 import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '../..';
+import { jpex as base, JpexInstance } from '../../..';
 
 interface Voice {
   shout(str: string): string

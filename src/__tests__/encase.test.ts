@@ -1,6 +1,6 @@
 import anyTest, { TestInterface } from 'ava';
 import { stub } from 'sinon';
-import jpex, { JpexInstance } from '../..';
+import jpex, { JpexInstance } from '..';
 
 const test: TestInterface<{
   jpex: JpexInstance,

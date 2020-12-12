@@ -66,3 +66,18 @@ test('aliases a factory at registration', t => {
 
   t.is(result, 'foo');
 });
+
+test('respects precedence', t => {
+  const { jpex } = t.context;
+  const jpex2 = jpex.extend({ precedence: 'passive' });
+
+  type Foo = any;
+  type Bah = any;
+
+  jpex2.factory<Foo>(() => 'foo');
+  jpex2.factory<Bah>(() => 'bah');
+  jpex2.alias<Foo, Bah>();
+
+  t.is(jpex2.resolve<Foo>(), 'foo');
+  t.is(jpex2.resolve<Bah>(), 'bah');
+});

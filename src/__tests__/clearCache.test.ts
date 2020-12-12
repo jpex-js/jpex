@@ -1,5 +1,5 @@
 import anyTest, { TestInterface } from 'ava';
-import { jpex, JpexInstance } from '../..';
+import { jpex, JpexInstance } from '..';
 
 interface Instance {}
 const instance = jpex.infer<Instance>();
@@ -69,8 +69,11 @@ test('clears specific factories', t => {
 
 test('should clear Class-based caches', t => {
   type A = any;
+  type B = any;
   jpex.factory<A>(() => ({}), { lifecycle: 'class' });
+  jpex.factory<B>(() => ({}), { lifecycle: 'class' });
   jpex.resolve<A>();
+  jpex.resolve<B>();
 
   t.is(typeof jpex.$$resolved[jpex.infer<A>()], 'object');
 

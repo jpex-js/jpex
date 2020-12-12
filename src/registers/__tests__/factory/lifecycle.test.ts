@@ -1,5 +1,5 @@
 import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '../..';
+import { jpex as base, JpexInstance } from '../../..';
 
 const test: TestInterface<{
   jpex: JpexInstance,
