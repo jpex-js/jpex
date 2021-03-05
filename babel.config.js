@@ -17,6 +17,8 @@ module.exports = {
   ],
   plugins: [
     '@babel/plugin-proposal-class-properties',
+    ['@babel/plugin-proposal-optional-chaining', { loose: true }],
+    ['@babel/plugin-proposal-nullish-coalescing-operator', { loose: true }],
     [
       '@jpex-js/babel-plugin',
       {
