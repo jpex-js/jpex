@@ -18,11 +18,11 @@ export default {
   ],
   plugins: [
     localResolve({
-      extensions: [ '.js', '.ts' ],
+      extensions: ['.js', '.ts'],
     }),
     babel({
       exclude: 'node_modules/**',
-      extensions: [ '.js', '.ts' ],
+      extensions: ['.js', '.ts'],
     }),
     cleanup({
       extensions: [ 'js','ts' ],

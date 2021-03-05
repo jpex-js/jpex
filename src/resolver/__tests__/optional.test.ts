@@ -1,55 +1,50 @@
 /* eslint-disable no-invalid-this */
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '../..';
+import base from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
-});
+};
 
-test('throws if dependency does not exist', t => {
-  const { jpex } = t.context;
+test('throws if dependency does not exist', () => {
+  const { jpex } = setup();
   type Doesnotexist = any;
 
-  t.throws(() => jpex.resolve<Doesnotexist>());
+  expect(() => jpex.resolve<Doesnotexist>()).toThrow();
 });
 
-test('does not throw if dependency is optional', t => {
-  const { jpex } = t.context;
+test('does not throw if dependency is optional', () => {
+  const { jpex } = setup();
   type Doesnotexist = any;
 
-  t.notThrows(() => jpex.resolve<Doesnotexist>({ optional: true }));
+  expect(() => jpex.resolve<Doesnotexist>({ optional: true })).not.toThrow();
 });
 
-test('does not throw if optional dependency\'s dependencies fail', t => {
-  const { jpex } = t.context;
+test("does not throw if optional dependency's dependencies fail", () => {
+  const { jpex } = setup();
   type Doesnotexist = any;
   type Exists = any;
   jpex.factory<Exists>((x: Doesnotexist) => x);
 
-  t.notThrows(() => jpex.resolve<Exists>({ optional: true }));
+  expect(() => jpex.resolve<Exists>({ optional: true })).not.toThrow();
 });
 
-test('does not throw if the default optional is set', t => {
-  const { jpex: base } = t.context;
+test('does not throw if the default optional is set', () => {
+  const { jpex: base } = setup();
   type Doesnotexist = any;
   const jpex = base.extend({ optional: true });
 
-  t.notThrows(() => jpex.resolve<Doesnotexist>());
+  expect(() => jpex.resolve<Doesnotexist>()).not.toThrow();
 });
 
-test('resolves an optional dependency', t => {
-  const { jpex } = t.context;
+test('resolves an optional dependency', () => {
+  const { jpex } = setup();
   type Exists = any;
   jpex.factory<Exists>(() => 'foo');
   const result = jpex.resolve<Exists>({ optional: true });
 
-  t.is(result, 'foo');
+  expect(result).toBe('foo');
 });

@@ -1,50 +1,43 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '..';
+import { jpex as base } from '..';
 
 type Foo = string;
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
-  t.context = {
-    jpex,
-  };
-
   jpex.constant<Foo>('foo');
-});
 
-test('returns a new jpex instance', t => {
-  const { jpex } = t.context;
+  return { jpex };
+};
+
+it('returns a new jpex instance', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend();
 
-  t.is(typeof jpex2, 'object');
-  t.is(typeof jpex.resolve, 'function');
+  expect(typeof jpex2).toBe('object');
+  expect(typeof jpex.resolve).toBe('function');
 });
 
-test('inherits dependencies', t => {
-  const { jpex } = t.context;
+it('inherits dependencies', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend();
   const value = jpex2.resolve<Foo>();
 
-  t.is(value, 'foo');
+  expect(value).toBe('foo');
 });
 
-test('overrides inherited dependencies', t => {
-  const { jpex } = t.context;
+it('overrides inherited dependencies', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend();
   jpex2.constant<Foo>('bah');
   const value = jpex2.resolve<Foo>();
 
-  t.is(value, 'bah');
+  expect(value).toBe('bah');
 });
 
-test('does not inherit dependencies', t => {
-  const { jpex } = t.context;
+it('does not inherit dependencies', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend({ inherit: false });
   const value = jpex2.resolve<Foo>({ optional: true });
 
-  t.is(value, void 0);
+  expect(value).toBe(void 0);
 });

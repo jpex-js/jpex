@@ -1,23 +1,17 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '../../..';
+import { jpex as base } from '../../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-  jpex2: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
   const jpex2 = jpex.extend();
 
-  t.context = {
+  return {
     jpex,
     jpex2,
   };
-});
+};
 
-test('active overwrites an existing factory', t => {
-  const { jpex } = t.context;
+test('active overwrites an existing factory', () => {
+  const { jpex } = setup();
 
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -25,11 +19,11 @@ test('active overwrites an existing factory', t => {
 
   const result = jpex.resolve<A>();
 
-  t.is(result, 'A');
+  expect(result).toBe('A');
 });
 
-test('active overwrites an inherited factory', t => {
-  const { jpex, jpex2 } = t.context;
+test('active overwrites an inherited factory', () => {
+  const { jpex, jpex2 } = setup();
 
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -37,11 +31,11 @@ test('active overwrites an inherited factory', t => {
 
   const result = jpex2.resolve<A>();
 
-  t.is(result, 'A');
+  expect(result).toBe('A');
 });
 
-test('defaults to active', t => {
-  const { jpex } = t.context;
+test('defaults to active', () => {
+  const { jpex } = setup();
 
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -49,11 +43,11 @@ test('defaults to active', t => {
 
   const result = jpex.resolve<A>();
 
-  t.is(result, 'A');
+  expect(result).toBe('A');
 });
 
-test('passive is ignored over an existing factory', t => {
-  const { jpex } = t.context;
+test('passive is ignored over an existing factory', () => {
+  const { jpex } = setup();
 
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -61,11 +55,11 @@ test('passive is ignored over an existing factory', t => {
 
   const result = jpex.resolve<A>();
 
-  t.is(result, 'a');
+  expect(result).toBe('a');
 });
 
-test('passive is ignored over an inherited factory', t => {
-  const { jpex, jpex2 } = t.context;
+test('passive is ignored over an inherited factory', () => {
+  const { jpex, jpex2 } = setup();
 
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -73,22 +67,22 @@ test('passive is ignored over an inherited factory', t => {
 
   const result = jpex2.resolve<A>();
 
-  t.is(result, 'a');
+  expect(result).toBe('a');
 });
 
-test('passive is used if it does not exist', t => {
-  const { jpex2 } = t.context;
+test('passive is used if it does not exist', () => {
+  const { jpex2 } = setup();
 
   type A = string;
   jpex2.factory<A>(() => 'A', { precedence: 'passive' });
 
   const result = jpex2.resolve<A>();
 
-  t.is(result, 'A');
+  expect(result).toBe('A');
 });
 
-test('inherits passive from config', t => {
-  const { jpex: base } = t.context;
+test('inherits passive from config', () => {
+  const { jpex: base } = setup();
   const jpex = base.extend({ precedence: 'passive' });
   type A = string;
   jpex.factory<A>(() => 'a');
@@ -96,5 +90,5 @@ test('inherits passive from config', t => {
 
   const result = jpex.resolve<A>();
 
-  t.is(result, 'a');
+  expect(result).toBe('a');
 });

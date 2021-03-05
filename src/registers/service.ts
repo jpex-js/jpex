@@ -19,9 +19,8 @@ export default function service(
       });
     }
 
-    return instantiate(fn, [ context, ...args ]);
+    return instantiate(fn, [context, ...args]);
   }
 
   return this.factory(name, dependencies, factory, opts);
 }
-

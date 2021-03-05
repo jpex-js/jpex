@@ -1,3 +1,5 @@
+const isTest = process.env.NODE_ENV === 'test';
+
 module.exports = {
   presets: [
     '@babel/preset-typescript',
@@ -5,11 +7,9 @@ module.exports = {
       '@babel/preset-env',
       {
         targets: {
-          browsers: [
-            '> 2%',
-          ],
+          browsers: ['> 2%'],
         },
-        modules: false,
+        modules: isTest ? 'commonjs' : false,
         useBuiltIns: false,
         loose: true,
       },
@@ -19,7 +19,10 @@ module.exports = {
     '@babel/plugin-proposal-class-properties',
     [
       '@jpex-js/babel-plugin',
-      { publicPath: true },
+      {
+        publicPath: true,
+        identifier: ['jpex', 'jpex2', 'jpex3', 'base', 'base2'],
+      },
     ],
   ],
 };

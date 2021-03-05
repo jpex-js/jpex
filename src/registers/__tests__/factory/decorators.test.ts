@@ -1,56 +1,51 @@
 /* eslint-disable newline-per-chained-call */
 /* eslint-disable no-invalid-this */
-import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '../../..';
+import { jpex as base } from '../../..';
 
 interface Voice {
-  shout(str: string): string
+  shout(str: string): string;
 }
 
-const test: TestInterface<{
-  base: JpexInstance,
-  base2: JpexInstance,
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const base2 = base.extend();
-  base2.service<Voice>(function() {
+  base2.service<Voice>(function voice() {
     this.shout = (str: string) => {
       return `${str}!`;
     };
   });
   const jpex = base2.extend();
 
-  t.context = {
+  return {
     base,
     base2,
     jpex,
   };
-});
+};
 
-test('decorates a factory', t => {
-  const { jpex } = t.context;
+test('decorates a factory', () => {
+  const { jpex } = setup();
   jpex.factory<Voice>((voice: Voice) => {
     const original = voice.shout;
+    // eslint-disable-next-line no-param-reassign
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;
   });
   const voice = jpex.resolve<Voice>();
   const result = voice.shout('hello');
 
-  t.is(result, 'HELLO!');
+  expect(result).toBe('HELLO!');
 });
 
-test('decorators do not propogate up', t => {
-  const { jpex, base2 } = t.context;
+test('decorators do not propogate up', () => {
+  const { jpex, base2 } = setup();
   jpex.factory<Voice>((voice: Voice) => {
     const original = voice.shout;
+    // eslint-disable-next-line no-param-reassign
     voice.shout = (str: string) => original(str.toUpperCase());
     return voice;
   });
   const voice = base2.resolve<Voice>();
   const result = voice.shout('hello');
 
-  t.is(result, 'hello!');
+  expect(result).toBe('hello!');
 });

@@ -1,34 +1,28 @@
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '../../..';
+import base from '../../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
+};
+
+test('throws is name is not provided', () => {
+  const { jpex } = setup();
+  // @ts-expect-error intentionally missing the name parameter
+  expect(() => jpex.factory([], () => null)).toThrow();
 });
 
-test('throws is name is not provided', t => {
-  const { jpex } = t.context;
-  // @ts-ignore
-  t.throws(() => jpex.factory([], () => {}));
+test('throws if dependencies not provided', () => {
+  const { jpex } = setup();
+
+  expect(() => jpex.factory('foo', void 0, () => null)).toThrow();
 });
 
-test('throws if dependencies not provided', t => {
-  const { jpex } = t.context;
+test('throws if factory is not provided', () => {
+  const { jpex } = setup();
 
-  // @ts-ignore
-  t.throws(() => jpex.factory('foo', void 0, () => {}));
-});
-
-test('throws if factory is not provided', t => {
-  const { jpex } = t.context;
-
-  // @ts-ignore
-  t.throws(() => jpex.factory('foo', []));
+  // @ts-expect-error intentionally missing fn
+  expect(() => jpex.factory('foo', [])).toThrow();
 });

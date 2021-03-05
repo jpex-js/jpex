@@ -1,18 +1,13 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex, JpexInstance } from '../..';
+import { jpex } from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
-  t.context = {
+const setup = () => {
+  return {
     jpex: jpex.extend(),
   };
-});
+};
 
-test('it aliases a factory to a type', t => {
-  const { jpex } = t.context;
+test('it aliases a factory to a type', () => {
+  const { jpex } = setup();
   type Bah = string;
 
   jpex.factory('foo', [], () => 'foo');
@@ -20,11 +15,11 @@ test('it aliases a factory to a type', t => {
 
   const result = jpex.resolve<Bah>();
 
-  t.is(result, 'foo');
+  expect(result).toBe('foo');
 });
 
-test('it aliases a factory to a string', t => {
-  const { jpex } = t.context;
+test('it aliases a factory to a string', () => {
+  const { jpex } = setup();
   type Foo = any;
 
   jpex.factory<Foo>(() => 'foo');
@@ -32,11 +27,11 @@ test('it aliases a factory to a string', t => {
 
   const result = jpex.resolve('bah');
 
-  t.is(result, 'foo');
+  expect(result).toBe('foo');
 });
 
-test('it aliases two types', t => {
-  const { jpex } = t.context;
+test('it aliases two types', () => {
+  const { jpex } = setup();
   type Foo = any;
   type Bah = any;
 
@@ -45,23 +40,23 @@ test('it aliases two types', t => {
 
   const result = jpex.resolve<Bah>();
 
-  t.is(result, 'foo');
+  expect(result).toBe('foo');
 });
 
-test('aliases a factory at registration', t => {
-  const { jpex } = t.context;
+test('aliases a factory at registration', () => {
+  const { jpex } = setup();
   type Foo = any;
   type Bah = any;
 
-  jpex.factory<Foo>(() => 'foo', { alias: [ jpex.infer<Bah>() ] });
+  jpex.factory<Foo>(() => 'foo', { alias: [jpex.infer<Bah>()] });
 
   const result = jpex.resolve<Bah>();
 
-  t.is(result, 'foo');
+  expect(result).toBe('foo');
 });
 
-test('respects precedence', t => {
-  const { jpex } = t.context;
+test('respects precedence', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend({ precedence: 'passive' });
 
   type Foo = any;
@@ -71,6 +66,6 @@ test('respects precedence', t => {
   jpex2.factory<Bah>(() => 'bah');
   jpex2.alias<Foo, Bah>();
 
-  t.is(jpex2.resolve<Foo>(), 'foo');
-  t.is(jpex2.resolve<Bah>(), 'bah');
+  expect(jpex2.resolve<Foo>()).toBe('foo');
+  expect(jpex2.resolve<Bah>()).toBe('bah');
 });

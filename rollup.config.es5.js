@@ -13,20 +13,17 @@ export default {
   ],
   plugins: [
     localResolve({
-      extensions: [ '.js', '.ts' ],
+      extensions: ['.js', '.ts'],
     }),
     babel({
       exclude: 'node_modules/**',
-      extensions: [ '.js', '.ts' ],
+      extensions: ['.js', '.ts'],
       presets: [
         [
           '@babel/preset-env',
           {
             targets: {
-              browsers: [
-                'last 2 versions',
-                'safari >= 7',
-              ],
+              browsers: ['last 2 versions', 'safari >= 7'],
             },
             modules: false,
             useBuiltIns: false,
