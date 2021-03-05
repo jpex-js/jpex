@@ -1,6 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import localResolve from 'rollup-plugin-node-resolve';
-import path from 'path';
+import cleanup from 'rollup-plugin-cleanup';
 
 export default {
   input: 'src/index.ts',
@@ -34,6 +34,10 @@ export default {
           },
         ],
       ],
+    }),
+    cleanup({
+      extensions: [ 'js','ts' ],
+      sourcemap: false,
     }),
   ],
 };
