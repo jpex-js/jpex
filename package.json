@@ -12,7 +12,7 @@
     "lint": "eslint './src/**/*.ts' --fix && tsc --noEmit",
     "build:prepare": "rm -rf dist",
     "build:js": "rollup --config ./rollup.config.js",
-    "build:ts": "tsc -d --outDir dist/ts --emitDeclarationOnly ./src/index.ts",
+    "build:ts": "tsc -d --outDir dist/ts --emitDeclarationOnly --downlevelIteration ./src/index.ts",
     "build:post": "node ./postbuild-checks.js",
     "build": "yarn build:prepare && yarn build:js && yarn build:ts && yarn build:post",
     "prepublishOnly": "yarn build",
