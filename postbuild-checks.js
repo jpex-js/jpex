@@ -8,11 +8,11 @@ const expectedFiles = [
   'dist/ts/types/index.d.ts',
 ];
 const expectedExports = [
-  [ 'default', '[object Object]' ],
-  [ 'jpex', '[object Object]' ],
+  ['default', '[object Object]'],
+  ['jpex', '[object Object]'],
 ];
 
-const run = async() => {
+const run = async () => {
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < expectedFiles.length; i++) {
     const target = expectedFiles[i];
@@ -26,13 +26,15 @@ const run = async() => {
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < expectedExports.length; i++) {
-    const [ key, type ] = expectedExports[i];
+    const [key, type] = expectedExports[i];
     if (jpex[key] === void 0) {
       throw new Error(`${key} was not exported`);
     }
     const actualType = Object.prototype.toString.call(jpex[key]);
     if (actualType !== type) {
-      throw new Error(`Expected type of ${key} to be ${type} but it was ${actualType}`);
+      throw new Error(
+        `Expected type of ${key} to be ${type} but it was ${actualType}`,
+      );
     }
   }
 

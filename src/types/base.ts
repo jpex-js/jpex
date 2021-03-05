@@ -1,8 +1,3 @@
-export * from './base';
-export * from './JpexInstance';
-export * from './BuiltIns';
-export * from './custom';
-
 export type Lifecycle = 'application' | 'class' | 'instance' | 'none';
 
 export type Precedence = 'active' | 'passive';
@@ -23,5 +18,4 @@ export interface Factory extends Definition {
   lifecycle: Lifecycle;
   resolved?: boolean;
   value?: any;
-  with?: Record<string, any>;
 }

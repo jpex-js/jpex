@@ -1,17 +1,10 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex as base, JpexInstance } from '../../..';
-
-const test: TestInterface<{
-  jpex: JpexInstance,
-  jpex2: JpexInstance,
-  jpex3: JpexInstance,
-}> = anyTest;
+import { jpex as base } from '../../..';
 
 type Foo = any;
 type Factory = any;
 type Test = any;
 
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
   const jpex2 = jpex.extend();
   const jpex3 = jpex2.extend();
@@ -20,19 +13,15 @@ test.beforeEach(t => {
   jpex2.constant<Foo>('jpex2');
   jpex3.constant<Foo>('jpex3');
 
-  t.context = {
+  return {
     jpex,
     jpex2,
     jpex3,
   };
-});
+};
 
-test('application returns the same instance for all classes', t => {
-  const {
-    jpex,
-    jpex2,
-    jpex3,
-  } = t.context;
+test('application returns the same instance for all classes', () => {
+  const { jpex, jpex2, jpex3 } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'application' });
 
@@ -40,17 +29,13 @@ test('application returns the same instance for all classes', t => {
   const b = jpex2.resolve<Factory>();
   const c = jpex3.resolve<Factory>();
 
-  t.is(a, b);
-  t.is(b, c);
-  t.is(c.foo, 'jpex');
+  expect(a).toBe(b);
+  expect(b).toBe(c);
+  expect(c.foo).toBe('jpex');
 });
 
-test('application uses the first resolution forever', t => {
-  const {
-    jpex,
-    jpex2,
-    jpex3,
-  } = t.context;
+test('application uses the first resolution forever', () => {
+  const { jpex, jpex2, jpex3 } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'application' });
 
@@ -58,17 +43,13 @@ test('application uses the first resolution forever', t => {
   const a = jpex.resolve<Factory>();
   const b = jpex2.resolve<Factory>();
 
-  t.is(a, b);
-  t.is(b, c);
-  t.is(c.foo, 'jpex3');
+  expect(a).toBe(b);
+  expect(b).toBe(c);
+  expect(c.foo).toBe('jpex3');
 });
 
-test('class returns different instances for each class', t => {
-  const {
-    jpex,
-    jpex2,
-    jpex3,
-  } = t.context;
+test('class returns different instances for each class', () => {
+  const { jpex, jpex2, jpex3 } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'class' });
 
@@ -76,17 +57,15 @@ test('class returns different instances for each class', t => {
   const b = jpex2.resolve<Factory>();
   const c = jpex3.resolve<Factory>();
 
-  t.not(a, b);
-  t.not(b, c);
-  t.is(a.foo, 'jpex');
-  t.is(b.foo, 'jpex2');
-  t.is(c.foo, 'jpex3');
+  expect(a).not.toBe(b);
+  expect(b).not.toBe(c);
+  expect(a.foo).toBe('jpex');
+  expect(b.foo).toBe('jpex2');
+  expect(c.foo).toBe('jpex3');
 });
 
-test('class returns the same instance within a single class', t => {
-  const {
-    jpex,
-  } = t.context;
+test('class returns the same instance within a single class', () => {
+  const { jpex } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'class' });
 
@@ -94,14 +73,12 @@ test('class returns the same instance within a single class', t => {
   const b = jpex.resolve<Factory>();
   const c = jpex.resolve<Factory>();
 
-  t.is(a, b);
-  t.is(b, c);
+  expect(a).toBe(b);
+  expect(b).toBe(c);
 });
 
-test('instance returns a new instance for each separate call', t => {
-  const {
-    jpex,
-  } = t.context;
+test('instance returns a new instance for each separate call', () => {
+  const { jpex } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'instance' });
 
@@ -109,32 +86,28 @@ test('instance returns a new instance for each separate call', t => {
   const b = jpex.resolve<Factory>();
   const c = jpex.resolve<Factory>();
 
-  t.not(a, b);
-  t.not(b, c);
+  expect(a).not.toBe(b);
+  expect(b).not.toBe(c);
 });
 
-test('instance returns a single instance within a single call', t => {
-  const {
-    jpex,
-  } = t.context;
+test('instance returns a single instance within a single call', () => {
+  const { jpex } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'instance' });
   jpex.factory<Test>((a: Factory, b: Factory) => {
-    t.is(a, b);
+    expect(a).toBe(b);
   });
 
   jpex.resolve<Test>();
 });
 
-test('none should return a different instance within a single call', t => {
-  const {
-    jpex,
-  } = t.context;
+test('none should return a different instance within a single call', () => {
+  const { jpex } = setup();
 
   jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'none' });
   jpex.factory<Test>((a: Factory, b: Factory) => {
-    t.not(a, b);
-    t.deepEqual(a, b);
+    expect(a).not.toBe(b);
+    expect(a).toEqual(b);
   });
 
   jpex.resolve<Test>();

@@ -1,45 +1,39 @@
 /* global global */
 /* eslint-disable no-invalid-this */
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance, Global } from '../..';
+import base, { Global } from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
-});
+};
 
-test('resolves a global property', t => {
-  const { jpex } = t.context;
+test('resolves a global property', () => {
+  const { jpex } = setup();
 
   const value = jpex.resolve<Window>();
 
-  t.is(value, window);
+  expect(value).toBe(window);
 });
 
-test('prefers a registered dependency over a global', t => {
-  const { jpex } = t.context;
+test('prefers a registered dependency over a global', () => {
+  const { jpex } = setup();
   const fakeWindow = {};
   jpex.factory<Window>(() => fakeWindow as any);
 
   const value = jpex.resolve<Window>();
 
-  t.not(value, window);
-  t.is(value, fakeWindow);
+  expect(value).not.toBe(window);
+  expect(value).toBe(fakeWindow);
 });
 
-test('allows a custom global variable', t => {
-  const { jpex } = t.context;
-  // @ts-ignore
-  global.foo = 'hello';
+test('allows a custom global variable', () => {
+  const { jpex } = setup();
+  (global as any).foo = 'hello';
 
   const value = jpex.resolve<Global<'foo'>>();
 
-  t.is(value, 'hello');
+  expect(value).toBe('hello');
 });

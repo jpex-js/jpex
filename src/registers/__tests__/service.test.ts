@@ -1,20 +1,16 @@
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '../..';
+/* eslint-disable max-classes-per-file */
+import base from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
-});
+};
 
-test('registers a class service', t => {
-  const { jpex } = t.context;
+test('registers a class service', () => {
+  const { jpex } = setup();
 
   class Service {
     val = 'SERVICE';
@@ -22,11 +18,11 @@ test('registers a class service', t => {
 
   jpex.service<Service>(Service);
 
-  t.is(jpex.resolve<Service>().val, 'SERVICE');
+  expect(jpex.resolve<Service>().val).toBe('SERVICE');
 });
 
-test('registers a function service', t => {
-  const { jpex } = t.context;
+test('registers a function service', () => {
+  const { jpex } = setup();
 
   type Service = { val: string };
   function service() {
@@ -35,19 +31,21 @@ test('registers a function service', t => {
 
   jpex.service<Service>(service);
 
-  t.is(jpex.resolve<Service>().val, 'SERVICE');
+  expect(jpex.resolve<Service>().val).toBe('SERVICE');
 });
 
-test('infers services from class names', t => {
-  const { jpex } = t.context;
+test('infers services from class names', () => {
+  const { jpex } = setup();
 
   class Service1 {
     val = 'SERVICE1';
   }
   jpex.service(Service1);
-  jpex.service(class Service2 {
-    val = 'SERVICE2';
-  });
+  jpex.service(
+    class Service2 {
+      val = 'SERVICE2';
+    },
+  );
   class Service3 {
     val = 'SERVICE3';
   }
@@ -56,25 +54,33 @@ test('infers services from class names', t => {
   jpex.resolve<Service1>();
   jpex.resolve<Service3>();
 
-  t.pass();
+  expect(true).toBe(true);
 });
 
-test('infers services from class interfaces', t => {
-  const { jpex } = t.context;
+test('infers services from class interfaces', () => {
+  const { jpex } = setup();
 
-  interface IService {}
-  interface IService1 {}
-  interface IService2 {}
-  interface IService3 {}
+  type IService = Record<string, unknown>;
+  type IService1 = Record<string, unknown>;
+  type IService2 = Record<string, unknown>;
+  type IService3 = Record<string, unknown>;
 
   class Service1 implements IService, IService1 {
+    [x: string]: unknown;
+
     val = 'SERVICE1';
   }
   jpex.service(Service1);
-  jpex.service(class Service2 implements IService, IService2 {
-    val = 'SERVICE2';
-  });
+  jpex.service(
+    class Service2 implements IService, IService2 {
+      [x: string]: unknown;
+
+      val = 'SERVICE2';
+    },
+  );
   class Service3 implements IService, IService3 {
+    [x: string]: unknown;
+
     val = 'SERVICE3';
   }
   jpex.service(Service3, { precedence: 'passive' });
@@ -84,5 +90,5 @@ test('infers services from class interfaces', t => {
   jpex.resolve<IService2>();
   jpex.resolve<IService3>();
 
-  t.pass();
+  expect(true).toBe(true);
 });

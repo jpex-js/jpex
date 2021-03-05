@@ -6,18 +6,14 @@ import {
   ResolveOpts,
   Factory,
 } from '../types';
-import {
-  getFactory,
-  cacheResult,
-  checkStack,
-} from './utils';
-import {
-  ensureArray,
-  hasLength,
-} from '../utils';
+import { getFactory, cacheResult, checkStack } from './utils';
+import { ensureArray, hasLength } from '../utils';
 import { NAMED_PARAMS } from '../constants';
 
-const getNamedParameters = (namedParameters: NamedParameters, opts: ResolveOpts = {}) => {
+const getNamedParameters = (
+  namedParameters: NamedParameters,
+  opts: ResolveOpts = {},
+) => {
   if (namedParameters) {
     return namedParameters;
   }
@@ -37,7 +33,7 @@ const isResolvedWithParams = (factory: Factory, opts: ResolveOpts = {}) => {
       ...Object.keys(factory.with || {}),
     ]),
   ];
-  return keys.every(key => opts?.with?.[key] === factory.with[key]);
+  return keys.every((key) => opts?.with?.[key] === factory.with[key]);
 };
 
 const resolveFactory = <R>(
@@ -52,7 +48,6 @@ const resolveFactory = <R>(
     return;
   }
 
-  
   // Check if it's already been resolved
   if (factory.resolved && isResolvedWithParams(factory, opts)) {
     return factory.value;
@@ -62,8 +57,8 @@ const resolveFactory = <R>(
   let args: any[] = [];
 
   if (hasLength(factory.dependencies)) {
-    // eslint-disable-next-line no-use-before-define
-    args = resolveMany(jpex, factory, namedParameters, opts, [ ...stack, name ]);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    args = resolveMany(jpex, factory, namedParameters, opts, [...stack, name]);
   }
 
   // Invoke the factory
@@ -115,17 +110,14 @@ export const resolveMany = <R extends any[]>(
   definition: Definition,
   namedParameters: NamedParameters,
   opts: ResolveOpts,
-  stack: string[],
+  stack: string[] = [],
 ): R => {
   if (!hasLength(definition.dependencies)) {
     return [] as R;
   }
-  if (!stack) {
-    stack = [];
-  }
   const dependencies: Dependency[] = ensureArray(definition.dependencies);
 
-  const values = dependencies.map(dependency => {
+  const values = dependencies.map((dependency) => {
     return resolveOne<any>(jpex, dependency, namedParameters, opts, stack);
   });
 

@@ -6,10 +6,11 @@ export default function encase<F extends AnyFunction<F>>(
   dependencies: Dependency[],
   fn: F,
 ): any {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const jpex = this;
   let result: AnyFunction;
 
-  const encased = function(...args: Parameters<F>) {
+  const encased = function encased(...args: Parameters<F>) {
     /* eslint-disable no-invalid-this */
     if (result && allResolved.call(jpex, dependencies)) {
       return result.apply(this, args);

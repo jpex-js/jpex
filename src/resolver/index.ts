@@ -1,16 +1,6 @@
-import {
-  JpexInstance,
-  Definition,
-  Dependency,
-  ResolveOpts,
-} from '../types';
-import {
-  resolveMany,
-  resolveOne,
-} from './resolve';
-import {
-  isString,
-} from '../utils';
+import { JpexInstance, Definition, Dependency, ResolveOpts } from '../types';
+import { resolveMany, resolveOne } from './resolve';
+import { isString } from '../utils';
 
 export { getFactory } from './utils';
 
