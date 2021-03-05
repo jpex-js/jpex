@@ -119,16 +119,20 @@ export const cacheResult = (
   factory: Factory,
   value: any,
   namedParameters: NamedParameters,
+  withArg: Record<string, any>,
 ) => {
   switch (factory.lifecycle) {
   case 'application':
     factory.resolved = true;
     factory.value = value;
+    factory.with = withArg;
     break;
   case 'class':
     jpex.$$resolved[name] = {
+      ...factory,
       resolved: true,
       value,
+      with: withArg,
     } as Factory;
     break;
   case 'none':
