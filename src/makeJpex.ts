@@ -1,17 +1,6 @@
-import {
-  JpexInstance as IJpex,
-  SetupConfig,
-} from './types';
-import {
-  constant,
-  factory,
-  service,
-  alias,
-} from './registers';
-import {
-  resolve,
-  getFactory,
-} from './resolver';
+import { JpexInstance as IJpex, SetupConfig } from './types';
+import { constant, factory, service, alias } from './registers';
+import { resolve, getFactory } from './resolver';
 import encase from './encase';
 import clearCache from './clearCache';
 
@@ -24,10 +13,7 @@ const defaultConfig = {
 };
 
 export default function makeJpex(
-  {
-    inherit = true,
-    ...config
-  }: SetupConfig = {},
+  { inherit = true, ...config }: SetupConfig = {},
   parent?: IJpex,
 ) {
   const jpex = {

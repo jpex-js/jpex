@@ -1,41 +1,36 @@
 /* eslint-disable no-invalid-this */
-import anyTest, { TestInterface } from 'ava';
 import fs from 'fs';
-import base, { JpexInstance, NodeModule } from '../..';
+import base, { NodeModule } from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
-});
+};
 
-test('resolves a node module', t => {
-  const { jpex } = t.context;
+test('resolves a node module', () => {
+  const { jpex } = setup();
 
   const value = jpex.resolve<NodeModule<'fs'>>();
 
-  t.is(value, fs);
+  expect(value).toBe(fs);
 });
 
-test('prefers a registered dependency over a node module', t => {
-  const { jpex } = t.context;
+test('prefers a registered dependency over a node module', () => {
+  const { jpex } = setup();
   const fakeFs = {};
   jpex.factory<NodeModule<'fs'>>(() => fakeFs);
 
   const value = jpex.resolve<NodeModule<'fs'>>();
 
-  t.not(value, fs);
-  t.is(value, fakeFs);
+  expect(value).not.toBe(fs);
+  expect(value).toBe(fakeFs);
 });
 
-test('does not resolve a node module when disabled', t => {
-  const { jpex: base } = t.context;
+test('does not resolve a node module when disabled', () => {
+  const { jpex: base } = setup();
   const jpex = base.extend({
     nodeModules: false,
     optional: true,
@@ -43,6 +38,6 @@ test('does not resolve a node module when disabled', t => {
 
   const value = jpex.resolve<NodeModule<'fs'>>();
 
-  t.not(value, fs);
-  t.is(value, void 0);
+  expect(value).not.toBe(fs);
+  expect(value).toBe(void 0);
 });

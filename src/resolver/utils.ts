@@ -5,16 +5,8 @@ import {
   NamedParameters,
   Dependency,
 } from '../types';
-import {
-  isNode,
-  unsafeRequire,
-  hasLength,
-  validateName,
-} from '../utils';
-import {
-  GLOBAL_TYPE_PREFIX,
-  VOID,
-} from '../constants';
+import { isNode, unsafeRequire, hasLength, validateName } from '../utils';
+import { GLOBAL_TYPE_PREFIX, VOID } from '../constants';
 
 const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
   // in order to stop webpack environments from including every possible
@@ -96,9 +88,19 @@ const getFromRegistry = (jpex: JpexInstance, name: string) => {
   return jpex.$$factories[name];
 };
 
-export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts = {}) => {
+export const getFactory = (
+  jpex: JpexInstance,
+  name: string,
+  opts: ResolveOpts = {},
+) => {
   validateName(name);
-  const fns = [ getFromResolved, getFromRegistry, getFromAlias, getFromGlobal, getFromNodeModules ];
+  const fns = [
+    getFromResolved,
+    getFromRegistry,
+    getFromAlias,
+    getFromGlobal,
+    getFromNodeModules,
+  ];
   while (fns.length) {
     const factory = fns.shift()(jpex, name);
     if (factory != null) {
@@ -113,6 +115,7 @@ export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts =
   throw new Error(`Unable to find required dependency [${name}]`);
 };
 
+/* eslint-disable no-param-reassign */
 export const cacheResult = (
   jpex: JpexInstance,
   name: string,
@@ -122,30 +125,36 @@ export const cacheResult = (
   withArg: Record<string, any>,
 ) => {
   switch (factory.lifecycle) {
-  case 'application':
-    factory.resolved = true;
-    factory.value = value;
-    factory.with = withArg;
-    break;
-  case 'class':
-    jpex.$$resolved[name] = {
-      ...factory,
-      resolved: true,
-      value,
-      with: withArg,
-    } as Factory;
-    break;
-  case 'none':
-    break;
-  case 'instance':
-  default: // instance
-    namedParameters[name] = value;
-    break;
+    case 'application':
+      factory.resolved = true;
+      factory.value = value;
+      factory.with = withArg;
+      break;
+    case 'class':
+      jpex.$$resolved[name] = {
+        ...factory,
+        resolved: true,
+        value,
+        with: withArg,
+      } as Factory;
+      break;
+    case 'none':
+      break;
+    case 'instance':
+    default:
+      // instance
+      namedParameters[name] = value;
+      break;
   }
 };
+/* eslint-enable no-param-reassign */
 
 // Ensure we're not stuck in a recursive loop
-export const checkStack = (jpex: JpexInstance, name: Dependency, stack: string[]) => {
+export const checkStack = (
+  jpex: JpexInstance,
+  name: Dependency,
+  stack: string[],
+) => {
   if (!hasLength(stack)) {
     // This is the first loop
     return false;

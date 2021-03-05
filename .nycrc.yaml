@@ -1,16 +1,16 @@
 lines: 91
 statements: 91
-branches : 82
+branches: 82
 functions: 95
 all: true
 include:
-  - "src/**/*.*"
+  - 'src/**/*.*'
 exclude:
-  - "src/**/*.test.*"
-  - "**/__tests__/**/*"
+  - 'src/**/*.test.*'
+  - '**/__tests__/**/*'
 report-dir: coverage
 check-coverage: true
 reporter:
-  - "html"
-  - "text-summary"
-  - "lcov"
+  - 'html'
+  - 'text-summary'
+  - 'lcov'

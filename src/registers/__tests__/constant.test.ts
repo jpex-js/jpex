@@ -1,27 +1,22 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex, JpexInstance } from '../..';
+import { jpex } from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
-  t.context = {
+const setup = () => {
+  return {
     jpex: jpex.extend(),
   };
-});
+};
 
-test('registers a constant', t => {
-  const { jpex } = t.context;
+test('registers a constant', () => {
+  const { jpex } = setup();
 
   type Foo = string;
   jpex.constant<Foo>('foo');
 
-  t.is(jpex.resolve<Foo>(), 'foo');
+  expect(jpex.resolve<Foo>()).toBe('foo');
 });
 
-test('always resolves the same value', t => {
-  const { jpex } = t.context;
+test('always resolves the same value', () => {
+  const { jpex } = setup();
   const jpex2 = jpex.extend();
   const jpex3 = jpex.extend();
 
@@ -32,6 +27,6 @@ test('always resolves the same value', t => {
   const b = jpex.resolve<Foo>();
   const c = jpex2.resolve<Foo>();
 
-  t.is(a, b);
-  t.is(b, c);
+  expect(a).toBe(b);
+  expect(b).toBe(c);
 });

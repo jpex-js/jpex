@@ -8,12 +8,7 @@
     "alwaysStrict": true,
     "declaration": true,
     "esModuleInterop": true,
-    "types": [ "mocha", "node" ],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "types": ["node", "jest"]
   },
-  "include": [
-    "src",
-    "@types"
-  ]
+  "include": ["src", "@types"]
 }

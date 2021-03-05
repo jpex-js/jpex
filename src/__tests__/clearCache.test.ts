@@ -1,44 +1,38 @@
-import anyTest, { TestInterface } from 'ava';
-import { jpex, JpexInstance } from '..';
+import { jpex } from '..';
 
-interface Instance {}
+type Instance = Record<string, any>;
 const instance = jpex.infer<Instance>();
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
-  t.context = {
-    jpex: jpex.extend(),
-  };
+const setup = () => ({
+  jpex: jpex.extend(),
 });
 
-test('sets a factory to resolved once resolved', t => {
-  const { jpex } = t.context;
+it('sets a factory to resolved once resolved', () => {
+  const { jpex } = setup();
 
   jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
-  t.is(jpex.$$factories[instance].resolved, void 0);
+  expect(jpex.$$factories[instance].resolved).toBe(void 0);
 
   jpex.resolve<Instance>();
-  t.is(jpex.$$factories[instance].resolved, true);
+  expect(jpex.$$factories[instance].resolved).toBe(true);
 });
 
-test('clears the cache', t => {
-  const { jpex } = t.context;
+it('clears the cache', () => {
+  const { jpex } = setup();
 
   jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
 
-  t.is(jpex.$$factories[instance].resolved, void 0);
+  expect(jpex.$$factories[instance].resolved).toBe(void 0);
   jpex.resolve<Instance>();
 
-  t.is(jpex.$$factories[instance].resolved, true);
+  expect(jpex.$$factories[instance].resolved).toBe(true);
 
   jpex.clearCache();
-  t.is(jpex.$$factories[instance].resolved, false);
+  expect(jpex.$$factories[instance].resolved).toBe(false);
 });
 
-test('returns a new instance once the cache is cleared', t => {
+it('returns a new instance once the cache is cleared', () => {
+  const { jpex } = setup();
   jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
 
   const a = jpex.resolve<Instance>();
@@ -46,11 +40,12 @@ test('returns a new instance once the cache is cleared', t => {
   jpex.clearCache();
   const c = jpex.resolve<Instance>();
 
-  t.is(a, b);
-  t.not(a, c);
+  expect(a).toBe(b);
+  expect(a).not.toBe(c);
 });
 
-test('clears specific factories', t => {
+it('clears specific factories', () => {
+  const { jpex } = setup();
   type A = string;
   type B = string;
   jpex.factory<A>(() => 'a', { lifecycle: 'application' });
@@ -58,16 +53,17 @@ test('clears specific factories', t => {
   jpex.resolve<A>();
   jpex.resolve<B>();
 
-  t.true(jpex.$$factories[jpex.infer<A>()].resolved);
-  t.true(jpex.$$factories[jpex.infer<B>()].resolved);
+  expect(jpex.$$factories[jpex.infer<A>()].resolved).toBe(true);
+  expect(jpex.$$factories[jpex.infer<B>()].resolved).toBe(true);
 
   jpex.clearCache<A>();
 
-  t.false(jpex.$$factories[jpex.infer<A>()].resolved);
-  t.true(jpex.$$factories[jpex.infer<B>()].resolved);
+  expect(jpex.$$factories[jpex.infer<A>()].resolved).not.toBe(true);
+  expect(jpex.$$factories[jpex.infer<B>()].resolved).toBe(true);
 });
 
-test('should clear Class-based caches', t => {
+it('should clear Class-based caches', () => {
+  const { jpex } = setup();
   type A = any;
   type B = any;
   jpex.factory<A>(() => ({}), { lifecycle: 'class' });
@@ -75,15 +71,16 @@ test('should clear Class-based caches', t => {
   jpex.resolve<A>();
   jpex.resolve<B>();
 
-  t.is(typeof jpex.$$resolved[jpex.infer<A>()], 'object');
+  expect(typeof jpex.$$resolved[jpex.infer<A>()]).toBe('object');
 
   jpex.clearCache();
 
-  t.is(jpex.$$resolved[jpex.infer<A>()], void 0);
+  expect(jpex.$$resolved[jpex.infer<A>()]).toBe(void 0);
 });
 
-test('skips unregistered dependencies', t => {
+it('skips unregistered dependencies', () => {
+  const { jpex } = setup();
   type A = any;
 
-  t.notThrows(() => jpex.clearCache<A>());
+  expect(() => jpex.clearCache<A>()).not.toThrow();
 });

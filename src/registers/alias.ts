@@ -1,12 +1,6 @@
-import {
-  JpexInstance,
-} from '../types';
+import { JpexInstance } from '../types';
 
-export default function alias(
-  this: JpexInstance,
-  alias: any,
-  name: any,
-) {
+export default function alias(this: JpexInstance, alias: any, name: any) {
   if (this.$$alias[alias] == null || this.$$config.precedence === 'active') {
     this.$$alias[alias] = name;
   }

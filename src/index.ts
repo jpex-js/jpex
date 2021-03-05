@@ -14,9 +14,7 @@ import type {
 
 const jpex = makeJpex();
 
-export {
-  jpex,
-};
+export { jpex };
 
 export type {
   Lifecycle,

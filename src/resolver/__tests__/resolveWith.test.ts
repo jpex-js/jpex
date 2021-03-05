@@ -1,20 +1,15 @@
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '../..';
+import base from '../..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
+const setup = () => {
   const jpex = base.extend();
 
-  t.context = {
+  return {
     jpex,
   };
-});
+};
 
-test('it resolves with given values', t => {
-  const { jpex } = t.context;
+it('resolves with given values', () => {
+  const { jpex } = setup();
 
   type A = string;
   type B = string;
@@ -29,23 +24,23 @@ test('it resolves with given values', t => {
     [jpex.infer<D>()]: 'd',
   });
 
-  t.is(result, 'bcd');
+  expect(result).toBe('bcd');
 });
 
-test('it resolves using type inference (1)', t => {
-  const { jpex } = t.context;
+it('resolves using type inference (1)', () => {
+  const { jpex } = setup();
   type A = string;
   type B = string;
 
   jpex.factory<A>((b: B) => `a${b}`);
 
-  const result = jpex.resolveWith<A, B>([ 'b' ]);
+  const result = jpex.resolveWith<A, B>(['b']);
 
-  t.is(result, 'ab');
+  expect(result).toBe('ab');
 });
 
-test('it resolves with type inference (6)', t => {
-  const { jpex } = t.context;
+it('resolves with type inference (6)', () => {
+  const { jpex } = setup();
   type A = string;
   type B = string;
   type C = string;
@@ -54,28 +49,37 @@ test('it resolves with type inference (6)', t => {
   type F = string;
   type G = string;
 
-  jpex.factory<A>((b: B, c: C, d: D, e: E, f: F, g: G) => `a${b}${c}${d}${e}${f}${g}`);
+  jpex.factory<A>(
+    (b: B, c: C, d: D, e: E, f: F, g: G) => `a${b}${c}${d}${e}${f}${g}`,
+  );
 
-  const result = jpex.resolveWith<A, B, C, D, E, F, G>([ 'b', 'c', 'd', 'e', 'f', 'g' ]);
+  const result = jpex.resolveWith<A, B, C, D, E, F, G>([
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+  ]);
 
-  t.is(result, 'abcdefg');
+  expect(result).toBe('abcdefg');
 });
 
-test('it resolves different values for different arguments', t => {
-  const { jpex } = t.context;
+test('it resolves different values for different arguments', () => {
+  const { jpex } = setup();
   type A = string;
   type B = string;
 
   jpex.factory<A>((b: B) => `a${b}`);
   jpex.factory<B>(() => 'z');
 
-  const result1 = jpex.resolveWith<A, B>([ 'b' ]);
-  const result2 = jpex.resolveWith<A, B>([ 'c' ]);
-  const result3 = jpex.resolveWith<A, B>([ 'd' ]);
+  const result1 = jpex.resolveWith<A, B>(['b']);
+  const result2 = jpex.resolveWith<A, B>(['c']);
+  const result3 = jpex.resolveWith<A, B>(['d']);
   const result4 = jpex.resolve<A>();
 
-  t.is(result1, 'ab');
-  t.is(result2, 'ac');
-  t.is(result3, 'ad');
-  t.is(result4, 'az');
+  expect(result1).toBe('ab');
+  expect(result2).toBe('ac');
+  expect(result3).toBe('ad');
+  expect(result4).toBe('az');
 });

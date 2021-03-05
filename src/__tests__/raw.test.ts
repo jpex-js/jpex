@@ -1,40 +1,28 @@
-import anyTest, { TestInterface } from 'ava';
-import base, { JpexInstance } from '..';
+import base from '..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
-  const jpex = base.extend();
-
-  t.context = {
-    jpex,
-  };
+const setup = () => ({
+  jpex: base.extend(),
 });
 
-test('it returns the raw factory by name', t => {
-  const { jpex } = t.context;
+it('returns the raw factory by name', () => {
+  const { jpex } = setup();
   type Constant = string;
   type Factory = string;
 
   jpex.constant<Constant>('foo');
   jpex.factory<Factory>((v: Constant) => {
-    return v
-      .split('')
-      .reverse()
-      .join('');
+    return v.split('').reverse().join('');
   });
 
   const factory = jpex.raw<Factory>();
   const result = factory('bah');
 
-  t.is(result, 'hab');
+  expect(result).toBe('hab');
 });
 
-test('it throws when not found', t => {
-  const { jpex } = t.context;
+it('throws when not found', () => {
+  const { jpex } = setup();
   type NotFound = any;
 
-  t.throws(() => jpex.raw<NotFound>());
+  expect(() => jpex.raw<NotFound>()).toThrow();
 });

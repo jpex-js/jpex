@@ -1,32 +1,24 @@
-import anyTest, { TestInterface } from 'ava';
-import { stub } from 'sinon';
-import jpex, { JpexInstance } from '..';
+import jpex from '..';
 
-const test: TestInterface<{
-  jpex: JpexInstance,
-}> = anyTest;
-
-test.beforeEach(t => {
-  t.context = {
-    jpex: jpex.extend(),
-  };
+const setup = () => ({
+  jpex: jpex.extend(),
 });
 
-test('wraps a method with specified dependencies', t => {
-  const { jpex } = t.context;
+it('wraps a method with specified dependencies', () => {
+  const { jpex } = setup();
 
   type Foo = string;
-  const fn = jpex.encase((foo: Foo) => (bah: string) => (foo + bah));
+  const fn = jpex.encase((foo: Foo) => (bah: string) => foo + bah);
 
   jpex.constant<Foo>('injected');
 
   const result = fn('provided');
 
-  t.is(result, 'injectedprovided');
+  expect(result).toBe('injectedprovided');
 });
 
-test('works with global interfaces', t => {
-  const { jpex } = t.context;
+it('works with global interfaces', () => {
+  const { jpex } = setup();
 
   jpex.constant<Window>(window);
 
@@ -34,28 +26,28 @@ test('works with global interfaces', t => {
 
   const result = fn();
 
-  t.is(result, window);
+  expect(result).toBe(window);
 });
 
-test('exposes the inner function', t => {
-  const { jpex } = t.context;
+it('exposes the inner function', () => {
+  const { jpex } = setup();
   type Foo = string;
 
-  const fn = jpex.encase((foo: Foo) => (bah: string) => (foo + bah));
+  const fn = jpex.encase((foo: Foo) => (bah: string) => foo + bah);
   const fn2 = fn.encased;
 
   const result = fn2('injected')('provided');
 
-  t.is(result, 'injectedprovided');
+  expect(result).toBe('injectedprovided');
 });
 
-test('caches the inner function', t => {
-  const { jpex } = t.context;
+it('caches the inner function', () => {
+  const { jpex } = setup();
   type Foo = string;
 
   jpex.constant<Foo>('injected');
 
-  const spy = stub().callsFake(foo => {
+  const spy = jest.fn((foo) => {
     return (bah: string) => {
       return foo + bah;
     };
@@ -64,13 +56,13 @@ test('caches the inner function', t => {
   const fn = jpex.encase(inner);
 
   fn('provided');
-  t.is(spy.callCount, 1);
+  expect(spy).toBeCalledTimes(1);
 
   fn('xxx');
-  t.is(spy.callCount, 1);
+  expect(spy).toBeCalledTimes(1);
 
   jpex.clearCache();
 
   fn('yyy');
-  t.is(spy.callCount, 2);
+  expect(spy).toBeCalledTimes(2);
 });
