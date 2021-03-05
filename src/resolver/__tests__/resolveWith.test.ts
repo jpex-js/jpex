@@ -60,3 +60,22 @@ test('it resolves with type inference (6)', t => {
 
   t.is(result, 'abcdefg');
 });
+
+test('it resolves different values for different arguments', t => {
+  const { jpex } = t.context;
+  type A = string;
+  type B = string;
+
+  jpex.factory<A>((b: B) => `a${b}`);
+  jpex.factory<B>(() => 'z');
+
+  const result1 = jpex.resolveWith<A, B>([ 'b' ]);
+  const result2 = jpex.resolveWith<A, B>([ 'c' ]);
+  const result3 = jpex.resolveWith<A, B>([ 'd' ]);
+  const result4 = jpex.resolve<A>();
+
+  t.is(result1, 'ab');
+  t.is(result2, 'ac');
+  t.is(result3, 'ad');
+  t.is(result4, 'az');
+});

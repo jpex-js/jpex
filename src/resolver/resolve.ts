@@ -27,6 +27,19 @@ const getNamedParameters = (namedParameters: NamedParameters, opts: ResolveOpts 
   return {};
 };
 
+const isResolvedWithParams = (factory: Factory, opts: ResolveOpts = {}) => {
+  if (!factory.with && !opts.with) {
+    return true;
+  }
+  const keys = [
+    ...new Set([
+      ...Object.keys(opts?.with || {}),
+      ...Object.keys(factory.with || {}),
+    ]),
+  ];
+  return keys.every(key => opts?.with?.[key] === factory.with[key]);
+};
+
 const resolveFactory = <R>(
   jpex: JpexInstance,
   name: string,
@@ -39,8 +52,9 @@ const resolveFactory = <R>(
     return;
   }
 
+  
   // Check if it's already been resolved
-  if (factory.resolved) {
+  if (factory.resolved && isResolvedWithParams(factory, opts)) {
     return factory.value;
   }
 
@@ -55,7 +69,7 @@ const resolveFactory = <R>(
   // Invoke the factory
   const value = factory.fn.apply(jpex, args);
   // Cache the result
-  cacheResult(jpex, name, factory, value, namedParameters);
+  cacheResult(jpex, name, factory, value, namedParameters, opts?.with);
 
   return value;
 };
