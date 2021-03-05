@@ -8,8 +8,8 @@ import {
 import {
   isNode,
   unsafeRequire,
-  isString,
   hasLength,
+  validateName,
 } from '../utils';
 import {
   GLOBAL_TYPE_PREFIX,
@@ -81,12 +81,6 @@ const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
   }
 };
 
-const validateArgs = (name: string) => {
-  if (!isString(name)) {
-    throw new Error(`Name must be a string, but recevied ${typeof name}`);
-  }
-};
-
 const getFromAlias = (jpex: JpexInstance, alias: string) => {
   const name = jpex.$$alias[alias];
   if (name != null) {
@@ -103,7 +97,7 @@ const getFromRegistry = (jpex: JpexInstance, name: string) => {
 };
 
 export const getFactory = (jpex: JpexInstance, name: string, opts: ResolveOpts = {}) => {
-  validateArgs(name);
+  validateName(name);
   const fns = [ getFromResolved, getFromRegistry, getFromAlias, getFromGlobal, getFromNodeModules ];
   while (fns.length) {
     const factory = fns.shift()(jpex, name);
