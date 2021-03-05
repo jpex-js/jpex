@@ -1,8 +1,7 @@
 import { JpexInstance, Dependency, ServiceOpts } from '../types';
-import { instantiate } from '../utils';
-import { validateArgs } from './factory';
+import { instantiate, validateArgs } from '../utils';
 
-function service(
+export default function service(
   this: JpexInstance,
   name: string,
   dependencies: Dependency[],
@@ -26,4 +25,3 @@ function service(
   return this.factory(name, dependencies, factory, opts);
 }
 
-export default service;
