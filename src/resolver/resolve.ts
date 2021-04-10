@@ -29,11 +29,11 @@ const isResolvedWithParams = (factory: Factory, opts: ResolveOpts = {}) => {
   }
   const keys = [
     ...new Set([
-      ...Object.keys(opts?.with || {}),
+      ...Object.keys(opts.with || {}),
       ...Object.keys(factory.with || {}),
     ]),
   ];
-  return keys.every((key) => opts?.with?.[key] === factory.with[key]);
+  return keys.every((key) => opts.with?.[key] === factory.with?.[key]);
 };
 
 const resolveFactory = <R>(
