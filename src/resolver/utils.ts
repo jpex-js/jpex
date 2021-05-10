@@ -55,9 +55,12 @@ const getGlobalProperty = (name: string) => {
   if (name.startsWith(GLOBAL_TYPE_PREFIX)) {
     // most global types will just be the name of the property in pascal case
     // i.e. window = Window / document = Document
+    // sometimes though, like classes, the concrete name and type name are the same
+    // i.e. the URL class
     const len = GLOBAL_TYPE_PREFIX.length;
-    const inferredName = name.charAt(len).toLowerCase() + name.substr(len + 1);
-    return global[inferredName];
+    const inferred = name.substr(len);
+    const inferredLower = inferred.charAt(0).toLowerCase() + inferred.substr(1);
+    return global[inferredLower] ?? global[inferred];
   }
 };
 const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {

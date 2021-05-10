@@ -10,6 +10,11 @@ const setup = () => {
   };
 };
 
+afterEach(() => {
+  delete (global as any).foo;
+  delete (global as any).Foo;
+});
+
 test('resolves a global property', () => {
   const { jpex } = setup();
 
@@ -36,4 +41,14 @@ test('allows a custom global variable', () => {
   const value = jpex.resolve<Global<'foo'>>();
 
   expect(value).toBe('hello');
+});
+
+test('allows a custom global class', () => {
+  const { jpex } = setup();
+  class Foo {}
+  (global as any).Foo = Foo;
+
+  const value = jpex.resolve<Global<'Foo', typeof Foo>>();
+
+  expect(value).toBe(Foo);
 });
