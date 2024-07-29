@@ -5,7 +5,7 @@ import encase from './encase';
 import clearCache from './clearCache';
 
 const defaultConfig = {
-  lifecycle: 'class' as const,
+  lifecycle: 'container' as const,
   precedence: 'active' as const,
   globals: true,
   nodeModules: true,

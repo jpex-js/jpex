@@ -193,17 +193,17 @@ The following options can be provided for both factories and services:
 ##### lifecycle
 
 ```ts
-'application' | 'class' | 'instance' | 'none';
+'singleton' | 'container' | 'invocation' | 'none';
 ```
 
 Determines how long the factory is cached for once resolved.
 
-- `application` is resolved forever across all containers
-- `class` is resolved for the current jpex container, if you `.extend()` the new container will resolve it again
-- `instance` if you request the same dependency multiple times in the same `resolve` call, this will use the same value, but the next time you call `resolve` it will start again
+- `singleton` is resolved forever across all containers
+- `container` is resolved for the current jpex container, if you `.extend()` the new container will resolve it again
+- `invocation` if you request the same dependency multiple times in the same `resolve` call, this will use the same value, but the next time you call `resolve` it will start again
 - `none` never caches anything
 
-The default lifecycle is `class`
+The default lifecycle is `container`
 
 ##### precedence
 
@@ -376,9 +376,9 @@ Whether or not to inherit config and factories from its parent
 
 ##### lifecycle
 
-`'application' | 'class' | 'instance' | 'none'`
+`'singleton' | 'container' | 'invocation' | 'none'`
 
-The default lifecycle for factories. `class` by default
+The default lifecycle for factories. `container` by default
 
 ##### precedence
 

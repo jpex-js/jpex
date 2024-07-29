@@ -10,7 +10,7 @@ const setup = () => ({
 it('sets a factory to resolved once resolved', () => {
   const { jpex } = setup();
 
-  jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
+  jpex.factory<Instance>(() => ({}), { lifecycle: 'singleton' });
   expect(jpex.$$factories[instance].resolved).toBe(void 0);
 
   jpex.resolve<Instance>();
@@ -20,7 +20,7 @@ it('sets a factory to resolved once resolved', () => {
 it('clears the cache', () => {
   const { jpex } = setup();
 
-  jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
+  jpex.factory<Instance>(() => ({}), { lifecycle: 'singleton' });
 
   expect(jpex.$$factories[instance].resolved).toBe(void 0);
   jpex.resolve<Instance>();
@@ -33,7 +33,7 @@ it('clears the cache', () => {
 
 it('returns a new instance once the cache is cleared', () => {
   const { jpex } = setup();
-  jpex.factory<Instance>(() => ({}), { lifecycle: 'application' });
+  jpex.factory<Instance>(() => ({}), { lifecycle: 'singleton' });
 
   const a = jpex.resolve<Instance>();
   const b = jpex.resolve<Instance>();
@@ -48,8 +48,8 @@ it('clears specific factories', () => {
   const { jpex } = setup();
   type A = string;
   type B = string;
-  jpex.factory<A>(() => 'a', { lifecycle: 'application' });
-  jpex.factory<B>(() => 'b', { lifecycle: 'application' });
+  jpex.factory<A>(() => 'a', { lifecycle: 'singleton' });
+  jpex.factory<B>(() => 'b', { lifecycle: 'singleton' });
   jpex.resolve<A>();
   jpex.resolve<B>();
 
@@ -62,12 +62,12 @@ it('clears specific factories', () => {
   expect(jpex.$$factories[jpex.infer<B>()].resolved).toBe(true);
 });
 
-it('should clear Class-based caches', () => {
+it('should clear container-based caches', () => {
   const { jpex } = setup();
   type A = any;
   type B = any;
-  jpex.factory<A>(() => ({}), { lifecycle: 'class' });
-  jpex.factory<B>(() => ({}), { lifecycle: 'class' });
+  jpex.factory<A>(() => ({}), { lifecycle: 'container' });
+  jpex.factory<B>(() => ({}), { lifecycle: 'container' });
   jpex.resolve<A>();
   jpex.resolve<B>();
 

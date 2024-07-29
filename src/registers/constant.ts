@@ -10,7 +10,7 @@ export default function constant(this: JpexInstance, name: string, obj: any) {
 
   this.$$factories[name] = {
     fn: () => obj,
-    lifecycle: 'application',
+    lifecycle: 'singleton',
     value: obj,
     resolved: true,
   };

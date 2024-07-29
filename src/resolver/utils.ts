@@ -128,12 +128,12 @@ export const cacheResult = (
   withArg: Record<string, any>,
 ) => {
   switch (factory.lifecycle || jpex.$$config.lifecycle) {
-    case 'application':
+    case 'singleton':
       factory.resolved = true;
       factory.value = value;
       factory.with = withArg;
       break;
-    case 'class':
+    case 'container':
       jpex.$$resolved[name] = {
         ...factory,
         resolved: true,
@@ -143,9 +143,8 @@ export const cacheResult = (
       break;
     case 'none':
       break;
-    case 'instance':
+    case 'invocation':
     default:
-      // instance
       namedParameters[name] = value;
       break;
   }

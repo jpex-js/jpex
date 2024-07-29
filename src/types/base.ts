@@ -1,4 +1,4 @@
-export type Lifecycle = 'application' | 'class' | 'instance' | 'none';
+export type Lifecycle = 'singleton' | 'container' | 'invocation' | 'none';
 
 export type Precedence = 'active' | 'passive';
 

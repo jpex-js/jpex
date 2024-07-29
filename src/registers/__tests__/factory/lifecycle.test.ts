@@ -20,10 +20,10 @@ const setup = () => {
   };
 };
 
-test('application returns the same instance for all classes', () => {
+test('singleton returns the same instance for all classes', () => {
   const { jpex, jpex2, jpex3 } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'application' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'singleton' });
 
   const a = jpex.resolve<Factory>();
   const b = jpex2.resolve<Factory>();
@@ -34,10 +34,10 @@ test('application returns the same instance for all classes', () => {
   expect(c.foo).toBe('jpex');
 });
 
-test('application uses the first resolution forever', () => {
+test('singleton uses the first resolution forever', () => {
   const { jpex, jpex2, jpex3 } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'application' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'singleton' });
 
   const c = jpex3.resolve<Factory>();
   const a = jpex.resolve<Factory>();
@@ -51,7 +51,7 @@ test('application uses the first resolution forever', () => {
 test('class returns different instances for each class', () => {
   const { jpex, jpex2, jpex3 } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'class' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'container' });
 
   const a = jpex.resolve<Factory>();
   const b = jpex2.resolve<Factory>();
@@ -67,7 +67,7 @@ test('class returns different instances for each class', () => {
 test('class returns the same instance within a single class', () => {
   const { jpex } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'class' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'container' });
 
   const a = jpex.resolve<Factory>();
   const b = jpex.resolve<Factory>();
@@ -80,7 +80,7 @@ test('class returns the same instance within a single class', () => {
 test('instance returns a new instance for each separate call', () => {
   const { jpex } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'instance' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'invocation' });
 
   const a = jpex.resolve<Factory>();
   const b = jpex.resolve<Factory>();
@@ -93,7 +93,7 @@ test('instance returns a new instance for each separate call', () => {
 test('instance returns a single instance within a single call', () => {
   const { jpex } = setup();
 
-  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'instance' });
+  jpex.factory<Factory>((foo: Foo) => ({ foo }), { lifecycle: 'invocation' });
   jpex.factory<Test>((a: Factory, b: Factory) => {
     expect(a).toBe(b);
   });
