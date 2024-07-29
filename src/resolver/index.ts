@@ -1,4 +1,4 @@
-import { JpexInstance, Definition, Dependency, ResolveOpts } from '../types';
+import { JpexInstance, Dependency, ResolveOpts, Factory } from '../types';
 import { resolveMany, resolveOne } from './resolve';
 import { isString } from '../utils';
 
@@ -12,9 +12,17 @@ export function resolve(
   return resolveOne(this, name, void 0, opts, []);
 }
 
+export function resolveAsync(
+  this: JpexInstance,
+  name: Dependency,
+  opts?: ResolveOpts,
+) {
+  return resolveOne(this, name, void 0, { ...opts, async: true }, []);
+}
+
 export function resolveDependencies(
   this: JpexInstance,
-  definition: Definition,
+  definition: Factory,
   opts?: ResolveOpts,
 ) {
   return resolveMany(this, definition, void 0, opts, []);

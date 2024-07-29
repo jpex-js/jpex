@@ -29,6 +29,20 @@ it('works with global interfaces', () => {
   expect(result).toBe(window);
 });
 
+it('works with async factories', async () => {
+  const { jpex } = setup();
+
+  type AsyncFactory = string;
+
+  jpex.factoryAsync<AsyncFactory>(async () => 'async');
+
+  const fn = jpex.encase((x: AsyncFactory) => async () => `${x}!`);
+
+  const result = await fn();
+
+  expect(result).toBe('async!');
+});
+
 it('exposes the inner function', () => {
   const { jpex } = setup();
   type Foo = string;

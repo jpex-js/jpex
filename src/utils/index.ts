@@ -86,4 +86,4 @@ export const ensureArray = <T>(arr: T[] | T): T[] => {
   return [arr];
 };
 
-export const hasLength = <T>(arr: T[]) => arr == null || arr.length > 0;
+export const hasLength = <T>(arr: T[]) => arr != null && arr.length > 0;

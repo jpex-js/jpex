@@ -22,7 +22,7 @@ export default function factory<T>(
   this.$$factories[name] = {
     fn,
     dependencies,
-    lifecycle: opts.lifecycle || this.$$config.lifecycle,
+    lifecycle: opts.lifecycle,
   };
 
   if (opts.alias) {

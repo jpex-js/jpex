@@ -10,16 +10,28 @@ export default function encase<F extends AnyFunction<F>>(
   const jpex = this;
   let result: AnyFunction;
 
+  const invokeFn = (deps: any[], args: any[]) => {
+    result = fn.apply(jpex, deps);
+
+    return result.apply(this, args);
+  };
+
   const encased = function encased(...args: Parameters<F>) {
     /* eslint-disable no-invalid-this */
     if (result && allResolved.call(jpex, dependencies)) {
       return result.apply(this, args);
     }
-    const deps = resolveDependencies.call(jpex, { dependencies });
+    const deps = resolveDependencies.call(
+      jpex,
+      { dependencies },
+      { async: true },
+    );
 
-    result = fn.apply(jpex, deps);
+    if (deps instanceof Promise) {
+      return deps.then((deps) => invokeFn(deps, args));
+    }
 
-    return result.apply(this, args);
+    return invokeFn(deps, args);
     /* eslint-enable */
   };
   encased.encased = fn;

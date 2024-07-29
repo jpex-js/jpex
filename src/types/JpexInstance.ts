@@ -29,6 +29,7 @@ export interface ServiceOpts extends FactoryOpts {
 export interface ResolveOpts {
   optional?: boolean;
   with?: NamedParameters;
+  async?: boolean;
 }
 
 export interface JpexInstance {
@@ -48,6 +49,20 @@ export interface JpexInstance {
     name: string,
     deps: Dependency[],
     fn: AnyFunction<T>,
+    opts?: FactoryOpts,
+  ): void;
+
+  factoryAsync(
+    name: string,
+    deps: Dependency[],
+    fn: AnyFunction,
+    opts?: FactoryOpts,
+  ): void;
+  factoryAsync<T>(fn: AnyFunction<Promise<T>>, opts?: FactoryOpts): void;
+  factoryAsync<T>(
+    name: string,
+    deps: Dependency[],
+    fn: AnyFunction<Promise<T>>,
     opts?: FactoryOpts,
   ): void;
 
@@ -76,6 +91,10 @@ export interface JpexInstance {
   resolve(name: Dependency, opts?: ResolveOpts): any;
   resolve<T>(opts?: ResolveOpts): T;
   resolve<T>(name: Dependency, opts?: ResolveOpts): T;
+
+  resolveAsync(name: Dependency, opts?: ResolveOpts): Promise<any>;
+  resolveAsync<T>(opts?: ResolveOpts): Promise<T>;
+  resolveAsync<T>(name: Dependency, opts?: ResolveOpts): Promise<T>;
 
   resolveWith(
     name: Dependency,
@@ -119,6 +138,64 @@ export interface JpexInstance {
     namedParameters: NamedParameters,
     opts?: ResolveOpts,
   ): T;
+
+  resolveAsyncWith(
+    name: Dependency,
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): any;
+  resolveAsyncWith<T>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D, E>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D, E, F>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D, E>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
+  resolveAsyncWith<T, A, B, C, D, E, F>(
+    namedParameters: NamedParameters,
+    opts?: ResolveOpts,
+  ): Promise<T>;
 
   encase<F extends AnyFunction<AnyFunction>>(
     dependencies: Dependency[],

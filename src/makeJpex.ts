@@ -1,6 +1,6 @@
 import { JpexInstance as IJpex, SetupConfig } from './types';
-import { constant, factory, service, alias } from './registers';
-import { resolve, getFactory } from './resolver';
+import { constant, factory, service, alias, factoryAsync } from './registers';
+import { resolve, getFactory, resolveAsync } from './resolver';
 import encase from './encase';
 import clearCache from './clearCache';
 
@@ -28,9 +28,11 @@ export default function makeJpex(
     $$alias: parent && inherit ? Object.create(parent.$$alias) : {},
     constant,
     factory,
+    factoryAsync,
     service,
     alias,
     resolve,
+    resolveAsync,
     encase,
     clearCache,
     extend(config?: SetupConfig): IJpex {
@@ -38,6 +40,12 @@ export default function makeJpex(
     },
     resolveWith(name: any, namedParameters?: any, opts?: any): any {
       return this.resolve(name, {
+        with: namedParameters,
+        ...opts,
+      });
+    },
+    resolveAsyncWith(name: any, namedParameters?: any, opts?: any): any {
+      return this.resolveAsync(name, {
         with: namedParameters,
         ...opts,
       });

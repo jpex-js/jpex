@@ -23,10 +23,12 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
       - [bindToInstance](#bindtoinstance)
       - [alias](#alias)
     - [service](#jpexservice)
+    - [factoryAsync](#jpexfactoryAsync)
     - [alias](#jpexalias)
     - [resolve](#jpexresolve)
       - [optional](#optional)
       - [with](#with)
+    - [resolveAsync][#jpexresolveasync]
     - [resolveWith](#jpexresolvewith)
     - [encase](#jpexencase)
     - [extend](#jpexextend)
@@ -262,6 +264,14 @@ jpex.service(Foo);
 const foo = jpex.resolve<IFoo>();
 ```
 
+#### jpex.factoryAsync
+
+```ts
+<T>(fn: (...deps: any[] => Promise<T>), opts?: object): void
+```
+
+Registers an asynchronous factory. The factory should return a promise that resolves to type `T`. If you are using async factories, you should ensure you are using `resolveAsync`, this will wait for asynchronous factories to resolve before passing them to their dependents.
+
 #### jpex.alias
 
 ```ts
@@ -292,6 +302,14 @@ boolean;
 
 When `true` if the dependency cannot be found or resolved, it will just return `undefined` rather than throwing an error.
 
+#### jpex.resolveAsync
+
+```ts
+<T>(opts?: object): Promise<T>
+```
+
+Locates and resolves the desired factory. Unlike `resolve`, this method returns a promise and allows all asynchronous dependents to resolve before returning the final value.
+
 #### jpex.resolveWith
 
 ```ts
@@ -303,6 +321,14 @@ Resolves a factory while substituting dependencies for the given values
 ```ts
 const foo = jpex.resolveWith<Foo, Bah, Baz>(['bah', 'baz']);
 ```
+
+#### jpex.resolveWithAsync
+
+```ts
+<T, ...Rest[]>(values: Rest, opts?: object): Promise<T>
+```
+
+This is an asynchronous version of `resolveWith` and returns a promise that will resolve all dependent factories.
 
 #### jpex.encase
 
@@ -320,11 +346,15 @@ const getStuff = jpex.encase((http: Http) => (thing: string) => {
 await getStuff('my-thing');
 ```
 
+The dependencies are only resolved at call time and are then cached and reused on subsequent calls (based on their lifecycles).
+
 To help with testing, the returned function also has an `encased` property containng the outer function
 
 ```ts
 getStuff.encased(fakeHttp)('my-thing');
 ```
+
+> If you include any factoryAsync dependencies, jpex will ensure the encased function returns a promise as well.
 
 #### jpex.extend
 

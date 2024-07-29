@@ -18,4 +18,5 @@ export interface Factory extends Definition {
   lifecycle: Lifecycle;
   resolved?: boolean;
   value?: any;
+  with?: Record<string, any>;
 }

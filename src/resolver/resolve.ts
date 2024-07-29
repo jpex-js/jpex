@@ -1,7 +1,6 @@
 import {
   JpexInstance,
   Dependency,
-  Definition,
   NamedParameters,
   ResolveOpts,
   Factory,
@@ -36,14 +35,29 @@ const isResolvedWithParams = (factory: Factory, opts: ResolveOpts = {}) => {
   return keys.every((key) => opts.with?.[key] === factory.with?.[key]);
 };
 
-const resolveFactory = <R>(
+const invokeFactory = (
+  jpex: JpexInstance,
+  name: string,
+  factory: Factory,
+  namedParameters: NamedParameters,
+  opts: ResolveOpts,
+  args: any[],
+) => {
+  // Invoke the factory
+  const value = factory.fn.apply(jpex, args);
+  // Cache the result
+  cacheResult(jpex, name, factory, value, namedParameters, opts?.with);
+  return value;
+};
+
+const resolveFactory = (
   jpex: JpexInstance,
   name: string,
   factory: Factory,
   namedParameters: NamedParameters,
   opts: ResolveOpts,
   stack: string[],
-): R => {
+) => {
   if (factory == null) {
     return;
   }
@@ -54,28 +68,29 @@ const resolveFactory = <R>(
   }
 
   // Work out dependencies
-  let args: any[] = [];
+  let args: any[] | Promise<any> = [];
 
   if (hasLength(factory.dependencies)) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     args = resolveMany(jpex, factory, namedParameters, opts, [...stack, name]);
   }
 
-  // Invoke the factory
-  const value = factory.fn.apply(jpex, args);
-  // Cache the result
-  cacheResult(jpex, name, factory, value, namedParameters, opts?.with);
+  if (args instanceof Promise) {
+    return args.then((args) => {
+      return invokeFactory(jpex, name, factory, namedParameters, opts, args);
+    });
+  }
 
-  return value;
+  return invokeFactory(jpex, name, factory, namedParameters, opts, args);
 };
 
-export const resolveOne = <R extends any>(
+export const resolveOne = (
   jpex: JpexInstance,
   name: Dependency,
   initialParameters: NamedParameters,
   opts: ResolveOpts,
   stack: string[],
-): R => {
+): any | Promise<any> => {
   const namedParameters = getNamedParameters(initialParameters, opts);
 
   // Check named parameters
@@ -87,7 +102,7 @@ export const resolveOne = <R extends any>(
 
   // Special keys
   if (name === NAMED_PARAMS || name === jpex.infer<NamedParameters>()) {
-    return namedParameters as R;
+    return namedParameters;
   }
 
   if (checkStack(jpex, name, stack)) {
@@ -105,21 +120,30 @@ export const resolveOne = <R extends any>(
   return resolveFactory(jpex, name, factory, namedParameters, opts, stack);
 };
 
-export const resolveMany = <R extends any[]>(
+export const resolveMany = (
   jpex: JpexInstance,
-  definition: Definition,
+  definition: Factory,
   namedParameters: NamedParameters,
   opts: ResolveOpts,
   stack: string[] = [],
-): R => {
+): any[] | Promise<any[]> => {
   if (!hasLength(definition.dependencies)) {
-    return [] as R;
+    return [];
   }
+  let isAsync = false;
   const dependencies: Dependency[] = ensureArray(definition.dependencies);
 
   const values = dependencies.map((dependency) => {
-    return resolveOne<any>(jpex, dependency, namedParameters, opts, stack);
+    const value = resolveOne(jpex, dependency, namedParameters, opts, stack);
+    if (opts && opts.async && value instanceof Promise) {
+      isAsync = true;
+    }
+    return value;
   });
 
-  return values as R;
+  if (isAsync) {
+    return Promise.all(values);
+  }
+
+  return values;
 };
