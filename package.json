@@ -18,7 +18,7 @@
     "build": "yarn build:prepare && yarn build:js && yarn build:ts && yarn build:post",
     "prepublishOnly": "yarn build",
     "semantic-release": "semantic-release",
-    "ci": "yarn lint && yarn test && yarn build",
+    "ci": "yarn install && yarn lint && yarn test && yarn build",
     "prepare": "husky install"
   },
   "lint-staged": {
