@@ -533,6 +533,28 @@ doOnClick();
 expect(saveData.called).to.be.true;
 ```
 
+## node
+
+Jpex was originally written for node and works out of the box in a node environment. However, the `@jpex-js/node` library was created to provide similar benefits to `react-jpex`. It can be used to create a provider/context pattern where the top level application (or testing environment) can choose which dependencies to inject into the app.
+
+```ts
+import { encase } from '@jpex-js/node';
+
+const myFunction = encase((dep: MyDep) => () => {
+  const someValue = dep();
+});
+```
+
+```ts
+import { provide } from '@jpex-js/node';
+
+provide((jpex) => {
+  jpex.constant<MyDep>(mockDep);
+
+  myFunction(); // will be called with mockDep
+});
+```
+
 ## Vanilla JS mode
 
 Perhaps you hate typescript, or babel, or both. Or perhaps you don't have the luxury of a build pipeline in your application. That's fine because jpex supports vanilla js as well, you just have to explicitly state your dependencies up front:
