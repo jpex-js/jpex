@@ -8,6 +8,7 @@
   "scripts": {
     "clear-cache": "rm -rf node_modules/.cache",
     "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "coverage": "jest --coverage",
     "lint": "eslint './src/**/*.ts' --fix && tsc --noEmit",
     "build:prepare": "rm -rf dist",

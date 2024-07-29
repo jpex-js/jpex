@@ -127,7 +127,7 @@ export const cacheResult = (
   namedParameters: NamedParameters,
   withArg: Record<string, any>,
 ) => {
-  switch (factory.lifecycle) {
+  switch (factory.lifecycle || jpex.$$config.lifecycle) {
     case 'application':
       factory.resolved = true;
       factory.value = value;
