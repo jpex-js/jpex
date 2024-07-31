@@ -95,7 +95,7 @@ export const getFactory = (
   jpex: JpexInstance,
   name: string,
   opts: ResolveOpts = {},
-) => {
+): Factory | undefined => {
   validateName(name);
   const fns = [
     getFromResolved,
@@ -113,6 +113,15 @@ export const getFactory = (
 
   if (opts.optional ?? jpex.$$config.optional) {
     return;
+  }
+
+  if ('default' in opts) {
+    return {
+      fn: () => opts.default,
+      lifecycle: jpex.$$config.lifecycle,
+      resolved: true,
+      value: opts.default,
+    };
   }
 
   throw new Error(`Unable to find required dependency [${name}]`);

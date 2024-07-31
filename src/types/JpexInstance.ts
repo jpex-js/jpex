@@ -30,6 +30,7 @@ export interface ResolveOpts {
   optional?: boolean;
   with?: NamedParameters;
   async?: boolean;
+  default?: any;
 }
 
 export interface JpexInstance {

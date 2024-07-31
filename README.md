@@ -302,6 +302,14 @@ boolean;
 
 When `true` if the dependency cannot be found or resolved, it will just return `undefined` rather than throwing an error.
 
+### default
+
+```ts
+any;
+```
+
+Provide a fallback value if the dependency cannot be found.
+
 #### jpex.resolveAsync
 
 ```ts
