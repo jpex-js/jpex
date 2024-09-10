@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// ^ we have functions that have several generic types that don't get used in the runtime code, but are necessary for the build process to extract type info
 import type {
   Lifecycle,
   AnyFunction,
@@ -67,7 +68,6 @@ export interface JpexInstance {
     opts?: FactoryOpts,
   ): void;
 
-  // eslint-disable-next-line max-len
   service(
     name: string,
     deps: Dependency[],
@@ -75,7 +75,6 @@ export interface JpexInstance {
     opts?: ServiceOpts,
   ): void;
   service<T>(fn: AnyConstructor<T> | AnyFunction, opts?: ServiceOpts): void;
-  // eslint-disable-next-line max-len
   service<T>(
     name: string,
     deps: Dependency[],
@@ -228,6 +227,7 @@ export interface JpexInstance {
   $$alias: {
     [key: string]: string;
   };
+  $$deps: Dependency[];
   $$config: {
     lifecycle: Lifecycle;
     precedence: Precedence;

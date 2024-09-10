@@ -26,6 +26,7 @@ export default function makeJpex(
     $$factories: parent && inherit ? Object.create(parent.$$factories) : {},
     $$resolved: {},
     $$alias: parent && inherit ? Object.create(parent.$$alias) : {},
+    $$deps: parent && inherit ? parent.$$deps : <string[]>[],
     constant,
     factory,
     factoryAsync,

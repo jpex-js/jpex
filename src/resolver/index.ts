@@ -1,14 +1,15 @@
 import { JpexInstance, Dependency, ResolveOpts, Factory } from '../types';
 import { resolveMany, resolveOne } from './resolve';
-import { isString } from '../utils';
+import { isString, trackDeps } from '../utils';
 
-export { getFactory } from './utils';
+export { default as getFactory } from './getFactory';
 
 export function resolve(
   this: JpexInstance,
   name: Dependency,
   opts?: ResolveOpts,
 ) {
+  trackDeps(this, [name]);
   return resolveOne(this, name, void 0, opts, []);
 }
 
@@ -17,6 +18,7 @@ export function resolveAsync(
   name: Dependency,
   opts?: ResolveOpts,
 ) {
+  trackDeps(this, [name]);
   return resolveOne(this, name, void 0, { ...opts, async: true }, []);
 }
 
@@ -25,6 +27,7 @@ export function resolveDependencies(
   definition: Factory,
   opts?: ResolveOpts,
 ) {
+  trackDeps(this, definition.dependencies);
   return resolveMany(this, definition, void 0, opts, []);
 }
 
@@ -35,7 +38,10 @@ export function isResolved(this: JpexInstance, dependency: Dependency) {
   if (this.$$resolved[dependency] != null) {
     return true;
   }
-  return this.$$factories[dependency]?.resolved === true;
+  if (this.$$factories[dependency]) {
+    return this.$$factories[dependency].resolved === true;
+  }
+  return false;
 }
 
 export function allResolved(this: JpexInstance, dependencies: Dependency[]) {

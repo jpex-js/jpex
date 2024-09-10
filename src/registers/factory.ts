@@ -1,5 +1,11 @@
 import { JpexInstance, Dependency, AnyFunction, FactoryOpts } from '../types';
-import { hasLength, ensureArray, isPassive, validateArgs } from '../utils';
+import {
+  hasLength,
+  ensureArray,
+  isPassive,
+  validateArgs,
+  trackDeps,
+} from '../utils';
 
 export default function factory<T>(
   this: JpexInstance,
@@ -11,7 +17,6 @@ export default function factory<T>(
   validateArgs(name, dependencies, fn);
 
   if (!hasLength(dependencies)) {
-    // eslint-disable-next-line no-param-reassign
     dependencies = null;
   }
 
@@ -24,6 +29,8 @@ export default function factory<T>(
     dependencies,
     lifecycle: opts.lifecycle,
   };
+
+  trackDeps(this, dependencies);
 
   if (opts.alias) {
     ensureArray(opts.alias).forEach((alias) => this.alias(alias, name));

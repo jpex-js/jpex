@@ -23,6 +23,7 @@ module.exports = {
     ],
     'import/prefer-default-export': 'off',
     'jsx-a11y/label-has-associated-control': ['error', { assert: 'either' }],
+    'no-param-reassign': 'off',
   },
   parserOptions: {
     project: 'tsconfig.json',

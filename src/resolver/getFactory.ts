@@ -1,11 +1,5 @@
-import {
-  Factory,
-  JpexInstance,
-  ResolveOpts,
-  NamedParameters,
-  Dependency,
-} from '../types';
-import { isNode, unsafeRequire, hasLength, validateName } from '../utils';
+import { Factory, JpexInstance, ResolveOpts } from '../types';
+import { isNode, unsafeRequire, validateName } from '../utils';
 import { GLOBAL_TYPE_PREFIX, VOID } from '../constants';
 
 const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
@@ -32,11 +26,9 @@ const getFromNodeModules = (jpex: JpexInstance, target: string): Factory => {
 
 const getGlobalObject = (): any => {
   if (typeof global !== VOID) {
-    // eslint-disable-next-line no-undef
     return global;
   }
   if (typeof globalThis !== VOID) {
-    // eslint-disable-next-line no-undef
     return globalThis;
   }
   if (typeof window !== VOID) {
@@ -58,11 +50,13 @@ const getGlobalProperty = (name: string) => {
     // sometimes though, like classes, the concrete name and type name are the same
     // i.e. the URL class
     const len = GLOBAL_TYPE_PREFIX.length;
-    const inferred = name.substr(len);
-    const inferredLower = inferred.charAt(0).toLowerCase() + inferred.substr(1);
+    const inferred = name.substring(len);
+    const inferredLower =
+      inferred.charAt(0).toLowerCase() + inferred.substring(1);
     return global[inferredLower] ?? global[inferred];
   }
 };
+
 const getFromGlobal = (jpex: JpexInstance, name: string): Factory => {
   if (!jpex.$$config.globals) {
     return;
@@ -91,7 +85,7 @@ const getFromRegistry = (jpex: JpexInstance, name: string) => {
   return jpex.$$factories[name];
 };
 
-export const getFactory = (
+const getFactory = (
   jpex: JpexInstance,
   name: string,
   opts: ResolveOpts = {},
@@ -127,61 +121,4 @@ export const getFactory = (
   throw new Error(`Unable to find required dependency [${name}]`);
 };
 
-/* eslint-disable no-param-reassign */
-export const cacheResult = (
-  jpex: JpexInstance,
-  name: string,
-  factory: Factory,
-  value: any,
-  namedParameters: NamedParameters,
-  withArg: Record<string, any>,
-) => {
-  switch (factory.lifecycle || jpex.$$config.lifecycle) {
-    case 'singleton':
-      factory.resolved = true;
-      factory.value = value;
-      factory.with = withArg;
-      break;
-    case 'container':
-      jpex.$$resolved[name] = {
-        ...factory,
-        resolved: true,
-        value,
-        with: withArg,
-      } as Factory;
-      break;
-    case 'none':
-      break;
-    case 'invocation':
-    default:
-      namedParameters[name] = value;
-      break;
-  }
-};
-/* eslint-enable no-param-reassign */
-
-// Ensure we're not stuck in a recursive loop
-export const checkStack = (
-  jpex: JpexInstance,
-  name: Dependency,
-  stack: string[],
-) => {
-  if (!hasLength(stack)) {
-    // This is the first loop
-    return false;
-  }
-  if (!stack.includes(name)) {
-    // We've definitely not tried to resolve this one before
-    return false;
-  }
-  if (stack[stack.length - 1] === name) {
-    // We've tried to resolve this one before, but...
-    // if this factory has overridden a parent factory
-    // we should assume it actually wants to resolve the parent
-    const parent = jpex.$$parent?.$$factories[name];
-    if (parent != null) {
-      return true;
-    }
-  }
-  throw new Error(`Recursive loop for dependency ${name} encountered`);
-};
+export default getFactory;

@@ -43,8 +43,13 @@ export const isPassive = (
 };
 
 export const instantiate = (context: any, args: any[]) => {
-  // eslint-disable-next-line new-parens
   return new (Function.prototype.bind.apply(context, args))();
+};
+
+export const unique = <T>(arr: T[]) => [...new Set(arr)];
+
+export const trackDeps = (jpex: JpexInstance, dependencies: Dependency[]) => {
+  jpex.$$deps = unique([...jpex.$$deps, ...(dependencies || [])]);
 };
 
 export const isNode = () => {
@@ -57,7 +62,6 @@ export const isNode = () => {
     // No process
   }
 
-  // eslint-disable-next-line max-len
   return (
     typeof _process === 'object' &&
     _process.toString &&
@@ -87,3 +91,5 @@ export const ensureArray = <T>(arr: T[] | T): T[] => {
 };
 
 export const hasLength = <T>(arr: T[]) => arr != null && arr.length > 0;
+
+export const last = <T>(arr: T[]) => arr[arr.length - 1];

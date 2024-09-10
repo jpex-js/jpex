@@ -13,7 +13,6 @@ const expectedExports = [
 ];
 
 const run = async () => {
-  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < expectedFiles.length; i++) {
     const target = expectedFiles[i];
 
@@ -24,7 +23,6 @@ const run = async () => {
     }
   }
 
-  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < expectedExports.length; i++) {
     const [key, type] = expectedExports[i];
     if (jpex[key] === void 0) {
