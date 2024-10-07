@@ -31,6 +31,7 @@ Jpex is an Inversion of Control framework. Register dependencies on a container,
     - [resolveAsync][#jpexresolveasync]
     - [resolveWith](#jpexresolvewith)
     - [encase](#jpexencase)
+    - [defer](#jpexdefer)
     - [extend](#jpexextend)
       - [inherit](#inherit)
       - [lifecycle](#lifecycle-1)
@@ -363,6 +364,20 @@ getStuff.encased(fakeHttp)('my-thing');
 ```
 
 > If you include any factoryAsync dependencies, jpex will ensure the encased function returns a promise as well.
+
+#### jpex.defer
+
+```ts
+<T>(): T
+```
+
+Provided `T` is a function type, returns `T` but only resolves its dependencies at call time.
+
+```ts
+const getStuff = jpex.defer<GetStuff>();
+
+await getStuff('my-thing'); // will only resolve the GetStuff factory here
+```
 
 #### jpex.extend
 
