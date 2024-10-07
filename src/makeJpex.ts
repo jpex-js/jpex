@@ -3,6 +3,7 @@ import { constant, factory, service, alias, factoryAsync } from './registers';
 import { resolve, getFactory, resolveAsync } from './resolver';
 import encase from './encase';
 import clearCache from './clearCache';
+import defer from './defer';
 
 const defaultConfig = {
   lifecycle: 'container' as const,
@@ -35,6 +36,7 @@ export default function makeJpex(
     resolve,
     resolveAsync,
     encase,
+    defer,
     clearCache,
     extend(config?: SetupConfig): IJpex {
       return makeJpex(config, this);

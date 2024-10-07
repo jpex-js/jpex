@@ -205,6 +205,9 @@ export interface JpexInstance {
     fn: F,
   ): ReturnType<F> & { encased: F };
 
+  defer<T extends AnyFunction>(): T;
+  defer<T extends AnyFunction>(name: Dependency): T;
+
   raw(name: Dependency): AnyFunction;
   raw<T>(): AnyFunction<T>;
   raw<T>(name: Dependency): AnyFunction<T>;
